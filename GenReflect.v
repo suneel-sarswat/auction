@@ -27,11 +27,15 @@ Some useful Ltac defined terms:
 
 
 From Coq Require Export ssreflect  ssrbool.
+
+Require Export Omega.
+
+
 Set Implicit Arguments.
 
 Section GeneralReflections.
 Definition Prop_bool_eq (P: Prop) (b: bool):= P <-> b=true.
-Check reflect. Print Bool.reflect.
+
 (* Inductive reflect (P : Prop) : bool -> Set :=  
    ReflectT : P -> reflect P true | ReflectF : ~ P -> reflect P false *)
 Lemma reflect_elim (P:Prop)(b: bool): reflect P b -> Prop_bool_eq P b.
@@ -53,17 +57,17 @@ Lemma pbe_EM P: forall b:bool, Prop_bool_eq P b -> P \/ ~P.
 Proof. { intros b H; cut( reflect P b).
          apply reflect_EM. apply reflect_intro;auto. } Qed.
 Hint Immediate reflect_EM reflect_dec.
-About iffP.
+
 (* iffP : forall (P Q : Prop) (b : bool), reflect P b -> (P -> Q) -> (Q -> P) -> reflect Q b *)
-About idP.
+
 (* idP : forall b1 : bool, reflect b1 b1 *)
-Check negP.
+
 (* negP
      : reflect (~ ?b1) (~~ ?b1) *)
-Check andP.
+
 (* andP
      : reflect (?b1 /\ ?b2) (?b1 && ?b2) *)
-Check orP.
+
 (*orP
      : reflect (?b1 \/ ?b2) (?b1 || ?b2) *)
 Lemma impP(p q:bool): reflect (p->q)((negb p) || q).
@@ -83,10 +87,18 @@ Proof. intros H H1.  rewrite H1 in H. discriminate H. Qed.
 Lemma switch2(b:bool): ~ b -> b=false.
 Proof. intros H. case b eqn:H1. absurd (true);auto. auto. Qed.
 
+Lemma bool_fun_equal (B1 B2: bool): (B1-> B2)-> (B2-> B1)-> B1=B2.
+    Proof. intros H1 H2. destruct B1; destruct B2; auto.
+           replace false with true. auto. symmetry; auto. Qed.
+
+    Hint Resolve bool_fun_equal: core.
+
 End GeneralReflections.
 
 
 Hint Immediate reflect_intro reflect_elim  reflect_EM reflect_dec dec_EM: core.
+Hint Resolve idP impP impP1: core.
+Hint Resolve bool_fun_equal: core.
 
 Ltac solve_dec := eapply reflect_dec; eauto.
 Ltac solve_EM  := eapply reflect_EM; eauto.
@@ -97,3 +109,47 @@ Ltac switch_in H:= (apply switch1 in H || apply switch2 in H).
 Ltac right_ := apply /orP; right.
 Ltac left_ := apply /orP; left.
 Ltac split_ := apply /andP; split.
+
+
+Section NaturalNumbers.
+
+Lemma ltP (x y:nat): reflect (x < y) (Nat.ltb x y).
+Proof. { apply reflect_intro. split.
+       { unfold "<".  unfold "<?". 
+         revert y. induction x. intro y; case y. simpl.
+         intro H. inversion H. simpl. auto.
+         intro y;case y.
+         intro H; inversion H. intros n H. 
+         replace (S (S x) <=?  S n) with (S x <=? n). apply IHx. omega.
+         simpl. auto. }
+       { unfold "<"; unfold "<?".
+         revert y. induction x. intro y; case y. simpl.
+         intro H. inversion H. intros; omega.
+         intro y;case y. simpl. intro H; inversion H.
+         intro n. replace (S (S x) <=? S n) with (S x <=? n).
+         intro H; apply IHx in H. omega. simpl;auto. } } Qed.
+
+Lemma leP (x y: nat): reflect (x <= y) (Nat.leb x y).
+Proof. { apply reflect_intro. split.
+       { revert y. induction x. intro y; case y; simpl; auto.
+         intro y;case y.
+         intro H; inversion H. intros n H. 
+         replace (S  x <=? S n) with ( x <=? n). apply IHx. omega.
+         simpl. auto. }
+       { revert y. induction x. intro y; case y; intros; omega. 
+         intro y;case y. simpl. intro H; inversion H.
+         intro n. replace (S x <=? S n) with ( x <=? n).
+         intro H; apply IHx in H. omega. simpl;auto. } } Qed.
+
+Lemma nat_reflexive: reflexive Nat.leb.
+  Proof. unfold reflexive; induction x; simpl; auto. Qed.
+
+Lemma nat_transitive: transitive Nat.leb.
+Proof. unfold transitive. intros x y z h1 h2. move /leP in h1. move /leP in h2.
+         apply /leP. omega. Qed.
+
+Hint Resolve leP ltP nat_reflexive nat_transitive: core.
+
+End NaturalNumbers.
+
+Hint Resolve leP ltP nat_reflexive nat_transitive: core.

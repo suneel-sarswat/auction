@@ -1,5 +1,10 @@
 
 
+(* -----------------Description------------------------------------------
+
+This file contains basic definitions of Bids, Asks, Fill (trade) between Bid and Ask. They are also attached with Equality. This file also contains three functions to compute bids, asks and trade prices from a matching, and their (function's) properties.
+
+*)
 
 
 Require Import ssreflect ssrbool.
@@ -103,7 +108,7 @@ Proof. unfold m_eqb. apply /andP. split. apply /andP. split. all: apply /eqP; au
 
 Hint Resolve m_eqb_ref: auction.
 Lemma m_eqb_elim (x y: fill_type):  m_eqb x y -> x = y.
-Proof.  Admitted. 
+Proof. unfold m_eqb. intros H. destruct x. destruct y. simpl in H. Admitted.
 
 
 Lemma m_eqb_intro (x y: fill_type): x=y -> m_eqb x y = true.

@@ -1,9 +1,12 @@
 
-(* -----------------Description------------------------------------------
+(* -----------------Description----------------------------------------------------------
 
-This file contains useful definitions and basic properties of fundamental concepts about auctions such as matching, fair matching, individual rational matching, uniform matching, maximum matching etc. This file also contains come counting results about matching like number of buyers above a price in matching etc.
+This file contains useful definitions and basic properties of fundamental concepts 
+about auctions such as matching, fair matching, individual rational matching, uniform 
+matching, maximum matching etc. This file also contains come counting results about 
+matching for example number of buyers above a price in matching etc.
 
-*)
+----------------------------------------------------------------------------------------*)
 
 Require Import ssreflect ssrbool.
 Require Export Lists.List.

@@ -1,10 +1,11 @@
 
 
-(* -----------------Description------------------------------------------
+(* -----------------Description----------------------------------------------
 
-This file contains basic definitions of Bids, Asks, Fill (trade) between Bid and Ask. They are also attached with Equality. This file also contains three functions to compute bids, asks and trade prices from a matching, and their (function's) properties.
-
-*)
+This file contains basic definitions of Bids, Asks and Fill (trade between
+Bid and Ask). They are also attached with eqType (i.e, domain with 
+decidable Equality). This file also contains three functions to compute 
+bids, asks and trade prices from a matching, and their specifications. ---- *)
 
 
 Require Import ssreflect ssrbool.

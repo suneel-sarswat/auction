@@ -1,7 +1,9 @@
 
 (* -----------------Description------------------------------------------
 
-This file is about Individual Rational (IR) matchings. It contains a function to convert any matching to an IR matching, it also contains existensial results of IR matching.
+This file is about Individual Rational (IR) matchings. It contains a
+ function to convert any matching to an IR matching, it also contains
+  existensial results of IR matching.
 
 *)
 

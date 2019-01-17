@@ -74,9 +74,9 @@ Proof. { split.
 Hint Resolve m_by_bp_P m_by_sp_P b_by_bp_P a_by_sp_P.
 
  
-Lemma top_prices_mb (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid)(A: list Ask):
+Lemma top_prices_mb (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid):
   Sorted m_by_bp (m::M)-> Sorted b_by_bp (b::B) -> 
-  bids_of (m::M) [<=] (b::B) -> bp (bid_of m) <= bp b.
+  bids_of (m::M) [<=] (b::B) -> (bid_of m) <= b.
 Proof. Admitted.
 
 
@@ -114,8 +114,10 @@ Proof. revert B NDB. induction M.
           { simpl. eauto. }
           { simpl. apply All_matchable_intro. 
           { simpl.
-            assert (H7: b >= (bid_of a)). admit.
-            assert (H8: bid_of a >= ask_of a). admit.
+            assert (H7: b >= (bid_of a)). 
+            { eapply top_prices_mb. eauto. eauto. exact. } 
+            assert (H8: bid_of a >= ask_of a). 
+            { unfold All_matchable in H4. simpl in H4. eapply H4. left. auto. }
             unfold matchable. omega. }
           { eapply IHM. 
             { eauto. } 

@@ -12,7 +12,9 @@ coqc MoreDecList.v
 
 coqc BidAsk.v
 coqc Matching.v
+coqc AuctionInvar.v
 coqc IndRat.v
+
 
 
 

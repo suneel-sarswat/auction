@@ -14,6 +14,7 @@ Require Export GenReflect SetSpecs.
 Require Export DecList DecType MoreDecList.
 
 Section Bid_Ask.
+  
 
 
 Record Bid:Type:= Mk_bid{
@@ -89,7 +90,60 @@ Hint Resolve a_eqP: auction.
 
 Canonical ask_eqType: eqType:= {| Decidable.E:= Ask; Decidable.eqb:= a_eqb; Decidable.eqP:= a_eqP |}.
 
-(*------------- Some common results on Bids and Asks--------------------------*)
+(*------------- Price projections for list of Bids and Asks--------------------------*)
+
+Fixpoint bid_prices (B: list Bid): (list nat):=
+  match B with
+  |nil => nil
+  |b::B' => (bp b)::(bid_prices B')
+  end.
+
+Lemma bid_prices_intro (B: list Bid) (b: Bid):
+  In b B -> (In (bp b) (bid_prices B)).
+Proof. { intro H. induction B. simpl. simpl in H. contradiction.
+         destruct  H. subst b. simpl. left. auto. simpl. right. auto. } Qed.
+
+
+Lemma bid_prices_intro1 (B: list Bid) (B': list Bid):
+  B [<=] B' -> ((bid_prices B)  [<=] (bid_prices B')).
+Proof.  Admitted.
+
+Lemma bid_prices_elim (B: list Bid): forall p, In p (bid_prices B)->
+                                             exists b, In b B /\ p = bp b.
+Proof. { intros p H. induction B. simpl in H. contradiction. simpl in H.
+       destruct  H as [H1 | H2].  exists a. split; auto.
+       apply IHB in H2 as H0. destruct H0 as [b H0].
+       exists b. destruct H0. split.
+       eauto. auto. } Qed.
+
+Fixpoint ask_prices (A: list Ask): (list nat):=
+  match A with
+  |nil => nil
+  |a::A' => (sp a)::(ask_prices A')
+  end.
+
+Lemma ask_prices_intro (A: list Ask) (a: Ask):
+  In a A -> (In (sp a) (ask_prices A)).
+Proof. { intro H. induction A. simpl. simpl in H. contradiction.
+         destruct  H. subst a. simpl. left. auto. simpl. right. auto. } Qed.
+
+
+Lemma ask_prices_intro1 (A: list Ask) (A': list Ask):
+  A [<=] A' -> ((ask_prices A)  [<=] (ask_prices A')).
+Proof.  Admitted.
+
+
+Lemma ask_prices_elim (A: list Ask): forall p, In p (ask_prices A)->
+                                             exists a, In a A /\ p = sp a.
+Proof. { intros p H. induction A. simpl in H. contradiction. simpl in H.
+       destruct  H as [H1 | H2]. exists a. split; auto.
+       apply IHA in H2 as H0. destruct H0 as [a0 H0].
+       exists a0. destruct H0. split.
+       eauto. auto. } Qed.
+
+
+Hint Resolve bid_prices_elim bid_prices_intro bid_prices_intro1: core.
+Hint Resolve ask_prices_elim ask_prices_intro ask_prices_intro1: core.
 
 
 (* ------------definition of  fill_type as record---------------------------- *)
@@ -202,12 +256,6 @@ Proof. Admitted.
 Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: auction.
 Hint Resolve trade_prices_of_intro trade_prices_of_elim: auction.
 
-Fixpoint bid_prices (B: list Bid): (list nat):=
-  match B with
-  |nil => nil
-  |b::B' => (bp b)::(bid_prices B')
-  end.
-
 
   
 End Bid_Ask.
@@ -220,11 +268,15 @@ Hint Resolve a_eqb_ref a_eqP : auction.
 Hint Immediate a_eqb_intro a_eqb_elim: auction.
 
 
+Hint Resolve bid_prices_elim bid_prices_intro bid_prices_intro1: core.
+Hint Resolve ask_prices_elim ask_prices_intro ask_prices_intro1: core.
+
+
 Hint Resolve m_eqb_ref m_eqP: auction.
 Hint Immediate m_eqb_elim m_eqb_intro: auction.
 
       
-Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: auction.
-Hint Resolve trade_prices_of_intro trade_prices_of_elim: auction.
+Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: core.
+Hint Resolve trade_prices_of_intro trade_prices_of_elim: core.
 
-Hint Resolve bids_of_perm asks_of_perm tps_of_perm: auction.
+Hint Resolve bids_of_perm asks_of_perm tps_of_perm: core.

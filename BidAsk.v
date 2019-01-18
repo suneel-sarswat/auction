@@ -202,6 +202,13 @@ Proof. Admitted.
 Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: auction.
 Hint Resolve trade_prices_of_intro trade_prices_of_elim: auction.
 
+Fixpoint bid_prices (B: list Bid): (list nat):=
+  match B with
+  |nil => nil
+  |b::B' => (bp b)::(bid_prices B')
+  end.
+
+
   
 End Bid_Ask.
 

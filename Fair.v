@@ -27,8 +27,10 @@ Proof. { intros H1 H2. unfold fair_on_bids. unfold fair_on_bids in H1.
 
 Hint Resolve same_ask_is_fair same_bid_is_fair.
 
-Definition b_by_bp (b1:Bid) (b2:Bid) := (b2 <=? b1).
 
+(*------------ Sorting by decreasing bid prices and their properties --------------*)
+
+Definition b_by_bp (b1:Bid) (b2:Bid) := (b2 <=? b1).
 
 Lemma b_by_bp_P : transitive b_by_bp /\ comparable b_by_bp.
 Proof.  { split.
@@ -118,7 +120,7 @@ Proof. revert B NDB. induction M.
             { eapply top_prices_mb. eauto. eauto. exact. } 
             assert (H8: bid_of a >= ask_of a). 
             { unfold All_matchable in H4. simpl in H4. eapply H4. left. auto. }
-            unfold matchable. omega. }
+            omega. }
           { eapply IHM. 
             { eauto. } 
             { eauto. }
@@ -152,10 +154,10 @@ Lemma mfob_subA (M:list fill_type) (B:list Bid) (A:list Ask):
 Lemma mfob_matching_in (M: list fill_type)(B: list Bid)(A: list Ask)(NDB: NoDup B):
 (Sorted m_by_bp M) -> (Sorted b_by_bp B) -> matching_in B A M ->
 matching_in B A (Make_FOB M B) .
-Proof.  intros H1 H2 H3. unfold matching_in. 
-split. { eapply mfob_matching. exact. exact. eapply H3. }
-split. { eapply mfob_subB. }
-{ eapply mfob_subA. exact. exact. exact. } Qed.
+Proof.  { intros H1 H2 H3. unfold matching_in. 
+          split. { eapply mfob_matching. all: auto. eapply H3.  }
+                 split. { eapply mfob_subB. }
+                        { eapply mfob_subA. all: auto. } } Qed.
 
 
 
@@ -230,5 +232,4 @@ Proof. { intros H0. apply exists_fair_on_bids in H0 as H1.
        { split. auto. eauto. }
        {eauto. } exact. } Qed.
          
-
 End Fair.

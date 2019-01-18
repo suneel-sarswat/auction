@@ -77,13 +77,14 @@ Hint Resolve m_bp_P m_sp_P by_bp_P by_sp_P.
 
  
 Lemma top_prices_mb (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid):
-  Sorted m_bp (m::M)-> Sorted by_bp (b::B) ->  bids_of (m::M) [<=] (b::B) -> (bid_of m) <= b.
+  Sorted m_bp (m::M)-> Sorted by_bp (b::B) ->
+  bid_prices (bids_of (m::M)) [<=] bid_prices (b::B) -> (bid_of m) <= b.
 Proof. Admitted.
 
 
-Lemma tail_is_matching (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid)(A: list Ask):
+(* Lemma tail_is_matching (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid)(A: list Ask):
   Sorted m_bp (m::M)-> Sorted by_bp (b::B) -> matching_in (b::B) A (m::M)-> matching_in B A M.
-Proof. Admitted.
+Proof. Admitted. *)
 
   
 (*----------------  Function to make a matching fair on bids -----------------*)
@@ -104,34 +105,29 @@ Proof. { revert B. induction M. simpl. auto. intro B.
            destruct H1. subst x. auto. cut (In x l). auto. eapply IHM. auto. } } Qed.  
 
 Lemma mfob_matchable (M:list fill_type)(B:list Bid)(NDB: NoDup B):
-  (Sorted m_bp M) -> (Sorted by_bp B) -> All_matchable M -> bids_of M [<=] B ->
+  (Sorted m_bp M) -> (Sorted by_bp B) -> All_matchable M ->
+   sublist (bid_prices (bids_of M)) (bid_prices B) ->
    NoDup (bids_of M) -> All_matchable (Make_FOB M B).
-Proof. revert B NDB. induction M. 
-       { intros B H1 H2 H3 H4 H5 H6. simpl. eauto. }
-       { intros B H1 H2 H3 H4 H5 H6. 
-          destruct B. 
-          { simpl. eauto. }
-          { simpl. apply All_matchable_intro. 
-          { simpl.
-            assert (H7: b >= (bid_of a)). 
-            { eapply top_prices_mb. eauto. eauto. auto. } 
-            assert (H8: bid_of a >= ask_of a). 
-            { unfold All_matchable in H4. simpl in H4. eapply H4. left;auto. }
-            omega. } 
-          { eapply IHM. 
-            { eauto. } 
-            { eauto. }
-            { eauto. } 
-            { eapply All_matchable_elim1. eauto. }
-            { (*--- bids_of M [<=] B ----*)
-              intros x H7.
-              assert (H8: In x (b::B)).
-              { apply H5. simpl. right;auto. }
-              assert (H9: x <> b).
-              { 
-              eauto.  }
-            { simpl in H6. eauto. } Admitted.   
-        
+Proof. { revert B NDB. induction M. 
+         { intros B H1 H2 H3 H4 H5 H6. simpl. eauto. }
+         { intros B H1 H2 H3 H4 H5 H6. 
+           destruct B. 
+           { simpl. apply All_matchable_nil.  }
+           { simpl. apply All_matchable_intro. 
+             { simpl.
+               assert (H7: b >= (bid_of a)). 
+               { eapply top_prices_mb.   eauto. apply H3. auto. } 
+               assert (H8: bid_of a >= ask_of a). 
+               { unfold All_matchable in H4. simpl in H4. eapply H4. left;auto. }
+               omega. } 
+             { eapply IHM. 
+               { eauto. } 
+               { eauto. }
+               { eauto. } 
+               { eapply All_matchable_elim1. apply H4. }
+               { simpl in H5. destruct (bid_of a =? b).
+                 auto.  eauto. } 
+               { simpl in H6. eauto.  } } } } } Qed.          
 
 (*
 

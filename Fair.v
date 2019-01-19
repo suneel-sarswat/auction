@@ -81,6 +81,14 @@ Lemma top_prices_mb (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid):
   bid_prices (bids_of (m::M)) [<=] bid_prices (b::B) -> (bid_of m) <= b.
 Proof. Admitted.
 
+Lemma sorted_nodup_is_sublist (B1 B2: list Bid): Sorted by_bp B1 -> Sorted by_bp B2 ->
+                                                 NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
+                                                 sublist (bid_prices B1) (bid_prices B2).
+Proof. Admitted.
+
+Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_bp M -> Sorted by_bp (bids_of M).
+Proof. Admitted.
+
 
 (* Lemma tail_is_matching (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid)(A: list Ask):
   Sorted m_bp (m::M)-> Sorted by_bp (b::B) -> matching_in (b::B) A (m::M)-> matching_in B A M.

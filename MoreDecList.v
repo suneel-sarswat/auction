@@ -25,13 +25,23 @@ Inductive uniform : list A -> Prop:=
 |Ind_uni(a b:A)(l:list A): a=b -> uniform (b::l)-> uniform (a::b::l).
 
 Lemma uniform_elim (a:A)(l: list A): uniform (a::l)-> (forall x, In x l -> x=a).
-Proof. Admitted.
+Proof. { revert l. induction l. 
+       { simpl. intros H0 fA f. destruct f. }
+       { simpl. intros H fA. inversion H. intro H5.  destruct H5 as [H5| H6].
+        subst fA. symmetry. exact. apply IHl in H6. exact. subst a. exact. } } Qed. 
+
+
 Lemma uniform_elim1 (a:A)(l: list A): uniform (a::l)-> (forall x, In x (a::l)-> x=a).
-Proof. Admitted.
+Proof. { induction l. 
+        { simpl. intros. destruct H0. auto. inversion H0. }
+        { intros. inversion H. subst a0.  simpl in H0. destruct H0. 
+        auto. apply IHl. exact. simpl. exact. } } Qed.
+
 Lemma uniform_elim2 (a:A) (l: list A): uniform (a::l)-> uniform l.
-Proof. Admitted.
+Proof. intro H. inversion H. constructor. exact. Qed.
+
 Lemma uniform_intro (a:A)(l: list A): (forall x, In x l -> x=a) -> uniform (a::l).
-Proof. Admitted.
+Proof. Admitted.     
 
 (* ----------------- delete_all operation ---------------------------------------------  *)
 
@@ -47,19 +57,52 @@ Fixpoint del_all (a:A)(l: list A): list A:=
 (* This function deletes all occurences of a in the list l *)
 
   Lemma del_all_elim1 (a b:A)(l: list A): In a (del_all b l)-> In a l.
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. auto. }
+          { simpl. destruct (a==a0) eqn:H0. intros. left. move /eqP in H0.
+            auto. destruct (b==a0) eqn:H1. intros. right. apply IHl in H.
+            exact. simpl. intros H2. destruct H2. left. exact.
+            right. apply IHl in H. exact. } } Qed.
+  
   Lemma del_all_elim2 (a b:A)(l: list A): In a (del_all b l)-> (a<>b).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. auto. }
+          { simpl. destruct (b==a0) eqn:H0. exact. simpl. intros H1.
+            destruct H1.  move /eqP in H0. subst a0. auto. 
+            apply IHl in H. exact. } } Qed.
 
   Lemma del_all_intro (a b: A)(l:list A): In a l -> a<>b -> In a (del_all b l).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. auto. } 
+          { simpl. intros H1 H2. destruct H1. destruct (b==a0) eqn: H3.
+            move /eqP in H3. subst a0. subst b. apply IHl in H2. exact. tauto.
+            simpl. left. auto. destruct (b==a0) eqn: H4. apply IHl in H2.
+            exact. exact. simpl. right. apply IHl in H2. exact. exact. }} Qed.
+  
+  
   Lemma del_all_iff (a b:A)(l: list A): (In a (del_all b l) <-> (In a l /\ a<>b)).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. split. auto.  intros H. destruct H. auto. }
+          { simpl. destruct (b==a0) eqn: H0. split. intros. split. right.
+           apply IHl in H. destruct H. exact. apply IHl in H. destruct H.
+           auto. intros H. destruct H. destruct H. move /eqP in H0. subst
+           a0. subst b. tauto. apply IHl. split. exact. exact. simpl. split.
+           intros H. destruct  H. split. left. auto. move /eqP in H0. 
+           subst a0. auto. split. apply IHl in H. destruct H. right. exact.
+           apply IHl in H. destruct H. exact. simpl. intros. destruct H.
+           destruct H. left. exact.  assert (H2: (In a l) /\ (a<>b)). split.
+           exact. exact.  apply IHl in H2. right. exact. } } Qed. 
+
 
   Hint Resolve del_all_elim1 del_all_elim2 del_all_intro: core.
   
   Lemma del_all_nodup (a:A)(l: list A): NoDup l -> NoDup (del_all a l).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. auto. }
+          { simpl. intros H. destruct (a==a0) eqn: H1. move /eqP in H1.
+            subst a0. eauto. assert (H0:NoDup l). eauto. apply IHl in H0.
+            assert (H2: ~(In a0 l)). eauto. 
+            assert (H3: ~(In a0 (del_all a l))). eauto. eauto. } } Qed.
 
   Hint Resolve del_all_nodup: core.
 
@@ -73,29 +116,83 @@ Fixpoint del_all (a:A)(l: list A): list A:=
                                     end
                                         end.
   Lemma countP1 (a:A) (l:list A): In a l -> (count a l >= 1).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { intros H. inversion H. }
+          { intros H. simpl in H. destruct H. subst a0. simpl. 
+           destruct (a==a) eqn:H0. omega. move /eqP in H0. absurd (a=a).
+           exact. exact. apply IHl in H. simpl. destruct (a==a0) eqn:H0.
+           omega. exact. } } Qed.
+    
+  
   Lemma countP2 (a:A)(l: list A): ~ In a l -> (count a l = 0).
-  Proof. Admitted.
+  Proof. { intros. induction l. 
+          { simpl. auto. }
+          { simpl. destruct (a==a0) eqn: H0. move /eqP in H0. subst a0. 
+           simpl in H. destruct H. left. exact. move /eqP in H0. 
+           assert (H1: ~(In a l)). eauto. apply IHl in H1. exact. } } Qed. 
+  
   Lemma countP3 (a:A)(l: list A): (count a l = 0) -> ~ In a l.
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. auto. } 
+          { simpl. destruct (a==a0) eqn:H0. intros. omega. intros. 
+            apply IHl in H. move /eqP in H0. intro.  destruct H1. auto.
+            eauto. } } Qed. 
+  
   Lemma countP4 (a:A)(l: list A): count a (a::l) = S (count a l).
-  Proof. Admitted.
+  Proof. simpl. destruct (a==a) eqn:H. exact. move /eqP in H. auto. Qed.
+  
   Lemma countP5 (a b:A)(l: list A): (count a l) <= count a (b::l).
-  Proof. Admitted.
+  Proof. { induction l. 
+         { simpl. omega. } 
+         { simpl. destruct (a==a0) eqn:H0. destruct (a==b) eqn:H1. omega.
+           omega. destruct (a==b) eqn: H1. omega. omega. } } Qed.
+ 
   Lemma countP6 (a: A)(l: list A): count a l <= |l|.
-  Proof. Admitted.
+  Proof. { induction l. simpl. omega. simpl. destruct (a==a0) eqn:H0.
+  omega. omega. } Qed.
+  
   Lemma countP7 (a:A) (l:list A): In a l -> count a l = S(count a (delete a l)).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. auto. }
+          { simpl. intro H. destruct H as [H1 | H2]. destruct (a==a0) eqn: H0.
+            exact. move /eqP in H0. auto. destruct (a==a0) eqn: H0. exact.
+            apply IHl in H2. move /eqP in H0. simpl. destruct (a==a0) eqn: H1.
+            move /eqP in H1. auto. exact. } } Qed.
+ 
   Lemma countP8 (a:A) (l:list A): forall x, x<>a-> count x (a::l) = count x l.
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. intros. destruct (x==a) eqn: H0. move /eqP in H0. auto. 
+           exact. } 
+          { intros. simpl. destruct (x==a) eqn:H0. move /eqP in H0. auto.
+            destruct (x==a0) eqn: H1. exact. exact. }} Qed.
+  
+  
   Lemma countP9 (a:A) (l:list A): forall x, x<>a -> count x l = count x (delete a l).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. intros;auto. }
+          { intros. simpl. destruct (x==a0) eqn: H0. destruct (a==a0) eqn:H1.
+            move /eqP in H0. move /eqP in H1. subst a0. auto. simpl. 
+            destruct (x==a0) eqn: H2. auto. auto. destruct (a==a0) eqn:H2. 
+            exact. simpl. destruct (x==a0) eqn: H3. inversion H0. auto. }}  Qed.
+  
   Lemma countP10 (a:A)(l s:list A): count a l <= count a s -> count a (a::l) <= count a (a::s).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. intros. destruct (a==a) eqn: H1. omega. omega. }
+          { simpl. intros. destruct (a==a0) eqn:H1. destruct (a==a) eqn:H2.
+            omega. omega. destruct (a==a) eqn: H2. omega. omega. } } Qed. 
+  
   Lemma countP11 (a:A)(l s: list A): count a l = count a s -> count a (a::l) = count a (a::s).
-  Proof. Admitted.
+  Proof. { induction l. 
+          { simpl. intros. destruct (a==a) eqn: H1. auto. exact. }
+           { simpl. destruct (a==a0) eqn:H1. intros. destruct (a==a) eqn:H2.
+            omega. omega. destruct (a==a) eqn: H2. intros. omega. omega. }} Qed.
+  
   Lemma countP12 (a:A)(l s: list A): count a l < count a s -> count a (a::l) < count a (a::s).
-  Proof. Admitted.
+  Proof. {  induction l. 
+          { simpl. intros. destruct (a==a) eqn: H1. omega. exact. }
+          { simpl. destruct (a==a0) eqn: H2. destruct (a==a) eqn: H1. intros.
+            omega. intros. omega. destruct (a==a) eqn: H1. intros. omega.
+            intros. omega. }} Qed.
   
   Hint Immediate countP1 countP2 countP3: core.
   Hint Resolve countP4 countP5 countP6 countP7 countP8 countP9: core.
@@ -254,11 +351,20 @@ Section Permutation.
                                                   end
                                         end.
   Lemma included_intro1 (l: list A): included nil l.
-  Proof. Admitted.
+  Proof.  auto. Qed. 
+  
    Lemma included_refl (l: list A): included l l.
-  Proof. Admitted.
+  Proof. { induction l. auto. simpl. destruct (a==a) eqn:H0. auto. move /eqP in H0. auto. } Qed.
+  
   Lemma included_intro2 (a:A)(l s: list A): In a s -> included l (delete a s)-> included (a::l) s.
-  Proof. Admitted.
+  Proof. { induction s. 
+          { simpl. auto. } 
+          { simpl. intros H1 H2. destruct H1. destruct (a==a0) eqn: H3. auto.
+            move /eqP in H3. auto. destruct (a==a0) eqn: H3. simpl. exact.
+            simpl.  assert (H4: memb a s). eauto. case (memb a s) eqn:H5.
+            exact. auto. } } Qed.
+   
+   
   Lemma included_intro3 (l s: list A): sublist l s -> included l s.
   Proof. Admitted. 
   Lemma included_intro (l s: list A): (forall a, count a l <= count a s)-> included l s.
@@ -279,13 +385,24 @@ Section Permutation.
              replace (count a s) with 0 in H. inversion H. symmetry; eauto. } } Qed. 
 
   Lemma included_elim1 (l: list A): included l nil -> l=nil.
-  Proof. Admitted.
+  Proof. induction l. auto. intros. inversion H. Qed. 
+  
   Lemma included_elim2 (a:A)(l s: list A): included (a::l) s -> In a s.
-  Proof. Admitted.
+  
+  Proof. { induction l. 
+          {simpl. destruct (memb a s) eqn:H. auto. intro. inversion H0. }
+          { simpl. destruct (memb a s) eqn:H. auto. intro. inversion H0. }}Qed.
+  
   Lemma included_elim3 (a:A)(l s: list A): included (a::l) s -> included l (delete a s).
-  Proof. Admitted.
+  Proof. { induction s.  
+          { simpl. auto. }
+          { simpl. destruct (a==a0) eqn:H0. simpl. auto. simpl. intros H. 
+            destruct (memb a s) eqn:H1. auto. auto. } } Qed. 
+  
   Lemma included_elim4 (a:A)(l s: list A): included (a::l) s -> included l s.
-  Proof. Admitted.
+  Proof. Admitted. 
+  
+  
   Lemma included_elim5 (l s: list A): included l s -> Subset l s.
   Proof. Admitted.
 
@@ -321,7 +438,9 @@ Section Permutation.
   (* ----- Some Misc Lemmas on nodup, sorted, sublist, subset and included ---------------- *)
 
   Lemma nodup_subset_included (l s: list A): NoDup l -> l [<=] s -> included l s.
-  Proof. Admitted.
+  Proof. Admitted. 
+  
+  
   Lemma sorted_included_sublist (l s: list A)(lr: A->A-> bool):
     Sorted lr l-> Sorted lr s-> included l s-> sublist l s.
   Proof. Admitted.

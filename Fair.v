@@ -77,7 +77,13 @@ Hint Resolve m_bp_P m_sp_P by_bp_P by_sp_P.
 Definition geb := fun a b => Nat.leb b a.
 
 Lemma sorted_B_imply_sorted_p (B: list Bid): Sorted by_bp B -> Sorted geb (bid_prices B).
-  Proof. Admitted.
+  Proof. { induction B.
+       { simpl. intro H. constructor. }
+       { simpl. intro H. inversion H. constructor. auto.
+         intros b H4. unfold geb.
+         apply IHB in H2. assert (H5: exists b1, In b1 B /\ b = bp b1).
+         eauto. destruct H5 as [b1 H5]. destruct H5 as [H5 H6].
+         apply H3 in H5 as H7. unfold by_bp in H7. subst b. exact. } } Qed. 
 
 Lemma top_prices_mb (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid):
   Sorted m_bp (m::M)-> Sorted by_bp (b::B) ->
@@ -224,11 +230,11 @@ Proof. Admitted.
 
 Lemma mfob_is_same_size (M: list fill_type) (B:list Bid):
 |M| = |(Make_FOB M B)|. 
-Proof. Admitted.
+Proof.  Admitted.
 
 Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
  (Sorted m_bp M) -> (Sorted by_bp B) -> matching_in B A M -> fair_on_bids (Make_FOB M B) B. 
-Proof. Admitted.  
+Proof.  Admitted.  
 
 Hint Resolve mfob_matching mfob_asks_is_perm mfob_is_same_size mfob_fair_on_bid.
 

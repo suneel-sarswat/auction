@@ -106,7 +106,8 @@ Proof. { intro H. induction B. simpl. simpl in H. contradiction.
 
 Lemma bid_prices_intro1 (B: list Bid) (B': list Bid):
   B [<=] B' -> ((bid_prices B)  [<=] (bid_prices B')).
-Proof.  Admitted.
+Proof. Admitted.
+
 
 Lemma bid_prices_elim (B: list Bid): forall p, In p (bid_prices B)->
                                              exists b, In b B /\ p = bp b.

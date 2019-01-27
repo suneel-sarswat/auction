@@ -92,12 +92,12 @@ Proof. { intros H1 H2 H3. simpl in H3.
        assert (H4: Sorted geb (bid_prices (b::B))).
        { apply sorted_B_imply_sorted_p;auto. } 
        cut (In (bp (bid_of m)) ((bp b)::bid_prices B)).
-       Print Sorted. inversion H4. intro H7. destruct H7. omega.
+       inversion H4. intro H7. destruct H7. omega.
        apply H6 in H7 as H8. unfold geb in H8. apply /leP. exact. auto. } Qed.
        
 Lemma sorted_nodup_is_sublist (B1 B2: list Bid): Sorted by_bp B1 -> Sorted by_bp B2 ->
                                                  NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
-                                                 sublist (bid_prices B1) (bid_prices B2).
+                                                 sublist (bid_prices B1) (bid_prices B2). 
 Proof. Admitted.
 
 Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_bp M -> Sorted by_bp (bids_of M).
@@ -233,8 +233,20 @@ Lemma mfob_is_same_size (M: list fill_type) (B:list Bid):
 Proof.  Admitted.
 
 Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
- (Sorted m_bp M) -> (Sorted by_bp B) -> matching_in B A M -> fair_on_bids (Make_FOB M B) B. 
-Proof.  Admitted.  
+ (Sorted m_bp M) -> (Sorted by_bp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) -> fair_on_bids (Make_FOB M B) B. 
+Proof. { revert B. induction M as [|m]. 
+        { intros. simpl. unfold fair_on_bids. intros. inversion H4. }
+        { intros. unfold fair_on_bids. intros. destruct B eqn: Hb. 
+         { simpl. inversion H4. }
+         { assert 
+         (case1: b' = b0 \/ In b' (bids_of ((Make_FOB M l)))). 
+         admit. destruct case1 as [c1a | c1b]. 
+         {subst b'. (*H3 is not possible*) admit. }
+         { assert (case2: b=b0 \/ In b l). destruct H2. auto.
+         destruct case2 as [c2a | c2b]. 
+          { subst b. simpl. left. exact. }
+          { simpl. right. eapply IHM. eauto. eauto. admit.
+            split. exact. admit. eapply H3. exact. }}}}} Admitted.
 
 Hint Resolve mfob_matching mfob_asks_is_perm mfob_is_same_size mfob_fair_on_bid.
 

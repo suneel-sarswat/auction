@@ -94,11 +94,56 @@ Proof. { intros H1 H2 H3. simpl in H3.
        cut (In (bp (bid_of m)) ((bp b)::bid_prices B)).
        inversion H4. intro H7. destruct H7. omega.
        apply H6 in H7 as H8. unfold geb in H8. apply /leP. exact. auto. } Qed.
-       
+
+Lemma nodup_sub_is_included (B1 B2: list Bid):  NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
+                                                  included B1 B2.
+Proof. eauto. Qed.
+
+(*--------------- following lemma important : need a mention in the paper ------------*)
+
+Lemma count_in_deleted (b: Bid)(B: list Bid):
+  In b B -> count (bp b)(bid_prices B) = S (count (bp b) (bid_prices (delete b B))).
+Proof. Admitted.
+
+
+Lemma included_B_imp_included_BP (B1 B2: list Bid): included B1 B2 ->
+                                                    included (bid_prices B1) (bid_prices B2).
+Proof. { revert B2. induction B1 as [| b1].
+       { simpl. auto. }
+       { intros B2 h1.
+         assert (h2: In b1 B2). eauto.
+         assert (h3: included B1 (delete b1 B2)). eauto.
+         assert (h3a: included (bid_prices B1) (bid_prices (delete b1 B2))).
+         { auto. }
+         assert(h4:count (bp b1)(bid_prices B2)= S (count (bp b1) (bid_prices (delete b1 B2)))).
+         { eauto using count_in_deleted. }
+         eapply included_intro.
+         intro x.  simpl. destruct (x =? b1) eqn: C1.
+         { (* ---- C1: x = b1 ---- *)
+           move /nat_eqP in C1. subst x.
+           rewrite h4. Check included_elim.
+           eapply included_elim in h3a  as h3b. instantiate (1 := b1) in h3b.
+           omega. }
+         { (*----- C1: x <> b1 ---- *)
+           assert (h3b: included B1 B2). eapply included_elim4; apply h1. 
+           apply IHB1 in h3b as h3c. auto. } } } Qed.
+
+
 Lemma sorted_nodup_is_sublist (B1 B2: list Bid): Sorted by_bp B1 -> Sorted by_bp B2 ->
                                                  NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
                                                  sublist (bid_prices B1) (bid_prices B2). 
-Proof. Admitted.
+Proof. { intros h1 h2 h3 h4 h5.
+         assert (h6: Sorted geb (bid_prices B1)).
+         { auto using sorted_B_imply_sorted_p. }
+         
+         assert (h7: Sorted geb (bid_prices B2)).
+         { auto using sorted_B_imply_sorted_p. }
+
+         assert (h8: included B1 B2).
+         { auto using nodup_sub_is_included. }
+         
+         assert (h9: included (bid_prices B1) (bid_prices B2)).
+         { auto using included_B_imp_included_BP. }  eauto. }  Qed.
 
 Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_bp M -> Sorted by_bp (bids_of M).
 Proof. { induction M.
@@ -117,7 +162,7 @@ Hint Resolve sorted_m_imply_sorted_b.
 Proof. Admitted. *)
 
   
-(*----------------  Function to make a matching fair on bids -----------------*)
+(*----------------  Function to make a matching fair on bids -----------------------*)
 
 Fixpoint Make_FOB (M:list fill_type) (B: list Bid):=
 match (M,B) with 
@@ -191,12 +236,9 @@ Proof. { revert B NDB. induction M.
                { simpl in H6. eauto.  } } } } } Qed.          
 
 (*
-
 Lemma mfob_matchable (M:list fill_type) (B:list Bid) (A:list Ask) (NDB: NoDup B):
 (Sorted m_by_bp M) -> (Sorted b_by_bp B) -> (matching_in B A M) -> All_matchable (Make_FOB M B).
-
 Proof. 
-
 *)
 
 Lemma mfob_matching (M:list fill_type) (B:list Bid) (A:list Ask) (NDB: NoDup B):

@@ -103,7 +103,18 @@ Proof. eauto. Qed.
 
 Lemma count_in_deleted (b: Bid)(B: list Bid):
   In b B -> count (bp b)(bid_prices B) = S (count (bp b) (bid_prices (delete b B))).
-Proof. Admitted.
+Proof. { induction B.
+       { simpl. auto. }
+       { intro h1. destruct (b == a) eqn: h2.
+         { simpl. rewrite h2. move /eqP in h2.
+           subst a. simpl. replace (b =? b) with true. auto. auto. }
+         { assert (h1a: In b B).
+           { move /eqP in h2; eauto. }
+           replace (delete b (a :: B)) with (a :: (delete b B)).
+           { simpl. destruct (b =? a) eqn: h3.
+             { apply IHB in h1a as h1b. rewrite h1b. auto. }
+             { auto. } }
+           { simpl. rewrite h2. auto. } } } } Qed.
 
 
 Lemma included_B_imp_included_BP (B1 B2: list Bid): included B1 B2 ->

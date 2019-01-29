@@ -286,20 +286,29 @@ Lemma mfob_is_same_size (M: list fill_type) (B:list Bid):
 Proof.  Admitted.
 
 Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
- (Sorted m_bp M) -> (Sorted by_bp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) -> fair_on_bids (Make_FOB M B) B. 
+  (Sorted m_bp M) -> (Sorted by_bp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
+  fair_on_bids (Make_FOB M B) B. 
 Proof. { revert B. induction M as [|m]. 
-        { intros. simpl. unfold fair_on_bids. intros. inversion H4. }
-        { intros. unfold fair_on_bids. intros. destruct B eqn: Hb. 
+        { intros; simpl; unfold fair_on_bids; intros; inversion H4. }
+        { intros. unfold fair_on_bids. intros b b' H2 H3 H4.
+          destruct B eqn: Hb. 
          { simpl. inversion H4. }
-         { assert 
-         (case1: b' = b0 \/ In b' (bids_of ((Make_FOB M l)))). 
-         admit. destruct case1 as [c1a | c1b]. 
-         {subst b'. (*H3 is not possible*) admit. }
-         { assert (case2: b=b0 \/ In b l). destruct H2. auto.
-         destruct case2 as [c2a | c2b]. 
-          { subst b. simpl. left. exact. }
-          { simpl. right. eapply IHM. eauto. eauto. admit.
-            split. exact. admit. eapply H3. exact. }}}}} Admitted.
+         { assert  (case1: b0 = b' \/ In b' (bids_of ((Make_FOB M l)))).
+           { simpl in H4. auto. }
+           destruct case1 as [c1a | c1b]. 
+           { (*-- c1a : b0 = b' -------------------------*)
+             subst b'. (*H3 is not possible*)
+             assert (H5: b <= b0).
+             { destruct H2. apply Sorted_elim2 with (x:= b) in H0 as H0a.
+              apply /leP. auto.  unfold by_bp.
+              unfold reflexive. auto.  auto. } omega. }
+           { (*-- c1b : In b' (bids_of (Make_FOB M l))---*)
+             assert (case2: b=b0 \/ In b l).
+             { destruct H2 as [H2 H2a]. auto. }
+             destruct case2 as [c2a | c2b]. 
+             { subst b. simpl. left. exact. }
+             { simpl. right. eapply IHM. eauto. eauto. admit.
+               split. exact. admit. eapply H3. exact. }}}}} Admitted.
 
 Hint Resolve mfob_matching mfob_asks_is_perm mfob_is_same_size mfob_fair_on_bid.
 

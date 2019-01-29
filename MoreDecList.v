@@ -514,6 +514,10 @@ Section Permutation.
 
    Lemma perm_subset (l1 l2 s1 s2: list A): perm l1 l2 -> perm s1 s2 -> l1 [<=] s1 -> l2 [<=] s2.
    Proof. Admitted.
+
+   Lemma perm_elim3 (l s: list A)(a: A): perm l s -> perm (a::l) (a::s).
+   Proof. Admitted.
+   
    
    
 
@@ -553,7 +557,7 @@ Section Permutation.
  
   Hint Resolve  perm_intro0a  perm_intro0b perm_refl perm_nil perm_elim1 : core.
   Hint Immediate perm_elim perm_intro perm_sym: core.
-  Hint Resolve perm_elim1 perm_elim2: core.
+  Hint Resolve perm_elim1 perm_elim2 perm_elim3: core.
 
   Hint Extern 0 (is_true ( perm ?x ?z) ) =>
   match goal with

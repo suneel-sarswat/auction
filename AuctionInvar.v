@@ -13,15 +13,18 @@ Set Implicit Arguments.
 Section InvariancePerm.
 
 
+  Lemma bids_of_perm (M M': list fill_type): perm M M' -> perm (bids_of M) (bids_of M').
+  Proof. Admitted.
+
+  Lemma asks_of_perm (M M': list fill_type): perm M M' -> perm (asks_of M) (asks_of M').
+  Proof. Admitted.
+  
 (******************Matching Invariance*****************)
   
 Lemma match_inv (M M': list fill_type) (B B': list Bid) (A A' : list Ask):
-perm M  M' -> perm B B' -> perm A A' ->
-matching_in B A M -> matching_in B' A' M'.
+perm M  M' -> perm B B' -> perm A A' -> matching_in B A M -> matching_in B' A' M'.
 Proof.  Admitted.
   
-
-
 (******************Fainess Invariance******************)
 
 
@@ -52,6 +55,6 @@ Proof. Admitted.
 
 End InvariancePerm.
 
-    
+Hint Resolve bids_of_perm asks_of_perm: auction.    
 Hint Resolve  match_inv fair_inv fair_on_bid_inv fair_on_ask_inv : auction.
 

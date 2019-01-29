@@ -168,9 +168,6 @@ Proof. { induction M.
 
 Hint Resolve sorted_m_imply_sorted_b.
 
-(* Lemma tail_is_matching (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid)(A: list Ask):
-  Sorted m_bp (m::M)-> Sorted by_bp (b::B) -> matching_in (b::B) A (m::M)-> matching_in B A M.
-Proof. Admitted. *)
 
   
 (*----------------  Function to make a matching fair on bids -----------------------*)
@@ -246,11 +243,6 @@ Proof. { revert B NDB. induction M.
                  auto.  eauto. } 
                { simpl in H6. eauto.  } } } } } Qed.          
 
-(*
-Lemma mfob_matchable (M:list fill_type) (B:list Bid) (A:list Ask) (NDB: NoDup B):
-(Sorted m_by_bp M) -> (Sorted b_by_bp B) -> (matching_in B A M) -> All_matchable (Make_FOB M B).
-Proof. 
-*)
 
 Lemma mfob_matching (M:list fill_type) (B:list Bid) (A:list Ask) (NDB: NoDup B):
 (Sorted m_bp M) -> (Sorted by_bp B) -> (matching_in B A M) -> matching (Make_FOB M B).
@@ -275,16 +267,6 @@ Proof.  { intros H1 H2 H3. unfold matching_in.
                  split. { eapply mfob_subB. }
                         { eapply mfob_subA. apply H3.  } } Qed.
 
-
-
-Lemma mfob_asks_is_perm (M: list fill_type) (B:list Bid):
-perm (asks_of M) (asks_of (Make_FOB M B)). 
-Proof. Admitted. 
-
-Lemma mfob_is_same_size (M: list fill_type) (B:list Bid):
-|M| = |(Make_FOB M B)|. 
-Proof.  Admitted.
-
 Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
   (Sorted m_bp M) -> (Sorted by_bp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
   fair_on_bids (Make_FOB M B) B. 
@@ -305,8 +287,7 @@ Proof. { revert B. induction M as [|m].
               apply /leP. auto.  unfold by_bp.
               unfold reflexive. auto.  auto. } omega.  }
            
-           { (*-- c1b : b' <> b0 ---*)
-             assert (H5: In b' l).
+           { (*-- c1b : b' <> b0 ---*)             assert (H5: In b' l).
              { eauto. }
              assert (case2: b=b0 \/ In b l).
              { auto. }
@@ -320,9 +301,18 @@ Proof. { revert B. induction M as [|m].
                  { simpl in H1. destruct ( bid_of m =? b0) eqn: H6.  auto. eauto. }
                  { split;auto. }
                  { auto. }
-                 { auto. }  } } } } } } Qed. 
+                 { auto. }  } } } } } } Qed.
 
-Hint Resolve mfob_matching mfob_asks_is_perm mfob_is_same_size mfob_fair_on_bid.
+
+Lemma mfob_asks_is_perm (M: list fill_type) (B:list Bid)(A: list Ask):
+matching_in B A M  -> perm (asks_of M) (asks_of (Make_FOB M B)). 
+Proof. Admitted. 
+
+Lemma mfob_is_same_size (M: list fill_type) (B:list Bid) (A: list Ask):
+matching_in B A M -> |M| = |(Make_FOB M B)|. 
+Proof.  Admitted.
+
+Hint Resolve mfob_matching mfob_fair_on_bid mfob_asks_is_perm mfob_is_same_size: core.
 
 Theorem exists_fair_on_bids (M: list fill_type) (B: list Bid)(A:list Ask)(NDB: NoDup B):
   matching_in B A M->
@@ -339,14 +329,24 @@ Proof. { assert (HmP: transitive m_bp /\ comparable m_bp). apply m_bp_P.
           eapply match_inv with
               (B:= (sort by_bp B)) (M:=(Make_FOB (sort m_bp M) (sort by_bp B))) (A:=A).
           all: auto. } split.
-        { replace (|M|) with (|sort m_bp M|); auto. } split.
+        { replace (|M|) with (|sort m_bp M|). eapply mfob_is_same_size with (A:= A).
+          eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto. } split.
         {  assert(HA: perm (asks_of (sort m_bp M))
-                          (asks_of (Make_FOB (sort m_bp M) (sort by_bp B)))).
-          auto. eauto with auction.  }
-        {  assert (HBid: fair_on_bids
-                           (Make_FOB (sort m_bp M) (sort by_bp B)) (sort by_bp B)).
-           eapply mfob_fair_on_bid. all:auto. eapply match_inv with (M:=M)(B:=B)(A:=A);auto.
-           eauto with auction. } } Qed.
+                           (asks_of (Make_FOB (sort m_bp M) (sort by_bp B)))).
+           eapply  mfob_asks_is_perm with (A:=A).
+           eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto.  }
+        {  assert (HBid: fair_on_bids (Make_FOB (sort m_bp M) (sort by_bp B)) (sort by_bp B)).
+           { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublist.
+             all: auto. 
+             { assert (H1: NoDup (bids_of M)). apply H.  eauto with auction. }
+             { assert (H2: bids_of M [<=] B). apply H.
+               eapply perm_subset with (l1:= bids_of M)(s1:= B).
+               auto with auction. all: auto. } }
+           unfold fair_on_bids.
+           intros b b' h1 h2 h3.
+           unfold fair_on_bids in HBid. apply HBid with (b':= b').
+           { destruct h1 as [h1 h1a]. split; auto. }
+           all: auto.  } } Qed.
 
 (* -------------- function to make a matching fair on asks --------------------- *)
 Fixpoint Make_FOA (M:list fill_type) (A: list Ask):=
@@ -361,6 +361,8 @@ Theorem exists_fair_on_asks (M: list fill_type) (B: list Bid) (A:list Ask):
   (exists M':list fill_type, matching_in B A M' /\  (|M| = |M'|) /\ perm (bids_of M) (bids_of M')
    /\ fair_on_asks M' A).
 Proof. Admitted.
+
+
 
 Theorem exists_fair_matching (M: list fill_type) (B: list Bid) (A:list Ask) (NDB: NoDup B):
   matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).

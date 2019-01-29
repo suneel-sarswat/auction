@@ -509,7 +509,15 @@ Section Permutation.
    Lemma perm_sort3 (l s: list A)(lr: A-> A-> bool): perm l s -> perm (sort lr l)(sort lr s).
    Proof. eauto using perm_sort1. Qed.
 
-   Hint Resolve perm_sort1 perm_sort2 perm_sort3: core.
+   Lemma perm_nodup (l s: list A): perm l s -> NoDup l -> NoDup s.
+   Proof. Admitted.
+
+   Lemma perm_subset (l1 l2 s1 s2: list A): perm l1 l2 -> perm s1 s2 -> l1 [<=] s1 -> l2 [<=] s2.
+   Proof. Admitted.
+   
+   
+
+   Hint Resolve perm_sort1 perm_sort2 perm_sort3 perm_nodup perm_subset: core.
    
  End Permutation. 
 
@@ -553,4 +561,4 @@ Section Permutation.
   | H: is_true (perm ?y  z) |- _ => apply (@perm_trans _ x y z) 
   end.
 
-  Hint Resolve perm_sort1 perm_sort2 perm_sort3: core.
+  Hint Resolve perm_sort1 perm_sort2 perm_sort3 perm_nodup perm_subset: core.

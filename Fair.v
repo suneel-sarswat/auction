@@ -293,22 +293,34 @@ Proof. { revert B. induction M as [|m].
         { intros. unfold fair_on_bids. intros b b' H2 H3 H4.
           destruct B eqn: Hb. 
          { simpl. inversion H4. }
-         { assert  (case1: b0 = b' \/ In b' (bids_of ((Make_FOB M l)))).
+         { assert (case1: b' = b0 \/ b' <> b0). eauto.
+           destruct H2 as [H2 H2a].
+           assert  (case3: b0 = b' \/ In b' (bids_of ((Make_FOB M l)))).
            { simpl in H4. auto. }
            destruct case1 as [c1a | c1b]. 
            { (*-- c1a : b0 = b' -------------------------*)
-             subst b'. (*H3 is not possible*)
+             subst b'. (*H3 is not possible*) 
              assert (H5: b <= b0).
-             { destruct H2. apply Sorted_elim2 with (x:= b) in H0 as H0a.
+             { apply Sorted_elim2 with (x:= b) in H0 as H0a.
               apply /leP. auto.  unfold by_bp.
-              unfold reflexive. auto.  auto. } omega. }
-           { (*-- c1b : In b' (bids_of (Make_FOB M l))---*)
+              unfold reflexive. auto.  auto. } omega.  }
+           
+           { (*-- c1b : b' <> b0 ---*)
+             assert (H5: In b' l).
+             { eauto. }
              assert (case2: b=b0 \/ In b l).
-             { destruct H2 as [H2 H2a]. auto. }
+             { auto. }
              destruct case2 as [c2a | c2b]. 
-             { subst b. simpl. left. exact. }
-             { simpl. right. eapply IHM. eauto. eauto. admit.
-               split. exact. admit. eapply H3. exact. }}}}} Admitted.
+             { subst b. simpl. left. auto. }
+             { destruct case3 as [c3a | c3b].
+               { subst b0. contradiction. }
+               { simpl. right. eapply IHM with (b':= b').
+                 { eauto. }
+                 { eauto. }
+                 { simpl in H1. destruct ( bid_of m =? b0) eqn: H6.  auto. eauto. }
+                 { split;auto. }
+                 { auto. }
+                 { auto. }  } } } } } } Qed. 
 
 Hint Resolve mfob_matching mfob_asks_is_perm mfob_is_same_size mfob_fair_on_bid.
 

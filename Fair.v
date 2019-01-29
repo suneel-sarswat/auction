@@ -304,13 +304,33 @@ Proof. { revert B. induction M as [|m].
                  { auto. }  } } } } } } Qed.
 
 
-Lemma mfob_asks_is_perm (M: list fill_type) (B:list Bid)(A: list Ask):
-matching_in B A M  -> perm (asks_of M) (asks_of (Make_FOB M B)). 
-Proof. Admitted. 
+Lemma mfob_asks_is_perm (M: list fill_type) (B:list Bid) :
+ (|M| <= |B|)  -> perm (asks_of M) (asks_of (Make_FOB M B)). 
+Proof. { revert B.  induction M. 
+         { simpl. auto. }
+         { destruct B eqn: HB.
+           { simpl. intro h1. inversion h1. } 
+           { simpl. intro h1.
+             assert (h2: |M| <= |l|). omega.
+             apply IHM in h2 as h3.  simpl. auto. } } } Qed.
 
-Lemma mfob_is_same_size (M: list fill_type) (B:list Bid) (A: list Ask):
-matching_in B A M -> |M| = |(Make_FOB M B)|. 
-Proof.  Admitted.
+Lemma mfob_is_same_size (M: list fill_type) (B:list Bid):
+ (|M| <= |B|)  -> |M| = |(Make_FOB M B)|. 
+Proof.  { revert B.  induction M. 
+         { simpl. auto. }
+         { destruct B eqn: HB.
+           { simpl. intro h1. inversion h1. } 
+           { simpl. intro h1.
+             assert (h2: |M| <= |l|). omega.
+             apply IHM in h2 as h3.  simpl. auto. } } } Qed. 
+
+Lemma M_is_smaller_than_B (M: list fill_type) (B: list Bid)(A: list Ask):
+  matching_in B A M -> (|M| <= |B|).
+Proof. Admitted.
+
+Lemma M_is_smaller_than_A (M: list fill_type) (B: list Bid)(A: list Ask):
+  matching_in B A M -> (|M| <= |A|).
+Proof. Admitted.
 
 Hint Resolve mfob_matching mfob_fair_on_bid mfob_asks_is_perm mfob_is_same_size: core.
 
@@ -329,11 +349,12 @@ Proof. { assert (HmP: transitive m_bp /\ comparable m_bp). apply m_bp_P.
           eapply match_inv with
               (B:= (sort by_bp B)) (M:=(Make_FOB (sort m_bp M) (sort by_bp B))) (A:=A).
           all: auto. } split.
-        { replace (|M|) with (|sort m_bp M|). eapply mfob_is_same_size with (A:= A).
+        { replace (|M|) with (|sort m_bp M|). eapply mfob_is_same_size.
+          apply M_is_smaller_than_B with (A:= A).
           eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto. } split.
         {  assert(HA: perm (asks_of (sort m_bp M))
                            (asks_of (Make_FOB (sort m_bp M) (sort by_bp B)))).
-           eapply  mfob_asks_is_perm with (A:=A).
+           eapply  mfob_asks_is_perm. apply M_is_smaller_than_B with (A:=A).
            eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto.  }
         {  assert (HBid: fair_on_bids (Make_FOB (sort m_bp M) (sort by_bp B)) (sort by_bp B)).
            { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublist.

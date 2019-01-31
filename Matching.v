@@ -37,7 +37,7 @@ Definition matching (M: list fill_type):=
 Definition matching_in (B:list Bid) (A:list Ask) (M:list fill_type):=
 (matching M) /\ ((bids_of M) [<=] B) /\ ((asks_of M) [<=] A).
 
-Definition MM_in (B: list Bid)(A: list Ask)(M : list fill_type) :=
+Definition Is_MM (M : list fill_type)(B: list Bid)(A: list Ask) :=
   matching_in B A M /\ 
   (forall M': list fill_type, matching_in B A M'-> |M'| <= |M|).
 

@@ -27,8 +27,6 @@ Proof.  { intros H1 H2. unfold fair_on_asks. unfold fair_on_asks in H1.
           intros s s' H3 H4 H5. destruct H2 as [H2a H2].
           apply H2a; eapply H1 with (s':=s');auto. } Qed.
        
- 
-
 Lemma same_bid_is_fair (M M': list fill_type)(B: list Bid):
   fair_on_bids M B -> (bids_of M [=] bids_of M')-> fair_on_bids M' B.
 Proof. { intros H1 H2. unfold fair_on_bids. unfold fair_on_bids in H1.
@@ -49,16 +47,24 @@ Proof.  { split.
           { unfold comparable.  unfold by_dbp. intros.
            move /leP in H. apply /leP. omega. } } Qed.
             
- 
-Definition m_bp (m1:fill_type) (m2:fill_type) := by_dbp (bid_of m1) (bid_of m2).
+Lemma by_dbp_refl: reflexive by_dbp.
+Proof. Admitted.
 
-Lemma m_bp_P : transitive m_bp /\ comparable m_bp.
+
+
+Definition m_dbp (m1:fill_type) (m2:fill_type) := by_dbp (bid_of m1) (bid_of m2).
+
+Lemma m_dbp_P : transitive m_dbp /\ comparable m_dbp.
 Proof. { split.
-         { unfold transitive. unfold m_bp. 
+         { unfold transitive. unfold m_dbp. 
            intros. cut (transitive by_dbp). intros. eauto using by_dbp_P. 
             apply by_dbp_P. }
-         { unfold comparable.  unfold m_bp. intros x y H. eapply by_dbp_P. 
+         { unfold comparable.  unfold m_dbp. intros x y H. eapply by_dbp_P. 
            exact.  } } Qed.
+
+Lemma m_dbp_refl: reflexive m_dbp.
+Proof. Admitted.
+
 
 (*------------- Sorting by increasing ask prices and their properties -------------*)
 
@@ -70,7 +76,11 @@ Proof. { split.
             intros y x z H H1. move /leP in H1. move /leP in H.
             apply /leP. omega. }
           { unfold comparable.  unfold by_sp. intros.
-           move /leP in H. apply /leP. omega. } } Qed.
+            move /leP in H. apply /leP. omega. } } Qed.
+
+Lemma by_sp_refl: reflexive by_sp.
+Proof. Admitted.
+
 
 Definition m_sp (m1:fill_type) (m2:fill_type) :=  by_sp (ask_of m1) (ask_of m2).
 
@@ -80,9 +90,14 @@ Proof. { split.
            intros. cut (transitive by_sp). intros. eauto using by_sp_P. 
             apply by_sp_P. }
          { unfold comparable.  unfold m_sp. intros x y H. eapply by_sp_P. 
-           exact.  } } Qed. 
+           exact.  } } Qed.
 
-Hint Resolve m_bp_P m_sp_P by_dbp_P by_sp_P.
+Lemma m_sp_refl: reflexive m_sp.
+Proof. Admitted.
+
+
+Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
+Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl.
 
 Definition geb := fun a b => Nat.leb b a.
 
@@ -96,7 +111,7 @@ Lemma sorted_B_imply_sorted_p (B: list Bid): Sorted by_dbp B -> Sorted geb (bid_
          apply H3 in H5 as H7. unfold by_dbp in H7. subst b. exact. } } Qed. 
 
 Lemma top_prices_mb (m: fill_type)(b: Bid) (M: list fill_type)(B: list Bid):
-  Sorted m_bp (m::M)-> Sorted by_dbp (b::B) ->
+  Sorted m_dbp (m::M)-> Sorted by_dbp (b::B) ->
   bid_prices (bids_of (m::M)) [<=] bid_prices (b::B) -> (bid_of m) <= b.
 Proof. { intros H1 H2 H3. simpl in H3.
        assert (H4: Sorted geb (bid_prices (b::B))).
@@ -166,14 +181,14 @@ Proof. { intros h1 h2 h3 h4 h5.
          assert (h9: included (bid_prices B1) (bid_prices B2)).
          { auto using included_B_imp_included_BP. }  eauto. }  Qed.
 
-Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_bp M -> Sorted by_dbp (bids_of M).
+Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_dbp M -> Sorted by_dbp (bids_of M).
 Proof. { induction M.
        { simpl. intro H. constructor. }
        { simpl. intro H. inversion H. constructor. auto.
          intros b H4. unfold by_dbp.
          assert (H5: exists m, In m M /\ b = bid_of m). eauto.
          destruct H5 as [m H5]. destruct H5 as [H5 H6].
-         apply H3 in H5 as H7. unfold m_bp in H7. unfold by_dbp in H7.
+         apply H3 in H5 as H7. unfold m_dbp in H7. unfold by_dbp in H7.
          subst b. exact. } } Qed.
 
 Hint Resolve sorted_m_imply_sorted_b.
@@ -229,7 +244,7 @@ Proof. { revert B. induction M. simpl. auto.
            auto. eauto. intro h2. absurd (In b l). eauto. eapply mfob_subB. apply h2. } } Qed.
 
 Lemma mfob_matchable (M:list fill_type)(B:list Bid)(NDB: NoDup B):
-  (Sorted m_bp M) -> (Sorted by_dbp B) -> All_matchable M ->
+  (Sorted m_dbp M) -> (Sorted by_dbp B) -> All_matchable M ->
    sublist (bid_prices (bids_of M)) (bid_prices B) ->
    NoDup (bids_of M) -> All_matchable (Make_FOB M B).
 Proof. { revert B NDB. induction M. 
@@ -255,7 +270,7 @@ Proof. { revert B NDB. induction M.
 
 
 Lemma mfob_matching (M:list fill_type) (B:list Bid) (A:list Ask) (NDB: NoDup B):
-(Sorted m_bp M) -> (Sorted by_dbp B) -> (matching_in B A M) -> matching (Make_FOB M B).
+(Sorted m_dbp M) -> (Sorted by_dbp B) -> (matching_in B A M) -> matching (Make_FOB M B).
 Proof. { intros h1 h2 h3. unfold matching.
        split.
        { (*-------- All_matchable (Make_FOB M B)---------*)
@@ -271,14 +286,14 @@ Proof. { intros h1 h2 h3. unfold matching.
 
 
 Lemma mfob_matching_in (M: list fill_type)(B: list Bid)(A: list Ask)(NDB: NoDup B):
-(Sorted m_bp M) -> (Sorted by_dbp B) -> matching_in B A M -> matching_in B A (Make_FOB M B).
+(Sorted m_dbp M) -> (Sorted by_dbp B) -> matching_in B A M -> matching_in B A (Make_FOB M B).
 Proof.  { intros H1 H2 H3. unfold matching_in. 
           split. { eapply mfob_matching. all: auto. eapply H3.  }
                  split. { eapply mfob_subB. }
                         { eapply mfob_subA. apply H3.  } } Qed.
 
 Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
-  (Sorted m_bp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
+  (Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
   fair_on_bids (Make_FOB M B) B. 
 Proof. { revert B. induction M as [|m]. 
         { intros; simpl; unfold fair_on_bids; intros; inversion H4. }
@@ -348,25 +363,25 @@ Theorem exists_fair_on_bids (M: list fill_type) (B: list Bid)(A:list Ask)(NDB: N
   matching_in B A M->
   (exists M':list fill_type, matching_in B A M'  /\ (|M| = |M'|) /\ perm (asks_of M) (asks_of M')
    /\ fair_on_bids M' B).
-Proof. { assert (HmP: transitive m_bp /\ comparable m_bp). apply m_bp_P.  
+Proof. { assert (HmP: transitive m_dbp /\ comparable m_dbp). apply m_dbp_P.  
         assert (HbP: transitive by_dbp /\ comparable by_dbp). apply by_dbp_P.
         destruct HmP as [Hmp1 Hmp2]. destruct HbP as [Hbp1 Hbp2].
-        intro H. exists (Make_FOB (sort m_bp M) (sort by_dbp B)).
+        intro H. exists (Make_FOB (sort m_dbp M) (sort by_dbp B)).
         split. 
-        { assert (HM: matching_in (sort by_dbp B) A (Make_FOB (sort m_bp M) (sort by_dbp B))).
+        { assert (HM: matching_in (sort by_dbp B) A (Make_FOB (sort m_dbp M) (sort by_dbp B))).
           apply mfob_matching_in. all:auto. 
           apply match_inv with (M:=M)(B:=B)(A:=A);auto.
           eapply match_inv with
-              (B:= (sort by_dbp B)) (M:=(Make_FOB (sort m_bp M) (sort by_dbp B))) (A:=A).
+              (B:= (sort by_dbp B)) (M:=(Make_FOB (sort m_dbp M) (sort by_dbp B))) (A:=A).
           all: auto. } split.
-        { replace (|M|) with (|sort m_bp M|). eapply mfob_is_same_size.
+        { replace (|M|) with (|sort m_dbp M|). eapply mfob_is_same_size.
           apply M_is_smaller_than_B with (A:= A).
           eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto. } split.
-        {  assert(HA: perm (asks_of (sort m_bp M))
-                           (asks_of (Make_FOB (sort m_bp M) (sort by_dbp B)))).
+        {  assert(HA: perm (asks_of (sort m_dbp M))
+                           (asks_of (Make_FOB (sort m_dbp M) (sort by_dbp B)))).
            eapply  mfob_asks_is_perm. apply M_is_smaller_than_B with (A:=A).
            eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto.  }
-        {  assert (HBid: fair_on_bids (Make_FOB (sort m_bp M) (sort by_dbp B)) (sort by_dbp B)).
+        {  assert (HBid: fair_on_bids (Make_FOB (sort m_dbp M) (sort by_dbp B)) (sort by_dbp B)).
            { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublist.
              all: auto. 
              { assert (H1: NoDup (bids_of M)). apply H.  eauto with auction. }
@@ -412,4 +427,5 @@ Proof. { intros H0. apply exists_fair_on_bids in H0 as H1.
 End Fair.
 
 
-Hint Resolve m_bp_P m_sp_P by_dbp_P by_sp_P.
+Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
+Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl.

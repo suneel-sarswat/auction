@@ -244,6 +244,12 @@ Hint Resolve idx_successor diff_index same_index: core.
             assert (H3: In a l). eauto.
             simpl. replace (|delete a l|) with (|l| - 1).
             cut (|l| > 0). omega. eauto.  symmetry;auto. } } Qed.
+
+   
+   Lemma delete_size1a  (a:A)(l: list A): In a l -> |l|= S(|delete a l|).
+   Proof. intro h1. apply delete_size1 in h1 as h2. rewrite h2. simpl.
+          destruct l. simpl. inversion h1. simpl. omega. Qed.
+     
    
   Lemma delete_size2 (a:A)(l: list A): ~ In a l -> |delete a l| = |l|.
   Proof. { induction l.
@@ -302,6 +308,7 @@ End DecLists.
  Hint Resolve insert_nodup :core.
 
  Hint Resolve delete_elim1 delete_elim2 delete_intro delete_size: core.
+ Hint Resolve delete_size1a delete_size1 delete_size2: core.
  Hint Resolve delete_nodup: core.
  
 Hint Immediate absnt_idx_zero idx_zero_absnt idx_gt_zero idx_is_one: core.

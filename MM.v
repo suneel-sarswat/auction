@@ -1,7 +1,7 @@
 Require Import ssreflect ssrbool. 
 Require Export Lists.List.
 
-Require Export GenReflect SetSpecs OrdType.
+Require Export GenReflect SetSpecs.
 
 Require Export Sorting MinMax.
 Require Export BidAsk.
@@ -12,9 +12,6 @@ Require Export AuctionInvar.
 Require Export Fair.
 
 Section MM.
-
-Print fill_type.
-Print Bid.
 
 
 (*Dear Abhishek, The main problem is in this function. I tried with these variations:
@@ -43,7 +40,8 @@ Fixpoint produce_MM (B:list Bid) (A: list Ask): (list fill_type) :=
            end
   end.
   
-  
+
+
   (**)
 
 Print Make_FOA.

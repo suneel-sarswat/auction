@@ -123,9 +123,21 @@ Proof. { unfold matching_in;unfold matching. intros H.
          destruct H as [H1 H]. destruct H as [H2 H]. destruct H1 as [H1 H3].
          destruct H3 as [H3 H4]. eauto. } Qed.
 
+Lemma matching_in_elim6 (a: Ask)(B: list Bid)(A: list Ask)(M: list fill_type):
+  matching_in B A M -> matching_in B (a::A) M.
+Proof. Admitted.
+
+Lemma matching_in_elim7 (b: Bid)(B: list Bid)(A: list Ask)(M: list fill_type):
+  matching_in B A M -> matching_in (b::B) A M.
+Proof. Admitted.
+
+
 Hint Immediate matching_in_intro: auction.
 Hint Resolve matching_in_elim matching_in_elim1 matching_in_elim2
-     matching_in_elim3 matching_in_elim4 matching_in_elim5: auction.
+     matching_in_elim3 matching_in_elim4 matching_in_elim5 : auction.
+
+Hint Resolve matching_in_elim6 matching_in_elim7: core.
+
 
 (* Remove_later
 Variable m_by_bp m_by_sp : fill_type->fill_type-> bool.
@@ -261,18 +273,16 @@ End Matching.
 
 
 Hint Unfold All_matchable.
-Hint Immediate All_matchable_intro All_matchable_nil: auction.
-Hint Resolve All_matchable_elim All_matchable_elim1 : auction.
+Hint Immediate All_matchable_intro All_matchable_nil: core.
+Hint Resolve All_matchable_elim All_matchable_elim1 : core.
 
-Hint Resolve nill_is_matching: auction.
-Hint Immediate matching_in_intro: auction.
+Hint Resolve nill_is_matching: core.
+Hint Immediate matching_in_intro: core.
 Hint Resolve matching_in_elim matching_in_elim1 matching_in_elim2
-     matching_in_elim3 matching_in_elim4 matching_in_elim5: auction.
+     matching_in_elim3 matching_in_elim4 matching_in_elim5: core.
+Hint Resolve matching_in_elim6 matching_in_elim7: core.
 
-Hint Immediate Is_IR_intro: auction.
-Hint Resolve Is_IR_elim Is_IR_elim1: auction.
 
-(* Remove_later
-Hint Resolve sorted_mbp_is_matching sorted_msp_is_matching  sorted_bid_is_matching sorted_ask_is_matching : auction.
-Hint Resolve sorted_mbp_is_fair sorted_msp_is_fair sorted_bid_is_fair sorted_ask_is_fair : auction.
-*)
+Hint Immediate Is_IR_intro: core.
+Hint Resolve Is_IR_elim Is_IR_elim1: core.
+

@@ -14,6 +14,7 @@ coqc BidAsk.v
 coqc Matching.v
 coqc AuctionInvar.v
 coqc IndRat.v
+coqc Fair.v
 
 
 

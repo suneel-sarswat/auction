@@ -52,6 +52,11 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
  Lemma produce_MM_is_matching (B: list Bid)(A: list Ask):
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
  Proof. Admitted.
+
+ Lemma matching_in_elim8 (B: list Bid)(A: list Ask)(b: Bid)(a: Ask)(M: list fill_type):
+   matching_in (b::B) (a::A) M -> ~ In b (bids_of M) -> ~ In a (asks_of M) -> matching_in B A M.
+ Proof. Admitted.
+ 
  
            
 Lemma produce_MM_is_MM (B: list Bid)(A: list Ask): Sorted by_dbp B -> Sorted by_dsp A->
@@ -101,10 +106,66 @@ Proof. revert B. induction A as [|a A'].
                { auto. }  } }
            
            { (*-- C2: when b and a are matchable then Output is (b,a):: produce_MM B' A'----*)
-             simpl. replace (a <=? b) with true.
-
-
-       } } } Admitted.
+             assert (h1: matching_in (b::B') (a::A') (produce_MM (b::B') (a::A'))).
+             { auto using produce_MM_is_matching. }
+             unfold Is_MM. split. auto.
+             simpl. replace (a <=? b) with true. Focus 2. symmetry. apply /leP. auto.
+             intros M h2. simpl.
+             assert (Hb: In b (bids_of M) \/ ~ In b (bids_of M)). eauto.
+             assert (Ha: In a (asks_of M) \/ ~ In a (asks_of M)). eauto.
+             assert (H0: Is_MM (produce_MM B' A') B' A').
+             { apply IHA'. all: eauto. }
+             destruct Hb as [Hb1 | Hb2]; destruct Ha as [Ha1 | Ha2].
+             { (* Case_ab1: In b (bids_of M) and In a (asks_of M)------*)
+               assert (h3: exists m1, In m1 M /\ a = ask_of m1). eauto.
+               assert (h4: exists m2, In m2 M /\ b = bid_of m2). eauto.
+               destruct h3 as [m1 h3]. destruct h3 as [h3a h3].
+               destruct h4 as [m2 h4]. destruct h4 as [h4a h4].
+               assert (h5: m1 = m2 \/ m1 <> m2). eauto.
+               destruct h5 as [h5a | h5b].
+               { (*-------- h5a : m1 = m2 ---------*)
+                 subst m2. 
+                 set (M' := delete m1 M). 
+                 assert (h5: matching_in B' A' M'). admit.
+                 assert (h6: |M| = S (|M'|)).
+                 { unfold M'. eauto. }
+                 assert (h7: |M'| <= |(produce_MM B' A')|). apply H0. exact.
+                 omega. }
+               { (*-------- h5b : m1 <> m2 ---------*)
+                 set (M'' := delete m1 (delete m2 M)).
+                 assert (h5: |M| = S (S (|M''|))).
+                 { unfold M''.
+                   assert (h3b: In m1 (delete m2 M)).
+                   { auto. }
+                   assert (h6: S (| delete m1 (delete m2 M) |) = |delete m2 M|).
+                   { symmetry. auto. }
+                   rewrite h6. auto. } 
+                 set (m:= {|bid_of:= bid_of m1 ; ask_of:= ask_of m2 ; tp:=(bp (bid_of m1))|}).
+                 set (M' := (m :: M'')).
+                 assert (h6: matching_in B' A' M'). admit.
+                 assert (h7: |M'| <= |(produce_MM B' A')|). apply H0. exact.
+                 unfold M' in h7. simpl in h7. rewrite h5. simpl. omega. } }
+             { (* Case_ab2: In b (bids_of M) and ~ In a (asks_of M)----*)
+               assert (h3: exists m, In m M /\ b = bid_of m). eauto.
+               destruct h3 as [m h3]. destruct h3 as [h3a h3].
+               set (M' := delete m M).
+               assert (h4: matching_in B' A' M'). admit.
+               assert (h5: |M| = S (|M'|)).
+               { unfold M'. eauto. }
+               assert (h6: |M'| <= |(produce_MM B' A')|). apply H0. exact.
+               omega. }
+             { (* Case_ab3: ~ In b (bids_of M) and In a (asks_of M)----*)
+               assert (h3: exists m, In m M /\ a = ask_of m). eauto.
+               destruct h3 as [m h3]. destruct h3 as [h3a h3].
+               set (M' := delete m M).
+               assert (h4: matching_in B' A' M'). admit.
+               assert (h5: |M| = S (|M'|)).
+               { unfold M'. eauto. }
+               assert (h6: |M'| <= |(produce_MM B' A')|). apply H0. exact.
+               omega. }
+             { (* Case_ab4: ~ In b (bids_of M) and ~ In a (asks_of M)---*)
+               assert (h3: matching_in B' A' M). eauto using matching_in_elim8.
+               cut (|M| <= | produce_MM B' A'|). omega. apply H0. exact. }   } } } Admitted.
                
 
           

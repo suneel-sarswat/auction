@@ -384,10 +384,10 @@ Proof. { assert (HmP: transitive m_dbp /\ comparable m_dbp). apply m_dbp_P.
         {  assert (HBid: fair_on_bids (Make_FOB (sort m_dbp M) (sort by_dbp B)) (sort by_dbp B)).
            { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublist.
              all: auto. 
-             { assert (H1: NoDup (bids_of M)). apply H.  eauto with auction. }
+             { assert (H1: NoDup (bids_of M)). apply H.  eauto. }
              { assert (H2: bids_of M [<=] B). apply H.
                eapply perm_subset with (l1:= bids_of M)(s1:= B).
-               auto with auction. all: auto. } }
+               auto. all: auto. } }
            unfold fair_on_bids.
            intros b b' h1 h2 h3.
            unfold fair_on_bids in HBid. apply HBid with (b':= b').

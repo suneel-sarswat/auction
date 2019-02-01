@@ -110,6 +110,10 @@ Section DecLists.
            { right;auto. }
            { intro H1. destruct H1. left;auto. right;auto. } } } Qed.
   
+  Lemma delete_elim0 (a: A)(l: list A): (delete a l) [<=] l.
+  Proof. Admitted.
+  
+  
   Lemma delete_elim2 (a b:A)(l: list A): NoDup l -> In a (delete b l)-> (a<>b).
   Proof. { induction l. simpl. auto.
          { simpl. destruct  (b == a0) eqn: eqH.
@@ -125,7 +129,7 @@ Section DecLists.
              absurd (a0=a0); auto. auto. }
            { intros H1 H2. simpl. destruct H1. left;auto. right;auto. } } } Qed.
             
-  Hint Resolve delete_elim1 delete_elim2 delete_intro: core.
+  Hint Resolve delete_elim0 delete_elim1 delete_elim2 delete_intro: core.
   Lemma delete_iff (a b:A)(l: list A): NoDup l -> (In a (delete b l) <-> (In a l /\ a<>b)).
   Proof. intro H. split. eauto.
          intro H0. destruct H0 as [H0 H1]. eauto.  Qed. 
@@ -307,7 +311,7 @@ End DecLists.
  Hint Resolve insert_elim insert_elim1 insert_elim2: core.
  Hint Resolve insert_nodup :core.
 
- Hint Resolve delete_elim1 delete_elim2 delete_intro delete_size: core.
+ Hint Resolve delete_elim0 delete_elim1 delete_elim2 delete_intro delete_size: core.
  Hint Resolve delete_size1a delete_size1 delete_size2: core.
  Hint Resolve delete_nodup: core.
  

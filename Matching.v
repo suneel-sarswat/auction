@@ -132,8 +132,6 @@ Lemma matching_elim13 (m: fill_type) (M: list fill_type): matching (m::M) ->
 Proof. Admitted.
 
 
-
-
 Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
 Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
 Hint Resolve matching_elim8 matching_elim9 matching_elim10 matching_elim11: core.

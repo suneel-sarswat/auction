@@ -219,7 +219,11 @@ Fixpoint asks_of (F: list fill_type) : (list Ask) :=
 Lemma asks_of_intro (F: list fill_type) (m: fill_type):
   In m F -> (In (ask_of m) (asks_of F)).
 Proof. { intro H. induction F. simpl. simpl in H. contradiction. destruct  H.
-        subst m. simpl. left. auto. simpl. right. auto. } Qed.
+         subst m. simpl. left. auto. simpl. right. auto. } Qed.
+
+Lemma asks_of_intro1 (M': list fill_type) (M: list fill_type):
+  M [<=] M' -> ((asks_of M)  [<=] (asks_of M')).
+Proof.  Admitted.
   
 Lemma asks_of_elim (F: list fill_type): forall a, In a (asks_of F)->
                                             exists m, In m F /\ a = ask_of m.
@@ -254,30 +258,34 @@ Lemma tps_of_perm (M M': list fill_type):
 Proof. Admitted.
 
       
-Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: auction.
-Hint Resolve trade_prices_of_intro trade_prices_of_elim: auction.
+Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: core.
+Hint Resolve trade_prices_of_intro trade_prices_of_elim: core.
+
+Hint Resolve asks_of_intro1 bids_of_intro1 asks_of_perm bids_of_perm: core.
 
 
   
 End Bid_Ask.
 
 
-Hint Resolve b_eqb_ref b_eqP : auction.
-Hint Immediate b_eqb_elim b_eqb_intro: auction.
+Hint Resolve b_eqb_ref b_eqP : core.
+Hint Immediate b_eqb_elim b_eqb_intro: core.
 
-Hint Resolve a_eqb_ref a_eqP : auction.
-Hint Immediate a_eqb_intro a_eqb_elim: auction.
+Hint Resolve a_eqb_ref a_eqP : core.
+Hint Immediate a_eqb_intro a_eqb_elim: core.
 
 
 Hint Resolve bid_prices_elim bid_prices_intro bid_prices_intro1: core.
 Hint Resolve ask_prices_elim ask_prices_intro ask_prices_intro1: core.
 
 
-Hint Resolve m_eqb_ref m_eqP: auction.
-Hint Immediate m_eqb_elim m_eqb_intro: auction.
+Hint Resolve m_eqb_ref m_eqP: core.
+Hint Immediate m_eqb_elim m_eqb_intro: core.
 
       
 Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: core.
 Hint Resolve trade_prices_of_intro trade_prices_of_elim: core.
+
+Hint Resolve asks_of_intro1 bids_of_intro1 asks_of_perm bids_of_perm: core.
 
 Hint Resolve bids_of_perm asks_of_perm tps_of_perm: core.

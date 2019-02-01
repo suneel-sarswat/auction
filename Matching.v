@@ -23,7 +23,8 @@ Section Matching.
 
 (* Definition matchable (b: Bid)(a: Ask):=  (sp (a)) <= (bp (b)). *)
 
-Definition All_matchable (M: list fill_type):= forall m, In m M -> (ask_of m) <= (bid_of m).
+  Definition All_matchable (M: list fill_type):= forall m, In m M -> (ask_of m) <= (bid_of m).
+
 
 Definition all_matchable (M:list fill_type) := forallb (fun m => 
  (bid_of m) <=? (ask_of m)) M.
@@ -33,6 +34,8 @@ Proof.  Admitted.
 
 Definition matching (M: list fill_type):=
   (All_matchable M) /\ (NoDup (bids_of M)) /\ (NoDup (asks_of M)).
+
+
   
 Definition matching_in (B:list Bid) (A:list Ask) (M:list fill_type):=
 (matching M) /\ ((bids_of M) [<=] B) /\ ((asks_of M) [<=] A).
@@ -70,12 +73,55 @@ Proof. { unfold matching_in. split. unfold matching.
          split. apply All_matchable_nil.
          split. simpl. constructor. simpl. constructor.
          split. simpl. auto. simpl. auto. } Qed.
-
-
 Hint Resolve nill_is_matching: auction.
 
+(*-------------introduction and elimination for matching ------------------------*)
+
+(*-------    Definition matching (M: list fill_type):=
+             (All_matchable M) /\ (NoDup (bids_of M)) /\ (NoDup (asks_of M)).    *)
+
+Lemma matching_elim0 (m: fill_type) (M: list fill_type): matching M -> In m M ->
+                                                         (ask_of m) <= (bid_of m).
+Proof. Admitted.
+
+Lemma matching_elim1 (M: list fill_type): matching M -> NoDup (bids_of M).
+Proof. Admitted.
+
+Lemma matching_elim2 (M: list fill_type): matching M -> NoDup (asks_of M).
+Proof. Admitted.
+
+Lemma matching_elim3 (M: list fill_type): matching M -> NoDup M.
+Proof. Admitted.
+
+Lemma matching_elim4 (m: fill_type) (M: list fill_type): matching (m::M) ->
+                                                         ~ In (ask_of m) (asks_of M).
+Proof. Admitted.
+
+Lemma matching_elim5 (m: fill_type) (M: list fill_type): matching (m::M) ->
+                                                         ~ In (bid_of m) (bids_of M).
+Proof. Admitted.
+
+Lemma matching_elim6 (m: fill_type) (M: list fill_type): matching (m::M) -> matching M.
+Proof. Admitted.
+
+Lemma matching_elim7 (m: fill_type) (M: list fill_type): In m M -> matching M ->
+                                                         ~ In (ask_of m) (asks_of (delete m M)).
+Proof. Admitted.
+
+Lemma matching_elim8 (m: fill_type) (M: list fill_type): In m M -> matching M ->
+                                                         ~ In (bid_of m) (bids_of (delete m M)).
+Proof. Admitted.
+
+Lemma matching_elim9 (m: fill_type) (M: list fill_type): matching M ->  matching (delete m M).
+Proof. Admitted.
 
 
+Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
+Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
+Hint Resolve matching_elim8 matching_elim9: core.
+
+
+(*-----------------introduction and elimination for matching_in -----------------*)                                                         
 Lemma matching_in_intro (m: fill_type) (M: list fill_type)(B: list Bid)(A: list Ask):
   (ask_of m) <= (bid_of m) -> matching_in B A M -> ~ In (bid_of m) (bids_of M) ->
   ~ In (ask_of m) (asks_of M) -> In (bid_of m) B -> In (ask_of m) A -> matching_in B A (m::M).
@@ -86,12 +132,14 @@ Proof.  intros H1 H2 H3 H4 H5 H6. unfold Is_a_matching. split. unfold Is_a_match
 
 *)
 
+  Lemma matching_in_elim0 (M: list fill_type)(B: list Bid)(A: list Ask): matching_in B A M ->
+                                                                         matching M.
+  Proof. Admitted.
+  
+  
 Lemma matching_in_elim (m: fill_type) (M: list fill_type)(B: list Bid)(A: list Ask):
   matching_in B A (m::M) -> matching_in B A M.
   Proof. Admitted.
-  (*
-Proof. unfold Is_a_matching. simpl. intros H. destruct H as [H1 H]. destruct H as [H2 H]. destruct H as [H3 H]. destruct H as [H4 H]. split. eauto with auction. split. eauto. split. eauto. split. unfold "[<=]".  eauto. unfold "[<=]". eauto. Qed.
-*)
 
 Lemma matching_in_elim1 (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A (m::M) ->  (ask_of m) <= (bid_of m).
@@ -110,6 +158,8 @@ Lemma matching_in_elim3 (m: fill_type) (M: list fill_type) (B: list Bid)(A: list
 Proof. { unfold matching_in;unfold matching. intros H.
          destruct H as [H1 H]. destruct H as [H2 H]. destruct H1 as [H1 H3].
          destruct H3 as [H3 H4]. eauto. } Qed.
+
+
 
 Lemma matching_in_elim4 (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A (m::M) ->   In (bid_of m) B.
@@ -133,32 +183,10 @@ Proof. Admitted.
 
 
 Hint Immediate matching_in_intro: auction.
-Hint Resolve matching_in_elim matching_in_elim1 matching_in_elim2
+Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1 matching_in_elim2
      matching_in_elim3 matching_in_elim4 matching_in_elim5 : auction.
 
 Hint Resolve matching_in_elim6 matching_in_elim7: core.
-
-
-(* Remove_later
-Variable m_by_bp m_by_sp : fill_type->fill_type-> bool.
-Variable b_by_bp : Bid -> Bid->bool.
-Variable a_by_sp : Ask -> Ask->bool.
-
-Lemma sorted_mbp_is_matching (M:list fill_type)(B:list Bid)(A:list Ask):
-matching_in B A M -> matching_in (sort m_by_bp M) B A.
-Proof. Admitted.
-Lemma sorted_msp_is_matching (M:list fill_type)(B:list Bid)(A:list Ask):
-matching_in B A M -> matching_in (sort m_by_sp M) B A.
-Proof. Admitted.
-Lemma sorted_bid_is_matching (M:list fill_type)(B:list Bid)(A:list Ask):
-matching_in B A M -> matching_in M (sort b_by_bp B) A.
-Proof. Admitted.
-Lemma sorted_ask_is_matching (M:list fill_type)(B:list Bid)(A:list Ask):
-matching_in B A M -> matching_in M B (sort a_by_sp A).
-Proof. Admitted. *)
-(* Remove_later    
-Hint Resolve sorted_mbp_is_matching sorted_msp_is_matching sorted_bid_is_matching sorted_ask_is_matching : auction.
-*)
 
 (*----------------- Individual rational and  Fair matching--------------------------*)
 
@@ -188,20 +216,6 @@ Definition fair_on_asks (M: list fill_type) (A: list Ask):=
 Definition Is_fair (M: list fill_type) (B: list Bid) (A: list Ask) 
   :=  fair_on_asks M A /\ fair_on_bids M B.
 
-(* Remove_later
-Lemma sorted_mbp_is_fair (M:list fill_type)(B:list Bid)(A:list Ask):
-Is_fair M B A -> Is_fair (sort m_by_bp M) B A.
-Proof. Admitted.
-Lemma sorted_msp_is_fair (M:list fill_type)(B:list Bid)(A:list Ask):
-Is_fair M B A -> Is_fair (sort m_by_sp M) B A.
-Proof. Admitted.
-Lemma sorted_bid_is_fair (M:list fill_type)(B:list Bid)(A:list Ask):
-Is_fair M B A -> Is_fair M (sort b_by_bp B) A.
-Proof. Admitted.
-Lemma sorted_ask_is_fair (M:list fill_type)(B:list Bid)(A:list Ask):
-Is_fair M B A -> Is_fair M B (sort a_by_sp A).
-Proof. Admitted.
-*)
 
 (*------------------Uniform matching------------------------------*)
 
@@ -217,9 +231,7 @@ Definition buyers_above (p: nat)(B: list Bid): list Bid :=
 Lemma buyers_above_elim (p:nat)(B: list Bid)(x:Bid):
   In x (buyers_above p B)-> x >= p.
 Proof.   Admitted.
-        
-
-  
+         
 Lemma buyers_above_intro (p:nat)(B: list Bid)(x:Bid):
  ( In x B /\ x >= p ) -> In x (buyers_above p B).
 Proof. Admitted.
@@ -276,12 +288,15 @@ Hint Unfold All_matchable.
 Hint Immediate All_matchable_intro All_matchable_nil: core.
 Hint Resolve All_matchable_elim All_matchable_elim1 : core.
 
+Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
+Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
+Hint Resolve matching_elim8 matching_elim9: core.
+
 Hint Resolve nill_is_matching: core.
 Hint Immediate matching_in_intro: core.
-Hint Resolve matching_in_elim matching_in_elim1 matching_in_elim2
-     matching_in_elim3 matching_in_elim4 matching_in_elim5: core.
-Hint Resolve matching_in_elim6 matching_in_elim7: core.
-
+Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1: core.
+Hint Resolve matching_in_elim2 matching_in_elim3 matching_in_elim4: core.
+Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7: core.
 
 Hint Immediate Is_IR_intro: core.
 Hint Resolve Is_IR_elim Is_IR_elim1: core.

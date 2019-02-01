@@ -206,6 +206,11 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
        destruct  H as [H1 | H2]. exists a. split; auto.
        apply IHF in H2 as H0. destruct H0 as [m H0]. exists m. destruct H0. split.
        eauto. auto. } Qed.
+
+Lemma bids_of_elim1 (M: list fill_type)(m: fill_type)(b: Bid): In b (bids_of (delete m M)) ->
+                                                               In b (bids_of M).
+Proof. Admitted.
+
        
 Lemma bids_of_perm (M M': list fill_type): perm M M' -> perm (bids_of M) (bids_of M').
 Proof.  Admitted.
@@ -231,6 +236,10 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
        destruct  H as [H1 | H2]. exists a. split; auto.
        apply IHF in H2 as H0. destruct H0 as [m H0]. exists m. destruct H0. split.
        eauto. auto. } Qed.
+
+Lemma asks_of_elim1 (M: list fill_type)(m: fill_type)(a: Ask): In a (asks_of (delete m M)) ->
+                                                               In a (asks_of M).
+Proof. Admitted.
 
 Lemma asks_of_perm (M M': list fill_type): perm M M' -> perm (asks_of M) (asks_of M').
 Proof. Admitted.
@@ -262,6 +271,7 @@ Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: core.
 Hint Resolve trade_prices_of_intro trade_prices_of_elim: core.
 
 Hint Resolve asks_of_intro1 bids_of_intro1 asks_of_perm bids_of_perm: core.
+Hint Resolve bids_of_elim1 asks_of_elim1: core.
 
 
   
@@ -289,3 +299,4 @@ Hint Resolve trade_prices_of_intro trade_prices_of_elim: core.
 Hint Resolve asks_of_intro1 bids_of_intro1 asks_of_perm bids_of_perm: core.
 
 Hint Resolve bids_of_perm asks_of_perm tps_of_perm: core.
+Hint Resolve bids_of_elim1 asks_of_elim1: core.

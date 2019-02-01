@@ -115,10 +115,29 @@ Proof. Admitted.
 Lemma matching_elim9 (m: fill_type) (M: list fill_type): matching M ->  matching (delete m M).
 Proof. Admitted.
 
+Lemma matching_elim10 (m: fill_type) (M: list fill_type): matching M -> In m M ->
+                                                          ~ In (bid_of m) (bids_of (delete m M)).
+Proof. Admitted.
+
+Lemma matching_elim11 (m: fill_type) (M: list fill_type): matching M -> In m M ->
+                                                          ~ In (ask_of m) (asks_of (delete m M)).
+Proof. Admitted.
+
+Lemma matching_elim12 (m: fill_type) (M: list fill_type): matching (m::M) ->
+                                                          ~ In (bid_of m) (bids_of M).
+Proof. Admitted.
+
+Lemma matching_elim13 (m: fill_type) (M: list fill_type): matching (m::M) ->
+                                                          ~ In (ask_of m) (asks_of M).
+Proof. Admitted.
+
+
+
 
 Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
 Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
-Hint Resolve matching_elim8 matching_elim9: core.
+Hint Resolve matching_elim8 matching_elim9 matching_elim10 matching_elim11: core.
+Hint Resolve matching_elim12 matching_elim13: core.
 
 
 (*-----------------introduction and elimination for matching_in -----------------*)                                                         
@@ -181,12 +200,16 @@ Lemma matching_in_elim7 (b: Bid)(B: list Bid)(A: list Ask)(M: list fill_type):
   matching_in B A M -> matching_in (b::B) A M.
 Proof. Admitted.
 
+ Lemma matching_in_elim8 (B: list Bid)(A: list Ask)(b: Bid)(a: Ask)(M: list fill_type):
+   matching_in (b::B) (a::A) M -> ~ In b (bids_of M) -> ~ In a (asks_of M) -> matching_in B A M.
+ Proof. Admitted.
+
 
 Hint Immediate matching_in_intro: auction.
 Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1 matching_in_elim2
      matching_in_elim3 matching_in_elim4 matching_in_elim5 : auction.
 
-Hint Resolve matching_in_elim6 matching_in_elim7: core.
+Hint Resolve matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
 
 (*----------------- Individual rational and  Fair matching--------------------------*)
 
@@ -291,12 +314,14 @@ Hint Resolve All_matchable_elim All_matchable_elim1 : core.
 Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
 Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
 Hint Resolve matching_elim8 matching_elim9: core.
+Hint Resolve matching_elim10 matching_elim11: core.
+Hint Resolve matching_elim12 matching_elim13: core.
 
 Hint Resolve nill_is_matching: core.
 Hint Immediate matching_in_intro: core.
 Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1: core.
 Hint Resolve matching_in_elim2 matching_in_elim3 matching_in_elim4: core.
-Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7: core.
+Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
 
 Hint Immediate Is_IR_intro: core.
 Hint Resolve Is_IR_elim Is_IR_elim1: core.

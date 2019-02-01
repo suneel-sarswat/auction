@@ -1,3 +1,8 @@
+
+
+
+
+
 Require Import ssreflect ssrbool. 
 Require Export Lists.List.
 
@@ -155,10 +160,66 @@ Proof. revert B. induction A as [|a A'].
                    { auto. }
                    assert (h6: S (| delete m1 (delete m2 M) |) = |delete m2 M|).
                    { symmetry. auto. }
-                   rewrite h6. auto. } 
+                   rewrite h6. auto. }  
                  set (m:= {|bid_of:= bid_of m1 ; ask_of:= ask_of m2 ; tp:=(bp (bid_of m1))|}).
                  set (M' := (m :: M'')).
-                 assert (h6: matching_in B' A' M'). admit.
+                 
+                 assert (h6: matching_in B' A' M').
+                 { unfold matching_in. split.
+                   { (*----- matching M' ---------------*)
+                     unfold matching. split.
+                     { unfold M'. cut (ask_of m <= bid_of m).
+                       cut (All_matchable M''). auto.
+                       unfold M''. cut (All_matchable M).
+                       auto. eauto. simpl. cut (ask_of m2 <= ask_of m1).
+                       cut (ask_of m1 <= bid_of m1). omega.
+                       eauto. rewrite <- h3. cut (In (ask_of m2) (a::A')).
+                       intro h6. assert(h7: by_dsp a (ask_of m2)). eauto.
+                       unfold by_dsp in h7. apply /leP. auto.
+                       eapply matching_in_elim5a. apply h2. auto. } split.
+                     { (*---- NoDup (bids_of M') ----*)
+                       unfold M'. simpl.
+                       cut (~ In (bid_of m1) (bids_of M'')).
+                       cut (NoDup (bids_of M'')). auto.
+                       { (*--- NoDup (bids_of M'')---*)
+                         cut (matching M''). auto.
+                         unfold M''. eauto. }
+                       { unfold M''. eauto. } }
+                      { (*---- NoDup (asks_of M') ----*)
+                       unfold M'. simpl.
+                       cut (~ In (ask_of m2) (asks_of M'')).
+                       cut (NoDup (asks_of M'')). auto.
+                       { (*--- NoDup (asks_of M'')---*)
+                         cut (matching M''). auto.
+                         unfold M''. eauto. }
+                       { unfold M''.
+                         assert(h6:asks_of(delete m1 (delete m2 M))[<=]asks_of(delete m2 M)).
+                         eauto. intro h7.
+                         absurd (In (ask_of m2) (asks_of (delete m2 M))).
+                         eauto. auto. } } } split.
+                   { (*----- bids_of M' [<=] B'-------------*)
+                     unfold M'. simpl.
+                     intros x h6. destruct h6 as [h6 | h6].
+                     { cut (In x (b::B')). cut ( x <> b). eauto.
+                       { subst x; subst b. eapply matching_elim14 with (M:= M).
+                         all: auto. eauto. }
+                       { subst x. eapply matching_in_elim4a. apply h2. auto. } }
+                     { unfold M'' in h6.
+                       assert (h7: In x (bids_of M)).
+                       { eauto. }
+                       assert (h8: x <> bid_of m2).
+                       { intro h8. subst x.
+                         assert (h9: In (bid_of m2) (bids_of (delete m2 M))).
+                         eauto.
+                         absurd (In (bid_of m2) (bids_of (delete m2 M))).
+                         eauto. auto. }
+                       rewrite <- h4 in h8.
+                       assert (h9: In x (b::B')).
+                       { apply h2. auto. }
+                       destruct h9. symmetry in H. contradiction. auto. } } 
+                   { (*------ asks_of M' [<=] A' -------*)
+                     admit. }   }
+                 
                  assert (h7: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                  unfold M' in h7. simpl in h7. rewrite h5. simpl. omega. } }
              { (* Case_ab2: In b (bids_of M) and ~ In a (asks_of M)----*)

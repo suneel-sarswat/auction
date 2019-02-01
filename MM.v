@@ -52,11 +52,6 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
  Lemma produce_MM_is_matching (B: list Bid)(A: list Ask):
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
  Proof. Admitted.
-
- Lemma matching_in_elim8 (B: list Bid)(A: list Ask)(b: Bid)(a: Ask)(M: list fill_type):
-   matching_in (b::B) (a::A) M -> ~ In b (bids_of M) -> ~ In a (asks_of M) -> matching_in B A M.
- Proof. Admitted.
- 
  
            
 Lemma produce_MM_is_MM (B: list Bid)(A: list Ask): Sorted by_dbp B -> Sorted by_dsp A->
@@ -126,11 +121,32 @@ Proof. revert B. induction A as [|a A'].
                { (*-------- h5a : m1 = m2 ---------*)
                  subst m2. 
                  set (M' := delete m1 M). 
-                 assert (h5: matching_in B' A' M'). admit.
+                 assert (h5: matching_in B' A' M').
+                 { unfold matching_in. unfold M'. split.
+                   { cut(matching M). auto.  apply h2. } split.
+                   { intros x h5.
+                     assert (h6: In x (b::B')).
+                     { cut (In x (bids_of M)). apply h2.
+                       cut ((delete m1 M) [<=] M). intro h6.
+                       eapply bids_of_intro1. apply h6. all: auto. }
+                     destruct h6 as [h6 | h6].
+                     { absurd (In b (bids_of (delete m1 M))).
+                       subst x. subst b. eauto. subst x;auto. }
+                     { auto. } }
+                    { intros x h5.
+                     assert (h6: In x (a::A')).
+                     { cut (In x (asks_of M)). apply h2.
+                       cut ((delete m1 M) [<=] M). intro h6.
+                       eapply asks_of_intro1. apply h6. all: auto. }
+                     destruct h6 as [h6 | h6].
+                     { absurd (In a (asks_of (delete m1 M))).
+                       subst x. subst a. eauto. subst x;auto. }
+                     { auto. } } }
                  assert (h6: |M| = S (|M'|)).
                  { unfold M'. eauto. }
                  assert (h7: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                  omega. }
+               
                { (*-------- h5b : m1 <> m2 ---------*)
                  set (M'' := delete m1 (delete m2 M)).
                  assert (h5: |M| = S (S (|M''|))).
@@ -169,14 +185,11 @@ Proof. revert B. induction A as [|a A'].
                
 
           
- 
-
 (*
 Definition B2:= ({|b_id:= 1 ; bp:= 125 |}) ::({|b_id:= 2 ; bp:= 120 |}) ::({|b_id:= 3 ; bp:= 112 |}) ::({|b_id:= 4 ; bp:= 91 |}) ::({|b_id:= 5 ; bp:= 82 |}) ::({|b_id:= 6 ; bp:= 82 |}) ::({|b_id:= 7 ; bp:= 69 |}) ::({|b_id:= 8 ; bp:= 37 |}) :: nil.
 
 Definition A2:= ({|s_id:= 1 ; sp:= 121 |}) ::({|s_id:= 3 ; sp:= 113 |}) ::({|s_id:= 5 ; sp:= 98 |}) ::({|s_id:= 9 ; sp:= 94 |}) ::({|s_id:= 90 ; sp:= 90 |}) ::({|s_id:= 78 ; sp:= 85 |}) ::({|s_id:= 67 ; sp:= 79 |}) ::({|s_id:= 45 ; sp:= 53 |}) ::nil.
 
 *)
-
 
 End MM.

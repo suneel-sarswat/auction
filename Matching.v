@@ -54,6 +54,10 @@ Lemma All_matchable_elim1 (m: fill_type)(M: list fill_type):
   All_matchable (m::M) -> All_matchable M.
 Proof.  unfold All_matchable. intros.  simpl in H. auto. Qed.
 
+Lemma All_matchable_elim2  (m: fill_type)(M: list fill_type):
+  All_matchable M -> All_matchable (delete m M).
+Proof. Admitted.
+
 Definition empty_fill: list fill_type:= nil.
 
 Lemma All_matchable_nil: All_matchable nil.
@@ -66,7 +70,7 @@ Proof. { intros H1 H2. unfold All_matchable. simpl. intros m0 H3. destruct H3.
 
 
 Hint Immediate All_matchable_intro All_matchable_nil: auction.
-Hint Resolve All_matchable_elim All_matchable_elim1 : auction.
+Hint Resolve All_matchable_elim All_matchable_elim1 All_matchable_elim2 : auction.
 
 Lemma nill_is_matching (B: list Bid)(A: list Ask) : matching_in B A nil.
 Proof. { unfold matching_in. split. unfold matching.
@@ -131,11 +135,21 @@ Lemma matching_elim13 (m: fill_type) (M: list fill_type): matching (m::M) ->
                                                           ~ In (ask_of m) (asks_of M).
 Proof. Admitted.
 
+Lemma matching_elim14 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
+                                                              m1 <> m2 -> bid_of m1 <> bid_of m2.
+Proof. Admitted.
+
+Lemma matching_elim15 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
+                                                              m1 <> m2 -> ask_of m1 <> ask_of m2.
+Proof. Admitted.
+
+
 
 Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
 Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
 Hint Resolve matching_elim8 matching_elim9 matching_elim10 matching_elim11: core.
 Hint Resolve matching_elim12 matching_elim13: core.
+Hint Resolve matching_elim14 matching_elim15: core.
 
 
 (*-----------------introduction and elimination for matching_in -----------------*)                                                         
@@ -184,11 +198,21 @@ Proof. { unfold matching_in;unfold matching. intros H.
          destruct H as [H1 H]. destruct H as [H2 H]. destruct H1 as [H1 H3].
          destruct H3 as [H3 H4]. eauto. } Qed.
 
+Lemma matching_in_elim4a (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
+  matching_in B A M -> In m M ->  In (bid_of m) B.
+Proof. Admitted.
+
+
 Lemma matching_in_elim5 (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A (m::M) ->   In (ask_of m) A.
 Proof. { unfold matching_in;unfold matching. intros H.
          destruct H as [H1 H]. destruct H as [H2 H]. destruct H1 as [H1 H3].
          destruct H3 as [H3 H4]. eauto. } Qed.
+
+Lemma matching_in_elim5a (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
+  matching_in B A M ->  In m M -> In (ask_of m) A.
+Proof. Admitted.
+
 
 Lemma matching_in_elim6 (a: Ask)(B: list Bid)(A: list Ask)(M: list fill_type):
   matching_in B A M -> matching_in B (a::A) M.
@@ -203,6 +227,7 @@ Proof. Admitted.
  Proof. Admitted.
 
 
+Hint Resolve matching_in_elim4a matching_in_elim5a: core. 
 Hint Immediate matching_in_intro: auction.
 Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1 matching_in_elim2
      matching_in_elim3 matching_in_elim4 matching_in_elim5 : auction.
@@ -307,18 +332,20 @@ End Matching.
 
 Hint Unfold All_matchable.
 Hint Immediate All_matchable_intro All_matchable_nil: core.
-Hint Resolve All_matchable_elim All_matchable_elim1 : core.
+Hint Resolve All_matchable_elim All_matchable_elim1 All_matchable_elim2 : core.
 
 Hint Resolve matching_elim0 matching_elim1 matching_elim2 matching_elim3: core.
 Hint Resolve matching_elim4 matching_elim5 matching_elim6 matching_elim7: core.
 Hint Resolve matching_elim8 matching_elim9: core.
 Hint Resolve matching_elim10 matching_elim11: core.
 Hint Resolve matching_elim12 matching_elim13: core.
+Hint Resolve matching_elim14 matching_elim15: core.
 
 Hint Resolve nill_is_matching: core.
 Hint Immediate matching_in_intro: core.
 Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1: core.
 Hint Resolve matching_in_elim2 matching_in_elim3 matching_in_elim4: core.
+Hint Resolve matching_in_elim4a matching_in_elim5a: core. 
 Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
 
 Hint Immediate Is_IR_intro: core.

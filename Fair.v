@@ -48,7 +48,7 @@ Proof.  { split.
            move /leP in H. apply /leP. omega. } } Qed.
             
 Lemma by_dbp_refl: reflexive by_dbp.
-Proof. Admitted.
+Proof. unfold reflexive. intros. eauto. Qed.
 
 
 
@@ -63,7 +63,7 @@ Proof. { split.
            exact.  } } Qed.
 
 Lemma m_dbp_refl: reflexive m_dbp.
-Proof. Admitted.
+Proof. unfold reflexive. intros. unfold m_dbp. eauto. Qed.
 
 
 (*------------- Sorting by increasing ask prices and their properties -------------*)
@@ -79,7 +79,7 @@ Proof. { split.
             move /leP in H. apply /leP. omega. } } Qed.
 
 Lemma by_sp_refl: reflexive by_sp.
-Proof. Admitted.
+Proof. unfold reflexive.  intros. eauto. Qed.
 
 
 Definition m_sp (m1:fill_type) (m2:fill_type) :=  by_sp (ask_of m1) (ask_of m2).
@@ -93,7 +93,7 @@ Proof. { split.
            exact.  } } Qed.
 
 Lemma m_sp_refl: reflexive m_sp.
-Proof. Admitted.
+Proof. unfold reflexive. intros. eauto. Qed.
 
 
 Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
@@ -348,14 +348,27 @@ Proof.  { revert B.  induction M.
            { simpl. intro h1.
              assert (h2: |M| <= |l|). omega.
              apply IHM in h2 as h3.  simpl. auto. } } } Qed. 
+             
+Lemma bids_of_size (M: list fill_type):
+|M|=|bids_of M|.
+Proof. induction M. simpl. auto. simpl. omega. Qed.
+     
+Lemma asks_of_size (M:list fill_type):
+|M|=|asks_of M|.
+Proof. induction M. simpl. auto. simpl. omega. Qed.
 
 Lemma M_is_smaller_than_B (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A M -> (|M| <= |B|).
-Proof. Admitted.
+Proof. { intro H. unfold matching_in in H. destruct H as [H H1]. 
+destruct H1 as [H1 H2]. unfold matching in H. destruct H as [H H3].
+destruct H3 as [H3 H4]. assert (H5: NoDup (bids_of M) -> bids_of M [<=] B). auto. eapply subset_cardinal_le in H5. assert (H6:|M| = |(bids_of M)|). apply bids_of_size. rewrite H6. exact. exact. exact. } Qed.   
 
 Lemma M_is_smaller_than_A (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A M -> (|M| <= |A|).
-Proof. Admitted.
+Proof. { intro H. unfold matching_in in H. destruct H as [H H1]. 
+destruct H1 as [H1 H2]. unfold matching in H. destruct H as [H H3].
+destruct H3 as [H3 H4]. assert (H5: NoDup (asks_of M) -> asks_of M [<=] A). auto. eapply subset_cardinal_le in H5. assert (H6:|M| = |(asks_of M)|).
+apply asks_of_size. rewrite H6. exact. exact. exact. } Qed.
 
 Hint Resolve mfob_matching mfob_fair_on_bid mfob_asks_is_perm mfob_is_same_size: core.
 

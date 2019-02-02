@@ -120,7 +120,7 @@ Proof. { intros H1 H2 H3. simpl in H3.
        inversion H4. intro H7. destruct H7. omega.
        apply H6 in H7 as H8. unfold geb in H8. apply /leP. exact. auto. } Qed.
 
-Lemma nodup_sub_is_included (B1 B2: list Bid):  NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
+Lemma nodup_sub_is_includedB (B1 B2: list Bid):  NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
                                                   included B1 B2.
 Proof. eauto. Qed.
 
@@ -165,7 +165,7 @@ Proof. { revert B2. induction B1 as [| b1].
            apply IHB1 in h3b as h3c. auto. } } } Qed.
 
 
-Lemma sorted_nodup_is_sublist (B1 B2: list Bid): Sorted by_dbp B1 -> Sorted by_dbp B2 ->
+Lemma sorted_nodup_is_sublistB (B1 B2: list Bid): Sorted by_dbp B1 -> Sorted by_dbp B2 ->
                                                  NoDup B1 -> NoDup B2 -> B1 [<=] B2 ->
                                                  sublist (bid_prices B1) (bid_prices B2). 
 Proof. { intros h1 h2 h3 h4 h5.
@@ -176,7 +176,7 @@ Proof. { intros h1 h2 h3 h4 h5.
          { auto using sorted_B_imply_sorted_p. }
 
          assert (h8: included B1 B2).
-         { auto using nodup_sub_is_included. }
+         { auto using nodup_sub_is_includedB. }
          
          assert (h9: included (bid_prices B1) (bid_prices B2)).
          { auto using included_B_imp_included_BP. }  eauto. }  Qed.
@@ -275,7 +275,7 @@ Proof. { intros h1 h2 h3. unfold matching.
        split.
        { (*-------- All_matchable (Make_FOB M B)---------*)
          apply mfob_matchable. all: auto. apply h3.
-         eapply sorted_nodup_is_sublist. all: auto. all: apply h3. }
+         eapply sorted_nodup_is_sublistB. all: auto. all: apply h3. }
        split.
        { (*-------NoDup (bids_of (Make_FOB M B))---------*)
         auto using mfob_nodup_bids. }
@@ -395,7 +395,7 @@ Proof. { assert (HmP: transitive m_dbp /\ comparable m_dbp). apply m_dbp_P.
            eapply  mfob_asks_is_perm. apply M_is_smaller_than_B with (A:=A).
            eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto.  }
         {  assert (HBid: fair_on_bids (Make_FOB (sort m_dbp M) (sort by_dbp B)) (sort by_dbp B)).
-           { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublist.
+           { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublistB.
              all: auto. 
              { assert (H1: NoDup (bids_of M)). apply H.  eauto. }
              { assert (H2: bids_of M [<=] B). apply H.
@@ -407,6 +407,117 @@ Proof. { assert (HmP: transitive m_dbp /\ comparable m_dbp). apply m_dbp_P.
            { destruct h1 as [h1 h1a]. split; auto. }
            all: auto.  } } Qed.
 
+
+
+(*-------------------------End of Fair On Bid Lemmas ---------------------*)
+
+
+
+
+
+
+
+Lemma sorted_A_imply_sorted_p (A: list Ask): Sorted by_sp A -> Sorted leb (ask_prices A).
+  Proof. Admitted. 
+
+Lemma top_prices_ma (m: fill_type)(a: Ask) (M: list fill_type)(A: list Ask):
+  Sorted m_sp (m::M)-> Sorted by_sp (a::A) ->
+  ask_prices (asks_of (m::M)) [<=] ask_prices (a::A) -> a<=(ask_of m).
+Proof. { intros H1 H2 H3. simpl in H3.
+       assert (H4: Sorted leb (ask_prices (a::A))).
+       { apply sorted_A_imply_sorted_p;auto. } 
+       cut (In (sp (ask_of m)) ((sp a)::ask_prices A)).
+       inversion H4. intro H7. destruct H7. omega.
+       apply H6 in H7 as H8.  apply /leP. exact. auto. } Qed.
+
+Lemma nodup_sub_is_includedA (A1 A2: list Ask):  NoDup A1 -> NoDup A2 -> A1 [<=] A2 ->
+                                                  included A1 A2.
+Proof. eauto. Qed.
+
+(*--------------- following lemma important : need a mention in the paper ------------*)
+
+Lemma count_in_deletedA (a: Ask)(A: list Ask):
+  In a A -> count (sp a)(ask_prices A) = S (count (sp a) (ask_prices (delete a A))).
+Proof. { induction A as [|b].
+       { simpl. auto. }
+       { intro h1. destruct (a == b) eqn: h2.
+         { simpl. rewrite h2. move /eqP in h2.
+           subst a. simpl. replace (b =? b) with true. auto. auto. }
+         { assert (h1a: In a A).
+           { move /eqP in h2. eauto.   }
+           replace (delete a (b :: A)) with (b :: (delete a A)).
+           { simpl. destruct (a =? b) eqn: h3.
+             { apply IHA in h1a as h1b. rewrite h1b. auto. }
+             { auto. } }
+           { simpl. rewrite h2. auto. } } } } Qed.
+
+
+Lemma included_A_imp_included_AP (A1 A2: list Ask): included A1 A2 ->
+                                                    included (ask_prices A1) (ask_prices A2).
+Proof. { revert A2. induction A1 as [| a1].
+       { simpl. auto. }
+       { intros A2 h1.
+         assert (h2: In a1 A2). eauto.
+         assert (h3: included A1 (delete a1 A2)). eauto.
+         assert (h3a: included (ask_prices A1) (ask_prices (delete a1 A2))).
+         { auto. }
+         assert(h4:count (sp a1)(ask_prices A2)= S (count (sp a1) (ask_prices (delete a1 A2)))).
+         {eauto using count_in_deletedA. }
+         eapply included_intro.
+         intro x.  simpl. destruct (x =? a1) eqn: C1.
+         { (* ---- C1: x = b1 ---- *)
+           move /nat_eqP in C1. subst x.
+           rewrite h4.
+           eapply included_elim in h3a  as h3b. instantiate (1 := a1) in h3b.
+           omega. }
+         { (*----- C1: x <> b1 ---- *)
+           assert (h3b: included A1 A2). eapply included_elim4; apply h1. 
+           apply IHA1 in h3b as h3c. auto. } } } Qed.
+
+
+Lemma sorted_nodup_is_sublistA (A1 A2: list Ask): Sorted by_sp A1 -> Sorted by_sp A2 ->
+                                                 NoDup A1 -> NoDup A2 -> A1 [<=] A2 ->
+                                                 sublist (ask_prices A1) (ask_prices A2). 
+Proof. { intros h1 h2 h3 h4 h5.
+         assert (h6: Sorted leb (ask_prices A1)).
+         { auto using sorted_A_imply_sorted_p. }
+         
+         assert (h7: Sorted leb (ask_prices A2)).
+         { auto using sorted_A_imply_sorted_p. }
+
+         assert (h8: included A1 A2).
+         { auto using nodup_sub_is_includedA. }
+         
+         assert (h9: included (ask_prices A1) (ask_prices A2)).
+         { auto using included_A_imp_included_AP. }  eauto. }  Qed.
+
+Lemma sorted_m_imply_sorted_a (M: list fill_type): Sorted m_sp M -> Sorted by_sp (asks_of M).
+Proof. { induction M.
+       { simpl. intro H. constructor. }
+       { simpl. intro H. inversion H. constructor. auto.
+         intros a1 H4. unfold by_sp.
+         assert (H5: exists m, In m M /\ a1 = ask_of m). eauto.
+         destruct H5 as [m H5]. destruct H5 as [H5 H6].
+         apply H3 in H5 as H7. unfold m_sp in H7. unfold by_sp in H7.
+         subst a1. exact. } } Qed.
+
+Hint Resolve sorted_m_imply_sorted_a.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (* -------------- function to make a matching fair on asks --------------------- *)
 Fixpoint Make_FOA (M:list fill_type) (A: list Ask):=
 match (M,A) with 
@@ -415,11 +526,197 @@ match (M,A) with
 |(m::M',a::A') => (Mk_fill (bid_of m) a (tp m))::(Make_FOA M' A')
 end.
 
+
+Lemma mfoa_subA (M:list fill_type) (A:list Ask): asks_of (Make_FOA M A) [<=] A.
+Proof. { revert A. induction M. simpl. auto. intro A.
+         case A.
+         { simpl. auto. }
+         { intros. simpl. intro x. intro H1.
+           destruct H1. subst x. auto. cut (In x l). auto. eapply IHM. auto. } } Qed.
+
+Lemma mfoa_bid_sub_M (M: list fill_type)(A: list Ask): bids_of (Make_FOA M A) [<=] bids_of M.
+Proof. { revert A. induction M.
+       { simpl. auto. }
+       { intro A. case A.
+         { simpl. auto. }
+         { intros a0 l. simpl.  auto. } } } Qed.
+  
+Lemma mfoa_subB (M:list fill_type)(A:list Ask)(B:list Bid):
+  (bids_of M [<=] B)->(bids_of(Make_FOA M A)) [<=] B.
+Proof. eauto using mfoa_bid_sub_M. Qed.
+
+Lemma mfoa_nodup_bids (M: list fill_type)(A: list Ask): NoDup (bids_of M)->
+                                                        NoDup (bids_of (Make_FOA M A)).
+Proof. { revert A. induction M.
+       { simpl. auto. }
+       { intro A. case A.
+         { simpl. auto. }
+         { intros a0 l. simpl. intro H. cut (NoDup (bids_of (Make_FOA M l))).
+           cut(~ In (bid_of a) (bids_of (Make_FOA M l))). eauto.
+           Focus 2. eauto.
+           intro H1. absurd (In (bid_of a) (bids_of M)). auto.
+           eapply mfoa_bid_sub_M. eauto. } } } Qed.
+
+Lemma mfoa_nodup_asks (M: list fill_type)(A:list Ask): NoDup A -> NoDup (asks_of (Make_FOA M A)).
+Proof. { revert A. induction M. simpl. auto.
+         intro A. case A.
+         { simpl. auto. }
+         { intros a0 l. simpl. intro h1.
+           cut (~In a0 (asks_of (Make_FOA M l))). cut (NoDup (asks_of (Make_FOA M l))).
+           auto. eauto. intro h2. absurd (In a0 l). eauto. eapply mfoa_subA. apply h2. } } Qed.
+
+Lemma mfoa_matchable (M:list fill_type)(A:list Ask)(NDA: NoDup A):
+  (Sorted m_sp M) -> (Sorted by_sp A) -> All_matchable M ->
+   sublist (ask_prices (asks_of M)) (ask_prices A) ->
+   NoDup (asks_of M) -> All_matchable (Make_FOA M A).
+Proof. { revert A NDA. induction M. 
+         { intros A H1 H2 H3 H4 H5 H6. simpl. eauto. }
+         { intros A H1 H2 H3 H4 H5 H6. 
+           destruct A. 
+           { simpl. apply All_matchable_nil.  }
+           { simpl. apply All_matchable_intro. 
+             { simpl.
+               assert (H7: a0 <= (ask_of a)). 
+               { eapply top_prices_ma.   eauto. apply H3. auto. } 
+               assert (H8: ask_of a <= bid_of a). 
+               { unfold All_matchable in H4. simpl in H4. eapply H4. left;auto. }
+               omega. } 
+             { eapply IHM. 
+               { eauto. } 
+               { eauto. }
+               { eauto. } 
+               { eapply All_matchable_elim1. apply H4. }
+               { simpl in H5. destruct (ask_of a =? a0).
+                 auto.  eauto. } 
+               { simpl in H6. eauto.  } } } } } Qed.          
+
+
+Lemma mfoa_matching (M:list fill_type) (A:list Ask) (B:list Bid) (NDA: NoDup A):
+(Sorted m_sp M) -> (Sorted by_sp A) -> (matching_in B A M) -> matching (Make_FOA M A).
+Proof. { intros h1 h2 h3. unfold matching.
+       split.
+       { (*-------- All_matchable (Make_FOA M B)---------*)
+         apply mfoa_matchable. all: auto. apply h3.
+         eapply sorted_nodup_is_sublistA. all: auto. all: apply h3. }
+       split.
+       { (*-------NoDup (bids_of (Make_FOA M B))---------*)
+         unfold matching_in in h3. unfold matching in h3. 
+         destruct h3. destruct H.  destruct H1. eauto using mfoa_nodup_bids. }
+       { (*------ NoDup (asks_of (Make_FOB M B))---------*)
+        eapply mfoa_nodup_asks. unfold matching_in in h3. unfold matching in h3. 
+         destruct h3. destruct H.  destruct H1. eauto. } } Qed.
+ 
+
+
+
+Lemma mfoa_matching_in (M: list fill_type)(A: list Ask)(B: list Bid)(NDA: NoDup A):
+(Sorted m_sp M) -> (Sorted by_sp A) -> matching_in B A M -> matching_in B A (Make_FOA M A).
+Proof.  { intros H1 H2 H3. unfold matching_in. 
+          split. { eapply mfoa_matching. all: auto. eapply H3.  }
+                 split. { eapply mfoa_subB. unfold matching_in in H3. unfold matching in H3. 
+         destruct H3. destruct H.  destruct H0. exact. }
+                        { eapply mfoa_subA. } } Qed.
+
+Lemma mfoa_fair_on_ask (M: list fill_type) (B:list Bid) (A:list Ask):
+  (Sorted m_sp M) -> (Sorted by_sp A) -> sublist (ask_prices (asks_of M)) (ask_prices A) ->
+  fair_on_asks (Make_FOA M A) A. 
+Proof. { revert A. induction M as [|m]. 
+        { intros; simpl; unfold fair_on_asks; intros; inversion H4. }
+        { intros. unfold fair_on_asks. intros a a' H2 H3 H4.
+          destruct A eqn: Ha. 
+         { simpl. inversion H4. }
+         { assert (case1: a' = a0 \/ a' <> a0). eauto.
+           destruct H2 as [H2 H2a].
+           assert  (case3: a0 = a' \/ In a' (asks_of ((Make_FOA M l)))).
+           { simpl in H4. auto. }
+           destruct case1 as [c1a | c1b]. 
+           { (*-- c1a : a0 = a' -------------------------*)
+             subst a'. (*H3 is not possible*) 
+             assert (H5: a >= a0).
+             { apply Sorted_elim2 with (x:= a) in H0 as H0a.
+              apply /leP. auto.  unfold by_sp.
+              unfold reflexive. auto. exact. } omega.  }
+           
+           { (*-- c1b : a' <> a0 ---*)             assert (H5: In a' l).
+             { eauto. }
+             assert (case2: a=a0 \/ In a l).
+             { auto. }
+             destruct case2 as [c2a | c2b]. 
+             { subst a. simpl. left. auto. }
+             { destruct case3 as [c3a | c3b].
+               { subst a0. contradiction. }
+               { simpl. right. eapply IHM with (s':=a').
+                 { eauto. }
+                 { eauto. }
+                 { simpl in H1. destruct ( ask_of m =? a0) eqn: H6.  auto. eauto. }
+                 { split. exact. eauto. }
+                 { exact.  }
+                 { auto. }  } } } } } } Qed.
+
+
+Lemma mfoa_bids_is_perm (M: list fill_type) (A:list Ask) :
+ (|M| <= |A|)  -> perm (bids_of M) (bids_of (Make_FOA M A)). 
+Proof. { revert A.  induction M. 
+         { simpl. auto. }
+         { destruct A eqn: HA.
+           { simpl. intro h1. inversion h1. } 
+           { simpl. intro h1.
+             assert (h2: |M| <= |l|). omega.
+             apply IHM in h2 as h3.  simpl. auto. } } } Qed.
+
+Lemma mfoa_is_same_size (M: list fill_type) (A:list Ask):
+ (|M| <= |A|)  -> |M| = |(Make_FOA M A)|. 
+Proof.  { revert A.  induction M. 
+         { simpl. auto. }
+         { destruct A eqn: HA.
+           { simpl. intro h1. inversion h1. } 
+           { simpl. intro h1.
+             assert (h2: |M| <= |l|). omega.
+             apply IHM in h2 as h3.  simpl. auto. } } } Qed. 
+
+Hint Resolve mfob_matching mfob_fair_on_bid mfob_asks_is_perm mfob_is_same_size: core.
+
+
+
 Theorem exists_fair_on_asks (M: list fill_type) (B: list Bid) (A:list Ask):
   matching_in B A M->
   (exists M':list fill_type, matching_in B A M' /\  (|M| = |M'|) /\ perm (bids_of M) (bids_of M')
    /\ fair_on_asks M' A).
-Proof. Admitted.
+Proof. { assert (HmP: transitive m_sp /\ comparable m_sp). apply m_sp_P.  
+        assert (HaP: transitive by_sp /\ comparable by_sp). apply by_sp_P.
+        destruct HmP as [Hmp1 Hmp2]. destruct HaP as [Hbp1 Hbp2].
+        intro H. exists (Make_FOA (sort m_sp M) (sort by_sp A)).
+        split. 
+        { assert (HM: matching_in B (sort by_sp A) (Make_FOA (sort m_sp M) (sort by_sp A))).
+          apply mfoa_matching_in. all:auto. unfold matching_in in H.
+          unfold matching in H. destruct H. destruct H. destruct H1. admit.  
+          apply match_inv with (M:=M)(B:=B)(A:=A);auto.
+          eapply match_inv with
+              (B:= B) (M:=(Make_FOB (sort m_dbp M) (sort by_dbp B))) (A:=(sort by_sp A)).
+          all: auto. } split.
+        { replace (|M|) with (|sort m_sp M|). eapply mfoa_is_same_size.
+          apply M_is_smaller_than_A with (B:= B).
+          eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto. } split.
+        {  assert(HB: perm (bids_of (sort m_sp M))
+                           (bids_of (Make_FOA (sort m_sp M) (sort by_sp A)))).
+           eapply  mfoa_bids_is_perm. apply M_is_smaller_than_A with (B:=B).
+           eapply match_inv with (B:= B)(A:= A)(M:= M). all: eauto.  }
+        {  assert (HAsk: fair_on_asks (Make_FOA (sort m_sp M) (sort by_sp A)) (sort by_sp A)).
+           { eapply mfoa_fair_on_ask. all:auto. apply sorted_nodup_is_sublistA.
+             all: auto. 
+             { assert (H1: NoDup (bids_of M)). apply H. unfold matching_in in H.
+             unfold matching in H. destruct H. destruct H. destruct H2.
+              eauto. }
+             { assert (H2: bids_of M [<=] B). apply H. unfold matching_in in H.
+             unfold matching in H. destruct H. destruct H.  destruct H1.
+             destruct H0. admit. } }
+           unfold fair_on_asks.
+           intros a a' h1 h2 h3.
+           unfold fair_on_asks in HAsk. apply HAsk with (s':= a').
+           { destruct h1 as [h1 h1a]. split; auto. }
+           all: auto.  } } Admitted.
+
+
 
 
 

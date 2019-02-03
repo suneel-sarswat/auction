@@ -382,7 +382,7 @@ Proof. { assert (HmP: transitive m_dbp /\ comparable m_dbp). apply m_dbp_P.
         intro H. exists (Make_FOB (sort m_dbp M) (sort by_dbp B)).
         split. 
         { assert (HM: matching_in (sort by_dbp B) A (Make_FOB (sort m_dbp M) (sort by_dbp B))).
-          apply mfob_matching_in. unfold matching_in in H. unfold matching in H. debug auto. all:auto. 
+          apply mfob_matching_in. unfold matching_in in H. unfold matching in H. auto. all:auto. 
           apply match_inv with (M:=M)(B:=B)(A:=A);auto.
           eapply match_inv with
               (B:= (sort by_dbp B)) (M:=(Make_FOB (sort m_dbp M) (sort by_dbp B))) (A:=A).
@@ -724,7 +724,7 @@ Proof. { assert (HmP: transitive m_sp /\ comparable m_sp). apply m_sp_P.
 
 
 
-Theorem exists_fair_matching (M: list fill_type) (B: list Bid) (A:list Ask) (NDB: NoDup B):
+Theorem exists_fair_matching (M: list fill_type) (B: list Bid) (A:list Ask) (NDB: NoDup B) (NDA: NoDup A):
   matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
 Proof. { intros H0. apply exists_fair_on_bids in H0 as H1.
        destruct H1 as [M' H1].
@@ -736,7 +736,7 @@ Proof. { intros H0. apply exists_fair_on_bids in H0 as H1.
        { auto. }
        split.
        { split. auto. eauto. }
-       {eauto. } auto. } Qed.
+       {eauto. } auto. auto. } Qed.
          
 End Fair.
 

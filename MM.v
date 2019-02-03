@@ -196,7 +196,7 @@ Proof. revert B. induction A as [|a A'].
                          assert(h6:asks_of(delete m1 (delete m2 M))[<=]asks_of(delete m2 M)).
                          eauto. intro h7.
                          absurd (In (ask_of m2) (asks_of (delete m2 M))).
-                         eauto. auto. } } } split.
+                         eauto. auto. } } } split. 
                    { (*----- bids_of M' [<=] B'-------------*)
                      unfold M'. simpl.
                      intros x h6. destruct h6 as [h6 | h6].
@@ -212,13 +212,31 @@ Proof. revert B. induction A as [|a A'].
                          assert (h9: In (bid_of m2) (bids_of (delete m2 M))).
                          eauto.
                          absurd (In (bid_of m2) (bids_of (delete m2 M))).
-                         eauto. auto. }
+                         eauto. auto. } 
                        rewrite <- h4 in h8.
                        assert (h9: In x (b::B')).
                        { apply h2. auto. }
                        destruct h9. symmetry in H. contradiction. auto. } } 
                    { (*------ asks_of M' [<=] A' -------*)
-                     admit. }   }
+                     unfold M'. simpl.
+                     intros x h6. destruct h6 as [h6 | h6].
+                     { cut (In x (a::A')). cut ( x <> a). eauto.
+                       { subst x; subst a. eapply matching_elim15 with (M:= M).
+                         all: auto. eauto. }
+                       { subst x. eapply matching_in_elim5a. apply h2. auto. } }
+                     { unfold M'' in h6.
+                       assert (h7: In x (asks_of M)).
+                       { eauto. } 
+                       assert (h8: x <> ask_of m1).
+                       { intro h8. subst x.
+                         assert (h9: In (ask_of m1) (asks_of (delete m2 M))).
+                         eauto.
+                         absurd (In (ask_of m1) (asks_of (delete m1 (delete m2 M)))).
+                         eauto. auto. }
+                       rewrite <- h3 in h8.
+                       assert (h9: In x (a::A')).
+                       { apply h2. auto. }
+                       destruct h9. symmetry in H. contradiction. auto. } } } 
                  
                  assert (h7: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                  unfold M' in h7. simpl in h7. rewrite h5. simpl. omega. } }
@@ -226,7 +244,31 @@ Proof. revert B. induction A as [|a A'].
                assert (h3: exists m, In m M /\ b = bid_of m). eauto.
                destruct h3 as [m h3]. destruct h3 as [h3a h3].
                set (M' := delete m M).
-               assert (h4: matching_in B' A' M'). admit.
+               assert (h4: matching_in B' A' M').
+               { unfold matching_in. split.
+                 { (*------ matching M' -----------*)
+                   unfold M'. eauto. } split.
+                 { (*------bids_of M' [<=] B'------*)
+                   intros x h4.
+                   assert (h5: In x (bids_of M)).
+                   { unfold M' in h4. eauto. }
+                   assert (h5a: In x (b::B')).
+                   { apply h2. auto. }
+                   assert (h6: x <> b).
+                   { intro h6. unfold M' in h4.
+                     subst x;subst b.
+                     absurd (In (bid_of m) (bids_of (delete m M))).
+                     eauto. auto. }
+                   eapply in_inv2. all: eauto. }
+                 { (*------ asks_of M' [<=] A'-------*)
+                   intros x h4.
+                   assert (h5: In x (asks_of M)).
+                   { unfold M' in h4. eauto. }
+                   assert (h6: x <> a).
+                   { intro h6. subst x. contradiction. }
+                   assert (h7: In x (a::A')).
+                   { apply h2. auto. }
+                   eapply in_inv2. all: eauto.  } }
                assert (h5: |M| = S (|M'|)).
                { unfold M'. eauto. }
                assert (h6: |M'| <= |(produce_MM B' A')|). apply H0. exact.
@@ -235,14 +277,39 @@ Proof. revert B. induction A as [|a A'].
                assert (h3: exists m, In m M /\ a = ask_of m). eauto.
                destruct h3 as [m h3]. destruct h3 as [h3a h3].
                set (M' := delete m M).
-               assert (h4: matching_in B' A' M'). admit.
+               
+               assert (h4: matching_in B' A' M').
+               { unfold matching_in. split.
+                 { (*------ matching M' -----------*)
+                   unfold M'. eauto. } split.
+                 { (*------bids_of M' [<=] B'------*)
+                   intros x h4.
+                   assert (h5: In x (bids_of M)).
+                   { unfold M' in h4. eauto. }
+                   assert (h6: x <> b).
+                   { intro h6. subst x. contradiction. }
+                   assert (h7: In x (b::B')).
+                   { apply h2. auto. }
+                   eapply in_inv2. all: eauto. }
+                 { (*------ asks_of M' [<=] A'-------*)
+                   intros x h4.
+                   assert (h5: In x (asks_of M)).
+                   { unfold M' in h4. eauto. }
+                   assert (h5a: In x (a::A')).
+                   { apply h2. auto. }
+                   assert (h6: x <> a).
+                   { intro h6. unfold M' in h4.
+                     subst x;subst a.
+                     absurd (In (ask_of m) (asks_of (delete m M))).
+                     eauto. auto. }
+                   eapply in_inv2. all: eauto. } } 
                assert (h5: |M| = S (|M'|)).
                { unfold M'. eauto. }
                assert (h6: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                omega. }
              { (* Case_ab4: ~ In b (bids_of M) and ~ In a (asks_of M)---*)
                assert (h3: matching_in B' A' M). eauto using matching_in_elim8.
-               cut (|M| <= | produce_MM B' A'|). omega. apply H0. exact. }   } } } Admitted.
+               cut (|M| <= | produce_MM B' A'|). omega. apply H0. exact. }   } } } Qed.
                
 
           

@@ -425,16 +425,7 @@ Lemma sorted_A_imply_sorted_p (A: list Ask): Sorted by_sp A -> Sorted leb (ask_p
          apply IHA in H2. assert (H5: exists b1, In b1 A /\ b = sp b1).
          eauto. destruct H5 as [b1 H5]. destruct H5 as [H5 H6].
          apply H3 in H5 as H7. unfold by_dbp in H7. subst b. exact. } } Qed. 
-  
-  Lemma sorted_B_imply_sorted_p (B: list Bid): Sorted by_dbp B -> Sorted geb (bid_prices B).
-  Proof. { induction B.
-       { simpl. intro H. constructor. }
-       { simpl. intro H. inversion H. constructor. auto.
-         intros b H4. unfold geb.
-         apply IHB in H2. assert (H5: exists b1, In b1 B /\ b = bp b1).
-         eauto. destruct H5 as [b1 H5]. destruct H5 as [H5 H6].
-         apply H3 in H5 as H7. unfold by_dbp in H7. subst b. exact. } } Qed. 
-
+ 
 Lemma top_prices_ma (m: fill_type)(a: Ask) (M: list fill_type)(A: list Ask):
   Sorted m_sp (m::M)-> Sorted by_sp (a::A) ->
   ask_prices (asks_of (m::M)) [<=] ask_prices (a::A) -> a<=(ask_of m).

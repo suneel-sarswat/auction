@@ -164,7 +164,7 @@ Proof. unfold m_eqb. apply /andP. split. apply /andP. split. all: apply /eqP; au
 
 Hint Resolve m_eqb_ref: auction.
 Lemma m_eqb_elim (x y: fill_type):  m_eqb x y -> x = y.
-Proof. unfold m_eqb. intros H. destruct x. destruct y. simpl in H. Admitted.
+Proof. Admitted.
 
 
 Lemma m_eqb_intro (x y: fill_type): x=y -> m_eqb x y = true.
@@ -209,7 +209,8 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
 
 Lemma bids_of_elim1 (M: list fill_type)(m: fill_type)(b: Bid): In b (bids_of (delete m M)) ->
                                                                In b (bids_of M).
-Proof. Admitted.
+Proof. { induction M. simpl. auto. simpl. intros. case (m_eqb m a) eqn: Hm.
+right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
 
        
 Lemma bids_of_perm (M M': list fill_type): perm M M' -> perm (bids_of M) (bids_of M').
@@ -239,7 +240,8 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
 
 Lemma asks_of_elim1 (M: list fill_type)(m: fill_type)(a: Ask): In a (asks_of (delete m M)) ->
                                                                In a (asks_of M).
-Proof. Admitted.
+Proof. { induction M. simpl. auto. simpl. intros. case (m_eqb m a0) eqn: Hm.
+right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
 
 Lemma asks_of_perm (M M': list fill_type): perm M M' -> perm (asks_of M) (asks_of M').
 Proof. Admitted.

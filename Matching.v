@@ -6,7 +6,7 @@ about auctions such as matching, fair matching, individual rational matching, un
 matching, maximum matching etc. This file also contains come counting results about 
 matching for example number of buyers above a price in matching etc.
 
-----------------------------------------------------------------------------------------*)
+-----------------------------------------------------------------------------*)
 
 Require Import ssreflect ssrbool.
 Require Export Lists.List.
@@ -32,6 +32,7 @@ Definition all_matchable (M:list fill_type) := forallb (fun m =>
 Lemma all_matchableP (M:list fill_type): reflect (All_matchable M) (all_matchable M).
 Proof.  Admitted.
 
+
 Definition matching (M: list fill_type):=
   (All_matchable M) /\ (NoDup (bids_of M)) /\ (NoDup (asks_of M)).
 
@@ -56,7 +57,7 @@ Proof.  unfold All_matchable. intros.  simpl in H. auto. Qed.
 
 Lemma All_matchable_elim2  (m: fill_type)(M: list fill_type):
   All_matchable M -> All_matchable (delete m M).
-Proof. Admitted.
+Proof. unfold All_matchable. eauto. Qed.
 
 Definition empty_fill: list fill_type:= nil.
 
@@ -86,38 +87,47 @@ Hint Resolve nill_is_matching: auction.
 
 Lemma matching_elim0 (m: fill_type) (M: list fill_type): matching M -> In m M ->
                                                          (ask_of m) <= (bid_of m).
-Proof. Admitted.
+Proof. intros. unfold matching in H.  destruct H. unfold All_matchable in H.
+apply H in H0. exact. Qed.
 
 Lemma matching_elim1 (M: list fill_type): matching M -> NoDup (bids_of M).
-Proof. Admitted.
+Proof.  intro H. unfold matching in H. destruct H. destruct H0. exact. Qed.
 
 Lemma matching_elim2 (M: list fill_type): matching M -> NoDup (asks_of M).
-Proof. Admitted.
+Proof. intro H. unfold matching in H. destruct H. destruct H0. exact. Qed.
 
 Lemma matching_elim3 (M: list fill_type): matching M -> NoDup M.
 Proof. Admitted.
 
+
 Lemma matching_elim4 (m: fill_type) (M: list fill_type): matching (m::M) ->
                                                          ~ In (ask_of m) (asks_of M).
-Proof. Admitted.
+Proof. intros. unfold matching in H. destruct H. destruct H0. simpl in H1.
+eapply nodup_elim2 in H1. exact. Qed.
 
 Lemma matching_elim5 (m: fill_type) (M: list fill_type): matching (m::M) ->
                                                          ~ In (bid_of m) (bids_of M).
-Proof. Admitted.
+Proof.  intros. unfold matching in H. destruct H. destruct H0. simpl in H0.
+eapply nodup_elim2 in H0. exact. Qed.
 
 Lemma matching_elim6 (m: fill_type) (M: list fill_type): matching (m::M) -> matching M.
-Proof. Admitted.
+Proof. intros. unfold matching in H. destruct H. destruct H0. unfold matching.
+split. eapply All_matchable_elim1. eauto. split. eauto. eauto. Qed.
+
+
 
 Lemma matching_elim7 (m: fill_type) (M: list fill_type): In m M -> matching M ->
                                                          ~ In (ask_of m) (asks_of (delete m M)).
-Proof. Admitted.
+Proof. intros H1 H2. unfold matching in H2. destruct H2. destruct H0.
+assert (H3: In (ask_of m) (asks_of M)). eauto. Admitted. 
 
 Lemma matching_elim8 (m: fill_type) (M: list fill_type): In m M -> matching M ->
                                                          ~ In (bid_of m) (bids_of (delete m M)).
 Proof. Admitted.
 
 Lemma matching_elim9 (m: fill_type) (M: list fill_type): matching M ->  matching (delete m M).
-Proof. Admitted.
+Proof. intros H. unfold matching in H. destruct H. destruct H0. unfold matching. split. unfold All_matchable in H. unfold All_matchable. eauto.
+split. eapply delete_nodup in H0. Admitted.
 
 Lemma matching_elim10 (m: fill_type) (M: list fill_type): matching M -> In m M ->
                                                           ~ In (bid_of m) (bids_of (delete m M)).
@@ -165,12 +175,13 @@ Proof.  intros H1 H2 H3 H4 H5 H6. unfold Is_a_matching. split. unfold Is_a_match
 
   Lemma matching_in_elim0 (M: list fill_type)(B: list Bid)(A: list Ask): matching_in B A M ->
                                                                          matching M.
-  Proof. Admitted.
+  Proof. intros. unfold matching_in in H. destruct H. exact. Qed.
   
   
 Lemma matching_in_elim (m: fill_type) (M: list fill_type)(B: list Bid)(A: list Ask):
   matching_in B A (m::M) -> matching_in B A M.
-  Proof. Admitted.
+  Proof. intros. unfold matching_in in H. destruct H. destruct H0. 
+  unfold matching_in. split. eauto. split. eauto. eauto. Qed.
 
 Lemma matching_in_elim1 (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A (m::M) ->  (ask_of m) <= (bid_of m).
@@ -211,20 +222,23 @@ Proof. { unfold matching_in;unfold matching. intros H.
 
 Lemma matching_in_elim5a (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A M ->  In m M -> In (ask_of m) A.
-Proof. Admitted.
+Proof. intros. unfold matching_in in H. destruct H. destruct H1. eauto. Qed.
 
 
 Lemma matching_in_elim6 (a: Ask)(B: list Bid)(A: list Ask)(M: list fill_type):
   matching_in B A M -> matching_in B (a::A) M.
-Proof. Admitted.
+Proof. unfold matching_in. intros. destruct H. destruct H0. split. exact.
+ split. exact. eauto. Qed.
 
 Lemma matching_in_elim7 (b: Bid)(B: list Bid)(A: list Ask)(M: list fill_type):
   matching_in B A M -> matching_in (b::B) A M.
-Proof. Admitted.
+Proof. unfold matching_in. intros. destruct H. destruct H0. split. exact.
+ split. eauto. exact. Qed.
 
  Lemma matching_in_elim8 (B: list Bid)(A: list Ask)(b: Bid)(a: Ask)(M: list fill_type):
    matching_in (b::B) (a::A) M -> ~ In b (bids_of M) -> ~ In a (asks_of M) -> matching_in B A M.
- Proof. Admitted.
+ Proof. unfold matching_in. intros. destruct H. destruct H2. split. exact.
+ split. Admitted.
 
 
 Hint Resolve matching_in_elim4a matching_in_elim5a: core. 

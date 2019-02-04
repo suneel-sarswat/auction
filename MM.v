@@ -40,24 +40,35 @@ Proof.  { split.
             move /leP in H. apply /leP. omega. } } Qed.
 
 Lemma by_dsp_refl: reflexive by_dsp.
-Proof. Admitted.
+Proof. eauto. Qed.
 
 
 Hint Resolve by_dsp_P by_dsp_refl: core.
 
 
  Lemma nil_is_MM_forB (B: list Bid): Is_MM nil B nil.
- Proof. Admitted.
+ Proof. unfold Is_MM. split. eauto. intros. destruct H. destruct H0. 
+ assert (H2: asks_of M'=nil). eauto. assert (H3: |M'|=|asks_of M'|).
+ eapply asks_of_size. assert (H4: |asks_of M'| = 0). rewrite H2. auto. omega.
+ Qed.
  
  Lemma nil_is_MM_forA (A: list Ask): Is_MM nil nil A.
- Proof. Admitted.
+ Proof. unfold Is_MM. split. eauto. intros. destruct H. destruct H0. 
+ assert (H2: bids_of M'=nil). eauto. assert (H3: |M'|=|bids_of M'|).
+ eapply bids_of_size. assert (H4: |bids_of M'| = 0). rewrite H2. auto. omega.
+ Qed.
 
  Hint Resolve nil_is_MM_forB nil_is_MM_forA: core.
 
  Lemma produce_MM_is_matching (B: list Bid)(A: list Ask):
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
- Proof. Admitted.
+ Proof. (*The statement is not true in this form. Nodup is needed.*)
+ Admitted.
  
+ (* revert A. induction B. intros. simpl. case A eqn: H1. simpl. eauto.
+ simpl. eauto. intros. case A eqn: H2. simpl. eauto. simpl. 
+ destruct (a0 <=? a) eqn: Ha. simpl. cut (matching_in B l (produce_MM B l)).
+ eauto. *)
            
 Lemma produce_MM_is_MM (B: list Bid)(A: list Ask): Sorted by_dbp B -> Sorted by_dsp A->
                                                    Is_MM (produce_MM B A) B A.

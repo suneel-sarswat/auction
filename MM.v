@@ -47,20 +47,25 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
 
 
  Lemma nil_is_MM_forB (B: list Bid): Is_MM nil B nil.
- Proof. unfold Is_MM. split. eauto. intros. destruct H. destruct H0. 
- assert (H2: asks_of M'=nil). eauto. assert (H3: |M'|=|asks_of M'|).
- eapply asks_of_size. assert (H4: |asks_of M'| = 0). rewrite H2. auto. omega.
- Qed.
+ Proof. { unfold Is_MM. split.
+          { eauto. }
+          { intros. destruct H. destruct H0. 
+            assert (H2: asks_of M'=nil). eauto.
+            assert (H3: |M'|=|asks_of M'|). eapply asks_of_size.
+            assert (H4: |asks_of M'| = 0). rewrite H2. auto. omega. } } Qed.
  
  Lemma nil_is_MM_forA (A: list Ask): Is_MM nil nil A.
- Proof. unfold Is_MM. split. eauto. intros. destruct H. destruct H0. 
- assert (H2: bids_of M'=nil). eauto. assert (H3: |M'|=|bids_of M'|).
- eapply bids_of_size. assert (H4: |bids_of M'| = 0). rewrite H2. auto. omega.
- Qed.
+ Proof. { unfold Is_MM. split.
+          { eauto. }
+          { intros. destruct H. destruct H0. 
+            assert (H2: bids_of M'=nil). eauto.
+            assert (H3: |M'|=|bids_of M'|). eapply bids_of_size.
+            assert (H4: |bids_of M'| = 0). rewrite H2. auto. omega. } } Qed.
 
  Hint Resolve nil_is_MM_forB nil_is_MM_forA: core.
 
- Lemma produce_MM_is_matching (B: list Bid)(A: list Ask):
+ 
+ Lemma produce_MM_is_matching(B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
  Proof. (*The statement is not true in this form. Nodup is needed.*)
  Admitted.
@@ -70,15 +75,15 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
  destruct (a0 <=? a) eqn: Ha. simpl. cut (matching_in B l (produce_MM B l)).
  eauto. *)
            
-Lemma produce_MM_is_MM (B: list Bid)(A: list Ask): Sorted by_dbp B -> Sorted by_dsp A->
-                                                   Is_MM (produce_MM B A) B A.
-Proof. revert B. induction A as [|a A'].
+ Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
+   Sorted by_dbp B -> Sorted by_dsp A-> Is_MM (produce_MM B A) B A.
+Proof. revert B no_dup_B. induction A as [|a A'].
        { (* base case: when A is nil *)
-         intros B H H0.  case B. simpl.
+         intros B hB H H0.  case B. simpl.
          { eauto. }
          { intros b l. simpl. eauto. } }
        { (* induction step: when A is a::A' *)
-         intros B h h0. case B as [| b B'].
+         intros B hB h h0. case B as [| b B'].
          { simpl. eauto. }
          { (*----- induction step : b::B'   and a:: A' ---------*)
            assert (Case: b < a \/ b >= a ). omega.

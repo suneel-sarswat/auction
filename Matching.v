@@ -151,7 +151,9 @@ Proof. Admitted.
 
 Lemma matching_elim15 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
                                                               m1 <> m2 -> ask_of m1 <> ask_of m2.
-Proof. Admitted.
+Proof. intros. destruct H. destruct H3. assert (H5: (In (ask_of m1) (asks_of M))).
+eauto. assert (H6: (In (ask_of m2) (asks_of M))).
+eauto. Admitted. 
 
 
 
@@ -211,7 +213,7 @@ Proof. { unfold matching_in;unfold matching. intros H.
 
 Lemma matching_in_elim4a (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
   matching_in B A M -> In m M ->  In (bid_of m) B.
-Proof. Admitted.
+Proof. intros. destruct H. destruct H1. eauto. Qed.
 
 
 Lemma matching_in_elim5 (m: fill_type) (M: list fill_type) (B: list Bid)(A: list Ask):
@@ -239,7 +241,7 @@ Proof. unfold matching_in. intros. destruct H. destruct H0. split. exact.
    matching_in (b::B) (a::A) M -> ~ In b (bids_of M) -> ~ In a (asks_of M) -> matching_in B A M.
  Proof. unfold matching_in. intros. destruct H. destruct H2. split. exact.
  split. Admitted.
-
+ 
 
 Hint Resolve matching_in_elim4a matching_in_elim5a: core. 
 Hint Immediate matching_in_intro: auction.

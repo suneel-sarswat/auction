@@ -400,7 +400,9 @@ Section Permutation.
             destruct (memb a s) eqn:H1. auto. auto. } } Qed. 
   
   Lemma included_elim4 (a:A)(l s: list A): included (a::l) s -> included l s.
-  Proof. Admitted. 
+  Proof. Admitted.
+  
+
   
   
   Lemma included_elim5 (l s: list A): included l s -> Subset l s.

@@ -111,8 +111,8 @@ Section DecLists.
            { intro H1. destruct H1. left;auto. right;auto. } } } Qed.
   
   Lemma delete_elim0 (a: A)(l: list A): (delete a l) [<=] l.
-  Proof. Admitted.
-  
+  Proof. induction l. simpl. auto. destruct (a==a0) eqn: H1. simpl. 
+  rewrite H1. auto. simpl. rewrite H1. eauto. Qed.
   
   Lemma delete_elim2 (a b:A)(l: list A): NoDup l -> In a (delete b l)-> (a<>b).
   Proof. { induction l. simpl. auto.

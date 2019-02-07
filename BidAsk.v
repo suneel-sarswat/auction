@@ -106,7 +106,10 @@ Proof. { intro H. induction B. simpl. simpl in H. contradiction.
 
 Lemma bid_prices_intro1 (B: list Bid) (B': list Bid):
   B [<=] B' -> ((bid_prices B)  [<=] (bid_prices B')).
-Proof. Admitted.
+Proof. revert B'. induction B. intros. simpl. auto. intros. case B' eqn: H1.
+absurd (In a nil). auto. eauto. destruct (a==b) eqn: H2. simpl. move /eqP in H2.  subst b. cut (bid_prices B [<=] bid_prices l). eauto. 
+cut (B [<=] l). apply IHB. Admitted.
+
 
 
 Lemma bid_prices_elim (B: list Bid): forall p, In p (bid_prices B)->
@@ -164,7 +167,10 @@ Proof. unfold m_eqb. apply /andP. split. apply /andP. split. all: apply /eqP; au
 
 Hint Resolve m_eqb_ref: auction.
 Lemma m_eqb_elim (x y: fill_type):  m_eqb x y -> x = y.
-Proof. Admitted.
+Proof. unfold m_eqb. destruct x. destruct y. simpl. intros. move /andP in H.
+destruct H. move /andP in H. destruct H.  unfold b_eqb in H. move /andP in H.
+destruct H. unfold a_eqb in H1. move /andP in H1. destruct H1. move /eqP in H3. move /eqP in H. move /eqP in H0. move /eqP in H2. move /eqP in H1. 
+Admitted.
 
 
 Lemma m_eqb_intro (x y: fill_type): x=y -> m_eqb x y = true.
@@ -266,7 +272,8 @@ Proof. { intros p H. induction F. simpl in H. contradiction. simpl in H. destruc
        destruct H0 as [H1 H2]. exists m. split;eauto. } Qed.
 Lemma tps_of_perm (M M': list fill_type):
  perm M M' -> perm (trade_prices_of M) (trade_prices_of M').
-Proof. Admitted.
+Proof. revert M'. induction M. intros. simpl. case M' eqn: H1. simpl. auto.
+inversion H. simpl. intros. case M' eqn: H1. inversion H. simpl. case (a==f) eqn: H2. move /eqP in H2. subst f. simpl. Admitted. 
 
       
 Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: core.

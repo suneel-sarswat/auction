@@ -57,7 +57,7 @@ Proof.  unfold All_matchable. intros.  simpl in H. auto. Qed.
 
 Lemma All_matchable_elim2  (m: fill_type)(M: list fill_type):
   All_matchable M -> All_matchable (delete m M).
-Proof. unfold All_matchable. eauto. Qed.
+Proof. unfold All_matchable. intros. apply H. eapply delete_elim1. eauto. Qed.  
 
 Definition empty_fill: list fill_type:= nil.
 
@@ -70,15 +70,15 @@ Proof. { intros H1 H2. unfold All_matchable. simpl. intros m0 H3. destruct H3.
          subst m0. exact. eauto. } Qed. 
 
 
-Hint Immediate All_matchable_intro All_matchable_nil: auction.
-Hint Resolve All_matchable_elim All_matchable_elim1 All_matchable_elim2 : auction.
+Hint Immediate All_matchable_intro All_matchable_nil: core.
+Hint Resolve All_matchable_elim All_matchable_elim1 All_matchable_elim2 : core.
 
 Lemma nill_is_matching (B: list Bid)(A: list Ask) : matching_in B A nil.
 Proof. { unfold matching_in. split. unfold matching.
          split. apply All_matchable_nil.
          split. simpl. constructor. simpl. constructor.
          split. simpl. auto. simpl. auto. } Qed.
-Hint Resolve nill_is_matching: auction.
+Hint Resolve nill_is_matching: core.
 
 (*-------------introduction and elimination for matching ------------------------*)
 
@@ -97,7 +97,10 @@ Lemma matching_elim2 (M: list fill_type): matching M -> NoDup (asks_of M).
 Proof. intro H. unfold matching in H. destruct H. destruct H0. exact. Qed.
 
 Lemma matching_elim3 (M: list fill_type): matching M -> NoDup M.
-Proof. Admitted.
+Proof. { intro H. destruct H. destruct H0. induction M as [|m].  { auto. } {
+constructor. intro H2. assert (H4: In (bid_of m) (bids_of M)). eauto.
+simpl in H0. assert (H5: ~In (bid_of m) (bids_of M)). eauto. contradiction.
+apply IHM. all: eauto. } } Qed.
 
 
 Lemma matching_elim4 (m: fill_type) (M: list fill_type): matching (m::M) ->
@@ -114,20 +117,55 @@ Lemma matching_elim6 (m: fill_type) (M: list fill_type): matching (m::M) -> matc
 Proof. intros. unfold matching in H. destruct H. destruct H0. unfold matching.
 split. eapply All_matchable_elim1. eauto. split. eauto. eauto. Qed.
 
+Lemma matching_elim14 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
+                                                              m1 <> m2 -> bid_of m1 <> bid_of m2.
+Proof. Admitted.
+
+Lemma matching_elim15 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
+                                                              m1 <> m2 -> ask_of m1 <> ask_of m2.
+Proof.  { induction M.  { intros. destruct H0. } 
+{ intros.  destruct H. destruct H3. destruct H1;destruct H0. 
+{ subst m1. subst m2. destruct H2. exact. }
+{ subst a. simpl in H4.
+assert (H5: In (ask_of m1) (asks_of M)). eauto. 
+assert (H6: ~ In (ask_of m2) (asks_of M)). eauto.
+intro h7. rewrite h7 in H5. contradiction. } 
+{ subst a. simpl in H4.
+assert (H5: In (ask_of m2) (asks_of M)). eauto. 
+assert (H6: ~ In (ask_of m1) (asks_of M)). eauto.
+intro h7. rewrite h7 in H6. contradiction. }
+{ apply IHM. unfold matching;eauto. all: exact. } } } Qed.
+
 
 
 Lemma matching_elim7 (m: fill_type) (M: list fill_type): In m M -> matching M ->
                                                          ~ In (ask_of m) (asks_of (delete m M)).
-Proof. intros H1 H2. unfold matching in H2. destruct H2. destruct H0.
-assert (H3: In (ask_of m) (asks_of M)). eauto. Admitted. 
+Proof.  { intros H1 H2. unfold matching in H2. destruct H2. destruct H0.
+intro H3. assert (H4: exists m', (In m' (delete m M))/\ (ask_of m = ask_of m')). eauto. destruct H4 as [m' H4]. destruct H4 as [H4 H5]. assert (H6: In m' M). eauto. assert (H7: m'<>m). cut (NoDup M). eauto. apply matching_elim3.
+unfold matching. auto. eapply matching_elim15 in H7. symmetry in H5. contradiction. instantiate (1:=M). unfold matching. auto. exact. exact. } Qed.
+ 
+  
 
 Lemma matching_elim8 (m: fill_type) (M: list fill_type): In m M -> matching M ->
                                                          ~ In (bid_of m) (bids_of (delete m M)).
 Proof. Admitted.
 
+Lemma included_M_imp_included_BM (M1 M2: list fill_type): included M1 M2 ->
+                                                    included (bids_of M1) (bids_of M2).
+Proof. Admitted.
+
+Lemma included_M_imp_included_AM (M1 M2: list fill_type): included M1 M2 ->
+                                                    included (asks_of M1) (asks_of M2).
+Proof. Admitted.
+
+
 Lemma matching_elim9 (m: fill_type) (M: list fill_type): matching M ->  matching (delete m M).
-Proof. intros H. unfold matching in H. destruct H. destruct H0. unfold matching. split. unfold All_matchable in H. unfold All_matchable. eauto.
-split. eapply delete_nodup in H0. Admitted.
+Proof. intros H. unfold matching in H. destruct H. destruct H0. unfold matching. split. 
+{ eauto. } split.
+{  assert (H2: included (delete m M) (M)). eapply included_elim4a. eapply included_M_imp_included_BM in H2. eapply nodup_included_nodup in H2.
+all: exact. }
+{ assert (H2: included (delete m M) (M)). eapply included_elim4a. eapply included_M_imp_included_AM in H2. eapply nodup_included_nodup in H2.
+all: exact. } Qed.
 
 Lemma matching_elim10 (m: fill_type) (M: list fill_type): matching M -> In m M ->
                                                           ~ In (bid_of m) (bids_of (delete m M)).
@@ -145,15 +183,6 @@ Lemma matching_elim13 (m: fill_type) (M: list fill_type): matching (m::M) ->
                                                           ~ In (ask_of m) (asks_of M).
 Proof. Admitted.
 
-Lemma matching_elim14 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
-                                                              m1 <> m2 -> bid_of m1 <> bid_of m2.
-Proof. Admitted.
-
-Lemma matching_elim15 (m1 m2: fill_type) (M: list fill_type): matching M -> In m1 M -> In m2 M ->
-                                                              m1 <> m2 -> ask_of m1 <> ask_of m2.
-Proof. intros. destruct H. destruct H3. assert (H5: (In (ask_of m1) (asks_of M))).
-eauto. assert (H6: (In (ask_of m2) (asks_of M))).
-eauto. Admitted. 
 
 
 
@@ -366,4 +395,3 @@ Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_e
 
 Hint Immediate Is_IR_intro: core.
 Hint Resolve Is_IR_elim Is_IR_elim1: core.
-

@@ -13,9 +13,8 @@ Require Export Lists.List.
 Require Export GenReflect SetSpecs.
 Require Export DecList DecType MoreDecList.
 
-Section Bid_Ask.
   
-
+Section BidAsk.
 
 Record Bid:Type:= Mk_bid{
                         bp:> nat;
@@ -134,7 +133,8 @@ Proof. { intro H. induction A. simpl. simpl in H. contradiction.
 
 Lemma ask_prices_intro1 (A: list Ask) (A': list Ask):
   A [<=] A' -> ((ask_prices A)  [<=] (ask_prices A')).
-Proof.  Admitted.
+Proof.  intro H. intros p. intro H1. assert (H2: exists a, In a A /\ p=sp a).
+admit. (*include above result*) destruct H2. destruct H0. assert (H3: In x A'). eauto. subst p. eapply ask_prices_intro. exact. Admitted.
 
 
 Lemma ask_prices_elim (A: list Ask): forall p, In p (ask_prices A)->
@@ -168,9 +168,8 @@ Proof. unfold m_eqb. apply /andP. split. apply /andP. split. all: apply /eqP; au
 Hint Resolve m_eqb_ref: auction.
 Lemma m_eqb_elim (x y: fill_type):  m_eqb x y -> x = y.
 Proof. unfold m_eqb. destruct x. destruct y. simpl. intros. move /andP in H.
-destruct H. move /andP in H. destruct H.  unfold b_eqb in H. move /andP in H.
-destruct H. unfold a_eqb in H1. move /andP in H1. destruct H1. move /eqP in H3. move /eqP in H. move /eqP in H0. move /eqP in H2. move /eqP in H1. 
-Admitted.
+destruct H. move /andP in H. destruct H. move /eqP in H. move /eqP in H1.
+move /eqP in H0. rewrite H0. rewrite H1. rewrite H. auto. Qed.
 
 
 Lemma m_eqb_intro (x y: fill_type): x=y -> m_eqb x y = true.
@@ -283,8 +282,7 @@ Hint Resolve asks_of_intro1 bids_of_intro1 asks_of_perm bids_of_perm: core.
 Hint Resolve bids_of_elim1 asks_of_elim1: core.
 
 
-  
-End Bid_Ask.
+End BidAsk.
 
 
 Hint Resolve b_eqb_ref b_eqP : core.

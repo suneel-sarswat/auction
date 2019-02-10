@@ -402,7 +402,8 @@ Section Permutation.
   Lemma included_elim4 (a:A)(l s: list A): included (a::l) s -> included l s.
   Proof. Admitted.
   
-
+Lemma included_elim4a (a:A) (l: list A) : included (delete a l) l.
+Proof. Admitted.
   
   
   Lemma included_elim5 (l s: list A): included l s -> Subset l s.
@@ -435,7 +436,7 @@ Section Permutation.
   Hint Resolve included_intro1 included_intro2 included_intro3: core.
   Hint Resolve included_refl included_intro: core.
   Hint Resolve included_elim1 included_elim2 included_elim3: core.
-  Hint Resolve included_elim4 included_elim5 included_elim: core.
+  Hint Resolve included_elim4 (* included_elim4a *) included_elim5 included_elim: core.
 
   (* ----- Some Misc Lemmas on nodup, sorted, sublist, subset and included ---------------- *)
 
@@ -450,9 +451,13 @@ Section Permutation.
     Sorted lr (a::l)-> Sorted lr (e::s)-> sublist (a::l)(e::s)-> lr e a.
   Proof. Admitted.
 
+ Lemma nodup_included_nodup (l s: list A) :
+ NoDup s -> included l s -> NoDup l.
+ Proof. Admitted.
 
   Hint Resolve nodup_subset_included: core.
-  Hint Immediate sorted_included_sublist first_in_ordered_sublists:core.
+  Hint Immediate sorted_included_sublist first_in_ordered_sublists
+  nodup_included_nodup :core.
   
 
   (* --------------------  permuted lists (permutation) -------------------------------------*)
@@ -546,7 +551,7 @@ Section Permutation.
   Hint Resolve included_intro1 included_intro2 included_intro3: core.
   Hint Resolve included_refl included_intro: core.
   Hint Resolve included_elim1 included_elim2 included_elim3: core.
-  Hint Resolve included_elim4 included_elim5 included_elim: core.
+  Hint Resolve included_elim4 (*included_elim4a*) included_elim5 included_elim: core.
 
   Hint Extern 0 (is_true ( included ?x ?z) ) =>
   match goal with
@@ -555,8 +560,8 @@ Section Permutation.
   end.
 
   Hint Resolve nodup_subset_included: core.
-  Hint Immediate sorted_included_sublist first_in_ordered_sublists:core.
- 
+    Hint Immediate sorted_included_sublist first_in_ordered_sublists
+  nodup_included_nodup :core.
   Hint Resolve  perm_intro0a  perm_intro0b perm_refl perm_nil perm_elim1 : core.
   Hint Immediate perm_elim perm_intro perm_sym: core.
   Hint Resolve perm_elim1 perm_elim2 perm_elim3: core.

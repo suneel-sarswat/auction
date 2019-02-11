@@ -103,14 +103,6 @@ Proof. { intro H. induction B. simpl. simpl in H. contradiction.
          destruct  H. subst b. simpl. left. auto. simpl. right. auto. } Qed.
 
 
-Lemma bid_prices_intro1 (B: list Bid) (B': list Bid):
-  B [<=] B' -> ((bid_prices B)  [<=] (bid_prices B')).
-Proof. revert B'. induction B. intros. simpl. auto. intros. case B' eqn: H1.
-absurd (In a nil). auto. eauto. destruct (a==b) eqn: H2. simpl. move /eqP in H2.  subst b. cut (bid_prices B [<=] bid_prices l). eauto. 
-cut (B [<=] l). apply IHB. Admitted.
-
-
-
 Lemma bid_prices_elim (B: list Bid): forall p, In p (bid_prices B)->
                                              exists b, In b B /\ p = bp b.
 Proof. { intros p H. induction B. simpl in H. contradiction. simpl in H.
@@ -118,6 +110,14 @@ Proof. { intros p H. induction B. simpl in H. contradiction. simpl in H.
        apply IHB in H2 as H0. destruct H0 as [b H0].
        exists b. destruct H0. split.
        eauto. auto. } Qed.
+
+Lemma bid_prices_intro1 (B: list Bid) (B': list Bid):
+  B [<=] B' -> ((bid_prices B)  [<=] (bid_prices B')).
+Proof. intro H. intros p. intro H1. assert (H2: exists b, In b B /\ p=bp b).
+apply bid_prices_elim. exact. destruct H2. destruct H0. assert (H3: In x B'). auto. subst p. eapply bid_prices_intro. exact. Qed.
+
+
+
 
 Fixpoint ask_prices (A: list Ask): (list nat):=
   match A with
@@ -130,13 +130,6 @@ Lemma ask_prices_intro (A: list Ask) (a: Ask):
 Proof. { intro H. induction A. simpl. simpl in H. contradiction.
          destruct  H. subst a. simpl. left. auto. simpl. right. auto. } Qed.
 
-
-Lemma ask_prices_intro1 (A: list Ask) (A': list Ask):
-  A [<=] A' -> ((ask_prices A)  [<=] (ask_prices A')).
-Proof.  intro H. intros p. intro H1. assert (H2: exists a, In a A /\ p=sp a).
-admit. (*include above result*) destruct H2. destruct H0. assert (H3: In x A'). eauto. subst p. eapply ask_prices_intro. exact. Admitted.
-
-
 Lemma ask_prices_elim (A: list Ask): forall p, In p (ask_prices A)->
                                              exists a, In a A /\ p = sp a.
 Proof. { intros p H. induction A. simpl in H. contradiction. simpl in H.
@@ -144,6 +137,13 @@ Proof. { intros p H. induction A. simpl in H. contradiction. simpl in H.
        apply IHA in H2 as H0. destruct H0 as [a0 H0].
        exists a0. destruct H0. split.
        eauto. auto. } Qed.
+
+Lemma ask_prices_intro1 (A: list Ask) (A': list Ask):
+  A [<=] A' -> ((ask_prices A)  [<=] (ask_prices A')).
+Proof.  intro H. intros p. intro H1. assert (H2: exists a, In a A /\ p=sp a).
+apply ask_prices_elim. exact. destruct H2. destruct H0. assert (H3: In x A'). eauto. subst p. eapply ask_prices_intro. exact. Qed.
+
+
 
 
 Hint Resolve bid_prices_elim bid_prices_intro bid_prices_intro1: core.
@@ -201,16 +201,20 @@ Proof. { intro H. induction F. simpl. simpl in H. contradiction. destruct  H.
         subst m. simpl. left. auto. simpl. right. auto. } Qed.
 
 
-Lemma bids_of_intro1 (M': list fill_type) (M: list fill_type):
-  M [<=] M' -> ((bids_of M)  [<=] (bids_of M')).
-Proof.  Admitted.
-
 Lemma bids_of_elim (F: list fill_type): forall b, In b (bids_of F)->
                                              exists m, In m F /\ b = bid_of m.
 Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
        destruct  H as [H1 | H2]. exists a. split; auto.
        apply IHF in H2 as H0. destruct H0 as [m H0]. exists m. destruct H0. split.
        eauto. auto. } Qed.
+
+
+
+Lemma bids_of_intro1 (M': list fill_type) (M: list fill_type):
+  M [<=] M' -> ((bids_of M)  [<=] (bids_of M')).
+Proof.  intro H. intros b. intro H1. assert (H2: exists m, In m M /\ b=bid_of m).
+apply bids_of_elim. exact. destruct H2. destruct H0. assert (H3: In x M'). auto. subst b. eapply bids_of_intro. exact. Qed.
+
 
 Lemma bids_of_elim1 (M: list fill_type)(m: fill_type)(b: Bid): In b (bids_of (delete m M)) ->
                                                                In b (bids_of M).
@@ -232,9 +236,7 @@ Lemma asks_of_intro (F: list fill_type) (m: fill_type):
 Proof. { intro H. induction F. simpl. simpl in H. contradiction. destruct  H.
          subst m. simpl. left. auto. simpl. right. auto. } Qed.
 
-Lemma asks_of_intro1 (M': list fill_type) (M: list fill_type):
-  M [<=] M' -> ((asks_of M)  [<=] (asks_of M')).
-Proof.  Admitted.
+
   
 Lemma asks_of_elim (F: list fill_type): forall a, In a (asks_of F)->
                                             exists m, In m F /\ a = ask_of m.
@@ -242,6 +244,11 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
        destruct  H as [H1 | H2]. exists a. split; auto.
        apply IHF in H2 as H0. destruct H0 as [m H0]. exists m. destruct H0. split.
        eauto. auto. } Qed.
+       
+       Lemma asks_of_intro1 (M': list fill_type) (M: list fill_type):
+  M [<=] M' -> ((asks_of M)  [<=] (asks_of M')).
+Proof.  intro H. intros a. intro H1. assert (H2: exists m, In m M /\ a=ask_of m).
+apply asks_of_elim. exact. destruct H2. destruct H0. assert (H3: In x M'). auto. subst a. eapply asks_of_intro. exact. Qed.
 
 Lemma asks_of_elim1 (M: list fill_type)(m: fill_type)(a: Ask): In a (asks_of (delete m M)) ->
                                                                In a (asks_of M).
@@ -269,10 +276,20 @@ Lemma trade_prices_of_elim (F: list fill_type): forall p, In p (trade_prices_of 
 Proof. { intros p H. induction F. simpl in H. contradiction. simpl in H. destruct H.
        exists a. split. eauto. auto. apply IHF in H as H0. destruct  H0 as [m H0].
        destruct H0 as [H1 H2]. exists m. split;eauto. } Qed.
+ 
+
+       
+Lemma tps_of_included1 (M M': list fill_type):
+ included M M' -> included (trade_prices_of M) (trade_prices_of M').
+ Proof. Admitted.
+   
+   
+   
 Lemma tps_of_perm (M M': list fill_type):
  perm M M' -> perm (trade_prices_of M) (trade_prices_of M').
-Proof. revert M'. induction M. intros. simpl. case M' eqn: H1. simpl. auto.
-inversion H. simpl. intros. case M' eqn: H1. inversion H. simpl. case (a==f) eqn: H2. move /eqP in H2. subst f. simpl. Admitted. 
+Proof. intro H. unfold perm in H. move /andP in H. destruct H.
+unfold perm. apply /andP. split. all: eapply tps_of_included1;exact. Qed.
+
 
       
 Hint Resolve bids_of_intro bids_of_elim asks_of_intro asks_of_elim: core.

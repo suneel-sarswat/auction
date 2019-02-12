@@ -126,7 +126,7 @@ Proof. eauto. Qed.
 
 (*--------------- following lemma important : need a mention in the paper ------------*)
 
-Lemma count_in_deleted (b: Bid)(B: list Bid):
+Lemma count_in_deleted_B (b: Bid)(B: list Bid):
   In b B -> count (bp b)(bid_prices B) = S (count (bp b) (bid_prices (delete b B))).
 Proof. { induction B.
        { simpl. auto. }
@@ -152,7 +152,7 @@ Proof. { revert B2. induction B1 as [| b1].
          assert (h3a: included (bid_prices B1) (bid_prices (delete b1 B2))).
          { auto. }
          assert(h4:count (bp b1)(bid_prices B2)= S (count (bp b1) (bid_prices (delete b1 B2)))).
-         { eauto using count_in_deleted. }
+         { eauto using count_in_deleted_B. }
          eapply included_intro.
          intro x.  simpl. destruct (x =? b1) eqn: C1.
          { (* ---- C1: x = b1 ---- *)

@@ -221,9 +221,49 @@ Lemma bids_of_elim1 (M: list fill_type)(m: fill_type)(b: Bid): In b (bids_of (de
 Proof. { induction M. simpl. auto. simpl. intros. case (m_eqb m a) eqn: Hm.
 right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
 
+Lemma count_in_deleted_bids (m: fill_type)(M: list fill_type):
+  In m M -> count (bid_of m) (bids_of M) = S (count (bid_of m) (bids_of (delete m M))).
+Proof. { induction M.
+       { simpl. auto. }
+       { intro h1. destruct (m == a) eqn: h2.
+         { simpl. rewrite h2. move /eqP in h2.
+           subst a. simpl. replace (b_eqb (bid_of m) (bid_of m)) with true. auto. auto. }
+         { assert (h1a: In m M).
+           { move /eqP in h2; eauto. }
+           replace (delete m (a :: M)) with (a :: (delete m M)).
+           { simpl. destruct (b_eqb (bid_of m) (bid_of a)) eqn: h3.
+             { apply IHM in h1a as h1b. rewrite h1b. auto. }
+             { auto. } }
+           { simpl. rewrite h2. auto. } } } } Qed.
+
+
+Lemma included_M_imp_included_bids (M1 M2: list fill_type): included M1 M2 ->
+                                                    included (bids_of M1) (bids_of M2).
+Proof. { revert M2. induction M1 as [| m1].
+       { simpl. auto. }
+       { intros M2 h1.
+         assert (h2: In m1 M2). eauto.
+         assert (h3: included M1 (delete m1 M2)). eauto.
+         assert (h3a: included (bids_of M1) (bids_of (delete m1 M2))).
+         { auto. }
+         assert(h4:count (bid_of m1)(bids_of M2)= S (count (bid_of m1) (bids_of (delete m1 M2)))).
+         { eauto using count_in_deleted_bids. }
+         eapply included_intro.
+         intro x.  simpl. destruct (b_eqb x (bid_of m1)) eqn: C1.
+         { (* ---- C1: x = b1 ---- *)
+           move /b_eqP in C1. subst x.
+           rewrite h4.
+           eapply included_elim in h3a  as h3b. instantiate (1 := bid_of m1) in h3b.
+           omega. }
+         { (*----- C1: x <> b1 ---- *)
+           assert (h3b: included M1 M2). eapply included_elim4; apply h1. 
+           apply IHM1 in h3b as h3c. auto. } } } Qed.
+
+
        
 Lemma bids_of_perm (M M': list fill_type): perm M M' -> perm (bids_of M) (bids_of M').
-Proof.  Admitted.
+Proof. intro H. unfold perm in H. move /andP in H. destruct H.
+unfold perm. apply /andP. split. all: eapply included_M_imp_included_bids;exact. Qed.
 
 Fixpoint asks_of (F: list fill_type) : (list Ask) :=
   match F with
@@ -255,8 +295,50 @@ Lemma asks_of_elim1 (M: list fill_type)(m: fill_type)(a: Ask): In a (asks_of (de
 Proof. { induction M. simpl. auto. simpl. intros. case (m_eqb m a0) eqn: Hm.
 right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
 
+
+Lemma count_in_deleted_asks (m: fill_type)(M: list fill_type):
+  In m M -> count (ask_of m) (asks_of M) = S (count (ask_of m) (asks_of (delete m M))).
+Proof. { induction M.
+       { simpl. auto. }
+       { intro h1. destruct (m == a) eqn: h2.
+         { simpl. rewrite h2. move /eqP in h2.
+           subst a. simpl. replace (a_eqb (ask_of m) (ask_of m)) with true. auto. auto. }
+         { assert (h1a: In m M).
+           { move /eqP in h2; eauto. }
+           replace (delete m (a :: M)) with (a :: (delete m M)).
+           { simpl. destruct (a_eqb (ask_of m) (ask_of a)) eqn: h3.
+             { apply IHM in h1a as h1b. rewrite h1b. auto. }
+             { auto. } }
+           { simpl. rewrite h2. auto. } } } } Qed.
+
+
+Lemma included_M_imp_included_asks (M1 M2: list fill_type): included M1 M2 ->
+                                                    included (asks_of M1) (asks_of M2).
+Proof. { revert M2. induction M1 as [| m1].
+       { simpl. auto. }
+       { intros M2 h1.
+         assert (h2: In m1 M2). eauto.
+         assert (h3: included M1 (delete m1 M2)). eauto.
+         assert (h3a: included (asks_of M1) (asks_of (delete m1 M2))).
+         { auto. }
+         assert(h4:count (ask_of m1)(asks_of M2)= S (count (ask_of m1) (asks_of (delete m1 M2)))).
+         { eauto using count_in_deleted_asks. }
+         eapply included_intro.
+         intro x.  simpl. destruct (a_eqb x (ask_of m1)) eqn: C1.
+         { (* ---- C1: x = b1 ---- *)
+           move /a_eqP in C1. subst x.
+           rewrite h4.
+           eapply included_elim in h3a  as h3b. instantiate (1 := ask_of m1) in h3b.
+           omega. }
+         { (*----- C1: x <> b1 ---- *)
+           assert (h3b: included M1 M2). eapply included_elim4; apply h1. 
+           apply IHM1 in h3b as h3c. auto. } } } Qed.
+
+
+       
 Lemma asks_of_perm (M M': list fill_type): perm M M' -> perm (asks_of M) (asks_of M').
-Proof. Admitted.
+Proof. intro H. unfold perm in H. move /andP in H. destruct H.
+unfold perm. apply /andP. split. all: eapply included_M_imp_included_asks;exact. Qed.
 
 Fixpoint trade_prices_of (F: list fill_type) : (list nat) :=
   match F with
@@ -277,18 +359,53 @@ Proof. { intros p H. induction F. simpl in H. contradiction. simpl in H. destruc
        exists a. split. eauto. auto. apply IHF in H as H0. destruct  H0 as [m H0].
        destruct H0 as [H1 H2]. exists m. split;eauto. } Qed.
  
+Lemma count_in_deleted_tp (m: fill_type)(M: list fill_type):
+  In m M -> count (tp m)(trade_prices_of M) = S (count (tp m) (trade_prices_of (delete m M))).
+  Proof.  { induction M.
+       { simpl. auto. }
+       { intro H1. destruct (m == a) eqn: H2.
+         { simpl. rewrite H2. move /eqP in H2.
+           subst a. simpl. replace (tp m =? tp m) with true. auto. auto. }
+         { assert (H1a: In m M).
+           { move /eqP in H2; eauto. }
+           replace (delete m (a :: M)) with (a :: (delete m M)).
+           { simpl. destruct (tp m =? tp a) eqn: H3.
+             { apply IHM in H1a as H1b. rewrite H1b. auto. }
+             { auto. } }
+           { simpl. rewrite H2. auto. } } } } Qed.
 
+  
        
-Lemma tps_of_included1 (M M': list fill_type):
+Lemma included_M_imp_included_tps (M M': list fill_type):
  included M M' -> included (trade_prices_of M) (trade_prices_of M').
- Proof. Admitted.
+ Proof. Proof. { revert M'. induction M as [| m].
+       { simpl. auto. }
+       { intros M' H1.
+         assert (H2: In m M'). eauto.
+         assert (H3: included M (delete m M')). eauto.
+         assert (H3a: included (trade_prices_of M) (trade_prices_of (delete m M'))).
+         { auto. }
+         assert(H4:count (tp m)(trade_prices_of M')= S (count (tp m) (trade_prices_of (delete m M')))).
+         { eauto using count_in_deleted_tp. }
+         eapply included_intro.
+         intro x.  simpl. destruct (x =? tp m) eqn: C1.
+         { (* ---- C1: x = b1 ---- *)
+           move /nat_eqP in C1. subst x.
+           rewrite H4.
+           eapply included_elim in H3a  as H3b. instantiate (1 :=tp m) in H3b.
+           omega. }
+         { (*----- C1: x <> b1 ---- *)
+           assert (H3b: included M M'). eapply included_elim4; apply H1. 
+           apply IHM in H3b as H3c. auto. } } } Qed.
+
    
    
    
 Lemma tps_of_perm (M M': list fill_type):
  perm M M' -> perm (trade_prices_of M) (trade_prices_of M').
 Proof. intro H. unfold perm in H. move /andP in H. destruct H.
-unfold perm. apply /andP. split. all: eapply tps_of_included1;exact. Qed.
+unfold perm. apply /andP. split. all: eapply included_M_imp_included_tps.
+exact. exact. Qed.
 
 
       

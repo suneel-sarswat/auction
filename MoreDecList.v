@@ -405,6 +405,8 @@ Section Permutation.
 Lemma included_elim4a (a:A) (l: list A) : included (delete a l) l.
 Proof. Admitted.
   
+  Lemma included_elim4b (a:A)(l s: list A): included l s -> included (a::l) (a::s).
+  Proof. Admitted.
   
   Lemma included_elim5 (l s: list A): included l s -> Subset l s.
   Proof. Admitted.
@@ -524,10 +526,14 @@ Proof. Admitted.
    Proof. Admitted.
 
    Lemma perm_subset (l1 l2 s1 s2: list A): perm l1 l2 -> perm s1 s2 -> l1 [<=] s1 -> l2 [<=] s2.
-   Proof. Admitted.
+   Proof. intros. unfold perm in H. unfold perm in H0. move /andP in H.
+   move /andP in H0. destruct H. destruct H0. eapply included_elim5 in H2.
+   eapply included_elim5 in H0. eauto. Qed.
+   
 
    Lemma perm_elim3 (l s: list A)(a: A): perm l s -> perm (a::l) (a::s).
-   Proof. Admitted.
+   Proof.  unfold perm. intros. move /andP in H. destruct H. apply /andP.
+   split. eapply included_elim4b. exact. eapply included_elim4b. exact. Qed.
    
    
    

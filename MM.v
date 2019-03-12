@@ -67,13 +67,9 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
  
  Lemma produce_MM_is_matching(B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
- Proof. (*The statement is not true in this form. Nodup is needed.*)
- Admitted.
- 
- (* revert A. induction B. intros. simpl. case A eqn: H1. simpl. eauto.
+ Proof. revert no_dup_A. induction B. intros. simpl. case A eqn: H1. simpl. eauto.
  simpl. eauto. intros. case A eqn: H2. simpl. eauto. simpl. 
- destruct (a0 <=? a) eqn: Ha. simpl. cut (matching_in B l (produce_MM B l)).
- eauto. *)
+ destruct (a0 <=? a) eqn: Ha. simpl. Admitted.
            
  Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
    Sorted by_dbp B -> Sorted by_dsp A-> Is_MM (produce_MM B A) B A.

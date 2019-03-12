@@ -1,0 +1,35 @@
+\begin{thebibliography}{1}
+
+\bibitem{friedman}
+Daniel Friedman.
+\newblock The double auction market institution: A survey.
+\newblock 01 1993.
+
+\bibitem{mcafee1992}
+R~Preston McAfee.
+\newblock A dominant strategy double auction.
+\newblock {\em Journal of economic Theory}, 56(2):434--450, 1992.
+
+\bibitem{NiuP13}
+Jinzhong Niu and Simon Parsons.
+\newblock Maximizing matching in double-sided auctions.
+\newblock In Maria~L. Gini, Onn Shehory, Takayuki Ito, and Catholijn~M. Jonker,
+  editors, {\em International conference on Autonomous Agents and Multi-Agent
+  Systems, AAMAS '13, Saint Paul, MN, USA, May 6-10, 2013}, pages 1283--1284.
+  IFAAMAS, 2013.
+\newblock URL: \url{http://dl.acm.org/citation.cfm?id=2484920}.
+
+\bibitem{WurmanWW98}
+Peter~R. Wurman, William~E. Walsh, and Michael~P. Wellman.
+\newblock Flexible double auctions for electronic commerce: theory and
+  implementation.
+\newblock {\em Decision Support Systems}, 24(1):17--27, 1998.
+
+\bibitem{ZhaoZKP10}
+Dengji Zhao, Dongmo Zhang, Md~Khan, and Laurent Perrussel.
+\newblock Maximal matching for double auction.
+\newblock In Jiuyong Li, editor, {\em Australasian Conference on Artificial
+  Intelligence}, volume 6464 of {\em Lecture Notes in Computer Science}, pages
+  516--525. Springer, 2010.
+
+\end{thebibliography}

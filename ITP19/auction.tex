@@ -1,0 +1,315 @@
+
+\documentclass[a4paper,UKenglish,cleveref, autoref]{lipics-v2019}
+%This is a template for producing LIPIcs articles. 
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling cleveref support, use "autoref"
+
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Formalization of double sided auctions} %TODO Please add
+
+\titlerunning{}%optional, please use if title is longer than one line
+
+\author{Abhishek Kr Singh}{Tata Institute of Fundamental Research, India} {abhishek.uor@gmail.com}
+{}{}
+\author{Suneel Sarswat}{Tata Institute of Fundamental Research, India} {suneel.sarswat@gmail.com}
+{}{}
+
+\authorrunning{Abhishek and Suneel}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{Abhishek and Suneel}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[500]{Information systems~Online auctions}
+\ccsdesc[500]{Software and its engineering~Formal software verification}
+\ccsdesc[300]{Theory of computation~Algorithmic mechanism design}
+\ccsdesc[300]{Theory of computation~Computational pricing and auctions}
+\ccsdesc[100]{Theory of computation~Program verification}
+\ccsdesc[100]{Theory of computation~Automated reasoning}
+
+
+\keywords{Coq, formalization, auction, matching, financial markets }%TODO mandatory; please add comma-separated list of keywords
+
+\category{}%optional, e.g. invited paper
+
+\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversion{A full version of the paper is available at \url{...}.}
+
+\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+\acknowledgements{}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{}
+\EventNoEds{2}
+\EventLongTitle{}
+\EventShortTitle{}
+\EventAcronym{}
+\EventYear{2019}
+\EventDate{}
+\EventLocation{}
+\EventLogo{}
+\SeriesVolume{}
+\ArticleNo{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+%TODO mandatory: add short abstract of the document
+\begin{abstract}
+
+In this paper, we introduce a formal framework for analyzing double sided auction mechanisms in a theorem prover. In double sided auctions multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfies certain properties of the matching. For example, fairness, percieved-fairness, individual rationality are some of the importnat properties. They are critical properties and to reason out them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties that we discuss in this paper are completely formalized in the Coq proof assistant.  
+\end{abstract}
+
+\section{Introduction}
+\label{section1}
+
+Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted tradings, the volume and liquidity in the markets has improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match the buy requests (demands) with the sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders (bids for buyers and asks for sellers) in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. For this reason, analysis of markets is no more feasible without the help of computers. 
+
+Potential traders (buyers or sellers) places order in the market through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continous markets and post markets. In the pre-markets session an opening price of a product is discovered through double sided auctions. In continous markets session the incoming buyers and sellers are continously matched against each others on a priority basis. And in the post-markets session clearing of the remaining orders are done and closing price is discovered.
+
+A double sided auction mechanism allows multiple buyers and sellers to trade simultaneously \cite{friedman}. In double sided auctions,  auctioneer ( for exampl stock exchange) collects buy and sell requests (orders) over a period. Each potential trader places the orders with a \emph{limit price}: below which a seller will not sell and above which a buyer will not buy. The exchange, at the end of this period, matches these orders based on their limit prices. This entire process is completed using a matching algorithm for double sided auctions. 
+
+Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}.  A major emphasis of many of these algorithms (works) is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. An algorithm which clears each matched bid-ask pair at single price is refered as a uniform price algorithm. Similarily, an algorithm which may clear each matched bid-ask pair at differnet prices is refered as a dynamic prices algorithm. There are other important properties besides the number of macthes which are  considered to evaluate the effectiveness of a matching algorithm. For examples, fairness, uniform pricing, individual rationality are some of the important features used to compare these matching algorithms. However, no single algorithm can posses all of these properties \cite{WurmanWW98,mcafee1992}. 
+
+In this paper, we provide a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assumed that each trader wishes to trade a single unit of the product and all the products are indistingusable as well as indivisible. We have used the Coq proof assistant to formaly  define the theory of double sided auctions.  Furthermore, we used this theory to validate various properties of matching algorithms. We formally proves important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
+
+\section{Modeling double sided auctions}
+
+An auction is a competetive event, where goods/services are sold to highest bidders. In a double sided auction, multiple buyers and multiple sellers places their orders of buy/sell to an agent. The agent, known as auctioneer, matches these buy-sell requests against each others based on their \emph{limit prices}. The limit price for a bid (buy order), is the price above which buyer doesn't want to buy one quantity of the item. Similarily, the limit price of an ask (sell order), is the price below which seller doesn't want to sell one quantity of the item. We defined the notions of the bid as well ask as record in Coq. 
+
+\begin{verbatim}
+Record Bid:Type:= Mk_bid{
+                        bp:> nat;
+                        idb: nat}.
+
+Record Ask:Type:= Mk_ask{
+                        sp:>nat;
+                        ida: nat;}.
+
+Variable b: Bid.
+Variable a: Ask
+
+\end{verbatim}
+
+In the above definition of bid \texttt{b}, \texttt{bp} (\texttt{b}) is the limit price of \texttt{b} and \texttt{idb} (\texttt{b}) is the unique identity of bid \texttt{b}. Similarily for the ask \texttt{a}, \texttt{sp} (\texttt{a}) is the limit price of \texttt{a} and \texttt{ida} (\texttt{a}) is the unique identity of ask \texttt{a}. In our work, each bid (ask) is a buy (sell) request for one unit of the item. If a trader wish to buy (sell) multiple units, he can create multiple bids (asks) with different ids. 
+
+In double sided auctions, auctioneer collects all the bids (asks) for a duration. We can assume, all the bids are present in a list B. Similarily, all the asks are present in a list A. At the end of the duration, the auctioneer matches bids in B against asks in A. Furthermore, auctioneer assign a trade price to each matched bid-ask pair. The result of process is a matching M, which is also represented using list.
+
+In any matching M, a bid (ask) appears at most once in M. A bid \texttt{b} can be matched against an ask \texttt{a} if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. We say, a bid-ask pair (b,a) is matchable if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. Note that, there can be bids (asks) that are not matched in M. The collection of bids present in M is denoted as $B_{M}$ and collection of asks present in M is denoted as $A_M$. More precisely, for a given list of bids B and list of asks A, M is a matching iff, (1) All the bid-ask pairs in M are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$. Formaaly, Matching is,
+
+
+\begin{verbatim}
+Definition matching (M: list fill_type):=
+  (All_matchable M) /\ (NoDup (bids_of M)) /\ (NoDup (asks_of M)).
+
+Definition matching_in (B:list Bid) (A:list Ask) (M:list fill_type):=
+(matching M) /\ ((bids_of M) [<=] B) /\ ((asks_of M) [<=] A).
+\end{verbatim}
+
+
+
+\newpage
+
+ 
+
+\begin{lemma}[Lorem ipsum]
+\label{lemma:lorem}
+Vestibulum sodales dolor et dui cursus iaculis. Nullam ullamcorper purus vel turpis lobortis eu tempus lorem semper. Proin facilisis gravida rutrum. Etiam sed sollicitudin lorem. Proin pellentesque risus at elit hendrerit pharetra. Integer at turpis varius libero rhoncus fermentum vitae vitae metus.
+\end{lemma}
+
+\begin{proof}
+Cras purus lorem, pulvinar et fermentum sagittis, suscipit quis magna.
+
+\begin{claim}
+content...
+\end{claim}
+\begin{claimproof}
+content...
+\end{claimproof}
+
+\end{proof}
+
+\begin{corollary}[Curabitur pulvinar,]
+\label{lemma:curabitur}
+Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+\end{corollary}
+
+\begin{proposition}\label{prop1}
+This is a proposition
+\end{proposition}
+
+\autoref{prop1} and \cref{prop1} \ldots
+
+\subsection{Curabitur dictum felis id sapien}
+
+Curabitur dictum  felis id sapien mollis ut venenatis tortor feugiat. Curabitur sed velit diam. Integer aliquam, nunc ac egestas lacinia, nibh est vehicula nibh, ac auctor velit tellus non arcu. Vestibulum lacinia ipsum vitae nisi ultrices eget gravida turpis laoreet. Duis rutrum dapibus ornare. Nulla vehicula vulputate iaculis. Proin a consequat neque. Donec ut rutrum urna. Morbi scelerisque turpis sed elit sagittis eu scelerisque quam condimentum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean nec faucibus leo. Cras ut nisl odio, non tincidunt lorem. Integer purus ligula, venenatis et convallis lacinia, scelerisque at erat. Fusce risus libero, convallis at fermentum in, dignissim sed sem. Ut dapibus orci vitae nisl viverra nec adipiscing tortor condimentum. Donec non suscipit lorem. Nam sit amet enim vitae nisl accumsan pretium. 
+
+
+%\begin{lstlisting}[caption={Useless code},label=list:8-6,captionpos=t,float,abovecaptionskip=-\medskipamount]
+%for i:=maxint to 0 do 
+%begin 
+%    j:=square(root(i));
+%end;
+%\end{lstlisting}
+
+\subsection{Proin ac fermentum augue}
+
+Proin ac fermentum augue. Nullam bibendum enim sollicitudin tellus egestas lacinia euismod orci mollis. Nulla facilisi. Vivamus volutpat venenatis sapien, vitae feugiat arcu fringilla ac. Mauris sapien tortor, sagittis eget auctor at, vulputate pharetra magna. Sed congue, dui nec vulputate convallis, sem nunc adipiscing dui, vel venenatis mauris sem in dui. Praesent a pretium quam. Mauris non mauris sit amet eros rutrum aliquam id ut sapien. Nulla aliquet fringilla sagittis. Pellentesque eu metus posuere nunc tincidunt dignissim in tempor dolor. Nulla cursus aliquet enim. Cras sapien risus, accumsan eu cursus ut, commodo vel velit. Praesent aliquet consectetur ligula, vitae iaculis ligula interdum vel. Integer faucibus faucibus felis. 
+
+\begin{itemize}
+\item Ut vitae diam augue. 
+\item Integer lacus ante, pellentesque sed sollicitudin et, pulvinar adipiscing sem. 
+\item Maecenas facilisis, leo quis tincidunt egestas, magna ipsum condimentum orci, vitae facilisis nibh turpis et elit. 
+\end{itemize}
+
+\begin{remark}
+content...
+\end{remark}
+
+\section{Pellentesque quis tortor}
+
+Nec urna malesuada sollicitudin. Nulla facilisi. Vivamus aliquam tempus ligula eget ornare. Praesent eget magna ut turpis mattis cursus. Aliquam vel condimentum orci. Nunc congue, libero in gravida convallis , orci nibh sodales quam, id egestas felis mi nec nisi. Suspendisse tincidunt, est ac vestibulum posuere, justo odio bibendum urna, rutrum bibendum dolor sem nec tellus. 
+
+\begin{lemma} [Quisque blandit tempus nunc]
+Sed interdum nisl pretium non. Mauris sodales consequat risus vel consectetur. Aliquam erat volutpat. Nunc sed sapien ligula. Proin faucibus sapien luctus nisl feugiat convallis faucibus elit cursus. Nunc vestibulum nunc ac massa pretium pharetra. Nulla facilisis turpis id augue venenatis blandit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+\end{lemma}
+
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+%
+
+%%
+%% Bibliography
+%%
+
+%% Please use bibtex, 
+
+\bibliography{auction}
+
+\appendix
+
+\section{Styles of lists, enumerations, and descriptions}
+
+List of different predefined enumeration styles:
+
+\begin{itemize}
+\item \verb|\begin{itemize}...\end{itemize}|
+\item \dots
+\item \dots
+%\item \dots
+\end{itemize}
+
+\begin{enumerate}
+\item \verb|\begin{enumerate}...\end{enumerate}|
+\item \dots
+\item \dots
+%\item \dots
+\end{enumerate}
+
+\begin{alphaenumerate}
+\item \verb|\begin{alphaenumerate}...\end{alphaenumerate}|
+\item \dots
+\item \dots
+%\item \dots
+\end{alphaenumerate}
+
+\begin{romanenumerate}
+\item \verb|\begin{romanenumerate}...\end{romanenumerate}|
+\item \dots
+\item \dots
+%\item \dots
+\end{romanenumerate}
+
+\begin{bracketenumerate}
+\item \verb|\begin{bracketenumerate}...\end{bracketenumerate}|
+\item \dots
+\item \dots
+%\item \dots
+\end{bracketenumerate}
+
+\begin{description}
+\item[Description 1] \verb|\begin{description} \item[Description 1]  ...\end{description}|
+\item[Description 2] Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\item[Description 3]  \dots
+%\item \dots
+\end{description}
+
+\section{Theorem-like environments}\label{sec:theorem-environments}
+
+List of different predefined enumeration styles:
+
+\begin{theorem}\label{testenv-theorem}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{theorem}
+
+\begin{lemma}\label{testenv-lemma}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{lemma}
+
+\begin{corollary}\label{testenv-corollary}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{corollary}
+
+\begin{proposition}\label{testenv-proposition}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{proposition}
+
+\begin{exercise}\label{testenv-exercise}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{exercise}
+
+\begin{definition}\label{testenv-definition}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{definition}
+
+\begin{example}\label{testenv-example}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{example}
+
+\begin{note}\label{testenv-note}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{note}
+
+\begin{note*}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{note*}
+
+\begin{remark}\label{testenv-remark}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{remark}
+
+\begin{remark*}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{remark*}
+
+\begin{claim}\label{testenv-claim}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{claim}
+
+\begin{claim*}\label{testenv-claim2}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{claim*}
+
+\begin{proof}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{proof}
+
+\begin{claimproof}
+Fusce eu leo nisi. Cras eget orci neque, eleifend dapibus felis. Duis et leo dui. Nam vulputate, velit et laoreet porttitor, quam arcu facilisis dui, sed malesuada risus massa sit amet neque.
+\end{claimproof}
+
+\end{document}

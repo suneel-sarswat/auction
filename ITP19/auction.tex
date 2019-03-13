@@ -17,6 +17,7 @@
 
 \titlerunning{}%optional, please use if title is longer than one line
 
+
 \author{Abhishek Kr Singh}{Tata Institute of Fundamental Research, India} {abhishek.uor@gmail.com}
 {}{}
 \author{Suneel Sarswat}{Tata Institute of Fundamental Research, India} {suneel.sarswat@gmail.com}
@@ -24,7 +25,7 @@
 
 \authorrunning{Abhishek and Suneel}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
 
-\Copyright{Abhishek and Suneel}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\Copyright{Abhishek Kr. Singh and Suneel Sarswat}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
 
 \ccsdesc[500]{Information systems~Online auctions}
 \ccsdesc[500]{Software and its engineering~Formal software verification}
@@ -72,42 +73,35 @@
 %TODO mandatory: add short abstract of the document
 \begin{abstract}
 
-In this paper, we introduce a formal framework for analyzing double sided auction mechanisms in a theorem prover. In double sided auctions multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfies certain properties of the matching. For example, fairness, percieved-fairness, individual rationality are some of the importnat properties. They are critical properties and to reason out them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties that we discuss in this paper are completely formalized in the Coq proof assistant.  
+In this paper we introduce a formal framework for analyzing double sided auction mechanisms in a theorem prover. In double sided auctions multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfy certain properties of matching. For example, fairness, percieved-fairness, individual rationality are some of the important properties. These are critical properties and to verify them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally, we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties that we discuss in this paper are completely formalized in the Coq proof assistant.  
 \end{abstract}
 
 \section{Introduction}
 \label{section1}
 
-Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted tradings, the volume and liquidity in the markets has improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match the buy requests (demands) with the sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders (bids for buyers and asks for sellers) in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. For this reason, analysis of markets is no more feasible without the help of computers. 
+Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted trading, the volume and liquidity in the markets has improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match buy requests (demands) with sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders  in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. Hence, the analysis of markets is no more feasible without the help of computers. 
 
-Potential traders (buyers or sellers) places order in the market through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continous markets and post markets. In the pre-markets session an opening price of a product is discovered through double sided auctions. In continous markets session the incoming buyers and sellers are continously matched against each others on a priority basis. And in the post-markets session clearing of the remaining orders are done and closing price is discovered.
+A potential trader (buyer or seller) places orders in the markets through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continous markets and post markets. While in the pre-markets session an opening price of a product is discovered through double sided auction. In the continous markets session the incoming buyers and sellers are continously matched against each other on a priority basis. In the post-markets session clearing of the remaining orders is done and a closing price is discovered.
 
-A double sided auction mechanism allows multiple buyers and sellers to trade simultaneously \cite{friedman}. In double sided auctions,  auctioneer ( for exampl stock exchange) collects buy and sell requests (orders) over a period. Each potential trader places the orders with a \emph{limit price}: below which a seller will not sell and above which a buyer will not buy. The exchange, at the end of this period, matches these orders based on their limit prices. This entire process is completed using a matching algorithm for double sided auctions. 
+A double sided auction mechanism allows multiple buyers and sellers to trade simultaneously \cite{friedman}. In double sided auctions,  auctioneer (e.g. stock exchange) collects buy and sell requests over a period. Each potential trader places the orders with a \emph{limit price}: below which a seller will not sell and above which a buyer will not buy. The exchange at the end of this period matches these orders based on their limit prices. This entire process is completed using a matching algorithm for double sided auctions.  
 
-Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}.  A major emphasis of many of these algorithms (works) is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. An algorithm which clears each matched bid-ask pair at single price is refered as a uniform price algorithm. Similarily, an algorithm which may clear each matched bid-ask pair at differnet prices is refered as a dynamic prices algorithm. There are other important properties besides the number of macthes which are  considered to evaluate the effectiveness of a matching algorithm. For examples, fairness, uniform pricing, individual rationality are some of the important features used to compare these matching algorithms. However, no single algorithm can posses all of these properties \cite{WurmanWW98,mcafee1992}. 
+Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}.  A major emphasis of many of these algorithms is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. While an algorithm which clears each matched bid-ask pair at a single price is referred as uniform price algorithm.  An algorithm which may clear each matched bid-ask pair at different prices is refered as  dynamic price algorithm. There are other important properties besides the number of macthes which are considered while evaluating the effectiveness of a matching algorithm. For example, fairness, uniform pricing, individual rationality are some of the relevant features used to compare these matching algorithms. However, it is known that no single algorithm can posses all of these properties \cite{WurmanWW98,mcafee1992}. 
 
-In this paper, we provide a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assumed that each trader wishes to trade a single unit of the product and all the products are indistingusable as well as indivisible. We have used the Coq proof assistant to formaly  define the theory of double sided auctions.  Furthermore, we used this theory to validate various properties of matching algorithms. We formally proves important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
+In this paper, we describe a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of the product and all the products are indistinguishable as well as indivisible. We have used the Coq proof assistant to formally  define the theory of double sided auctions.  Furthermore, we use this theory to validate various properties of matching algorithms. We formally prove some important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
 
 \section{Modeling double sided auctions}
 
+\subsection*{Bid, Ask and limit price}
 An auction is a competetive event, where goods/services are sold to highest bidders. In a double sided auction, multiple buyers and multiple sellers places their orders of buy/sell to an agent. The agent, known as auctioneer, matches these buy-sell requests against each others based on their \emph{limit prices}. The limit price for a bid (buy order), is the price above which buyer doesn't want to buy one quantity of the item. Similarily, the limit price of an ask (sell order), is the price below which seller doesn't want to sell one quantity of the item. We defined the notions of the bid as well ask as record in Coq. 
 
 \begin{verbatim}
-Record Bid:Type:= Mk_bid{
-                        bp:> nat;
-                        idb: nat}.
-
-Record Ask:Type:= Mk_ask{
-                        sp:>nat;
-                        ida: nat;}.
-
-Variable b: Bid.
-Variable a: Ask
-
+Record Bid: Type := Mk_bid { bp:> nat;    idb: nat }.
+Record Ask: Type := Mk_ask { sp:> nat;    ida: nat }.
 \end{verbatim}
 
 In the above definition of bid \texttt{b}, \texttt{bp} (\texttt{b}) is the limit price of \texttt{b} and \texttt{idb} (\texttt{b}) is the unique identity of bid \texttt{b}. Similarily for the ask \texttt{a}, \texttt{sp} (\texttt{a}) is the limit price of \texttt{a} and \texttt{ida} (\texttt{a}) is the unique identity of ask \texttt{a}. In our work, each bid (ask) is a buy (sell) request for one unit of the item. If a trader wish to buy (sell) multiple units, he can create multiple bids (asks) with different ids. 
 
+\subsubsection*{Matching}
 In double sided auctions, auctioneer collects all the bids (asks) for a duration. We can assume, all the bids are present in a list B. Similarily, all the asks are present in a list A. At the end of the duration, the auctioneer matches bids in B against asks in A. Furthermore, auctioneer assign a trade price to each matched bid-ask pair. The result of process is a matching M, which is also represented using list.
 
 In any matching M, a bid (ask) appears at most once in M. A bid \texttt{b} can be matched against an ask \texttt{a} if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. We say, a bid-ask pair (b,a) is matchable if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. Note that, there can be bids (asks) that are not matched in M. The collection of bids present in M is denoted as $B_{M}$ and collection of asks present in M is denoted as $A_M$. More precisely, for a given list of bids B and list of asks A, M is a matching iff, (1) All the bid-ask pairs in M are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$. Formaaly, Matching is,

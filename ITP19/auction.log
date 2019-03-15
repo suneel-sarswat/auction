@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  13 MAR 2019 09:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  15 MAR 2019 10:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1148,7 +1148,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <6> on input line 77.
 
-<cc-by.pdf, id=36, 88.33pt x 31.11626pt>
+<cc-by.pdf, id=44, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
  <use cc-by.pdf>
 Package pdftex.def Info: cc-by.pdf used on input line 87.
@@ -1158,7 +1158,7 @@ LaTeX Font Info:    Try loading font information for TS1+lmr on input line 87.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<lipics-logo-bw.pdf, id=39, 591.44762pt x 144.42657pt>
+<lipics-logo-bw.pdf, id=47, 591.44762pt x 144.42657pt>
 File: lipics-logo-bw.pdf Graphic file (type pdf)
 
 <use lipics-logo-bw.pdf>
@@ -1168,7 +1168,7 @@ Package pdftex.def Info: lipics-logo-bw.pdf used on input line 87.
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./cc-by
 .pdf> <./lipics-logo-bw.pdf>]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 97.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 98.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1181,20 +1181,20 @@ Package microtype Info: Loading generic settings for font family
 (./auction.bbl) [5] [6] 
 AED: lastpage setting LastPage
 [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 309.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 309.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 312.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 312.
  (./auction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 309.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 309.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 312.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 312.
 Package rerunfilecheck Info: File `auction.out' has not changed.
-(rerunfilecheck)             Checksum: 44059415B286374976018E219B1BDD94;469.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 309.
+(rerunfilecheck)             Checksum: 64C01662466D240130646D23B0D37102;606.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 312.
  ) 
 Here is how much of TeX's memory you used:
- 14516 strings out of 493014
- 229365 string characters out of 6133351
+ 14518 strings out of 493014
+ 229403 string characters out of 6133351
  375099 words of memory out of 5000000
- 17583 multiletter control sequences out of 15000+600000
+ 17585 multiletter control sequences out of 15000+600000
  109632 words of font info for 148 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  43i,10n,40p,1095b,472s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1216,10 +1216,10 @@ exlive/2016/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2016
 /texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dis
 t/fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/typ
 e1/public/amsfonts/symbols/msam10.pfb>
-Output written on auction.pdf (7 pages, 353683 bytes).
+Output written on auction.pdf (7 pages, 354322 bytes).
 PDF statistics:
- 218 PDF objects out of 1000 (max. 8388607)
- 183 compressed objects within 2 object streams
+ 224 PDF objects out of 1000 (max. 8388607)
+ 189 compressed objects within 2 object streams
  50 named destinations out of 1000 (max. 500000)
- 32329 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 32345 words of extra memory for PDF output out of 35830 (max. 10000000)
 

@@ -13,7 +13,7 @@
 
 \bibliographystyle{plainurl}% the mandatory bibstyle
 
-\title{Formalization of double sided auctions} %TODO Please add
+\title{Formalizing double sided auctions in Coq} %TODO Please add
 
 \titlerunning{}%optional, please use if title is longer than one line
 
@@ -90,19 +90,22 @@ Designing algorithms for double sided auctions is a well studied topic \cite{mca
 In this paper, we describe a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of the product and all the products are indistinguishable as well as indivisible. We have used the Coq proof assistant to formally  define the theory of double sided auctions.  Furthermore, we use this theory to validate various properties of matching algorithms. We formally prove some important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
 
 \section{Modeling double sided auctions}
+In this section we formally define various concepts involved in a double sided auction mechanism. List is a useful data struction for decribing various process and their properties  in a double sided auction mechanism. In this section, we describe some essential properties on lists which are used for stating important results on matching in double sided auctions.  
 
-\subsection*{Bid, Ask and limit price}
-An auction is a competetive event, where goods/services are sold to highest bidders. In a double sided auction, multiple buyers and multiple sellers places their orders of buy/sell to an agent. The agent, known as auctioneer, matches these buy-sell requests against each others based on their \emph{limit prices}. The limit price for a bid (buy order), is the price above which buyer doesn't want to buy one quantity of the item. Similarily, the limit price of an ask (sell order), is the price below which seller doesn't want to sell one quantity of the item. We defined the notions of the bid as well ask as record in Coq. 
+\subsection{Bid, Ask and limit price}
+An auction is a competetive event, where goods and services are sold to the highest bidders. In  a double sided auction multiple buyers and sellers place their orders to buy or sell an item to an agent. The agent, known as auctioneer, matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (bid), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (ask), is the price below which the seller doesn't want to sell one quantity of the item. The notions of bid as well ask can be represented as a record with two fields. 
 
 \begin{verbatim}
 Record Bid: Type := Mk_bid { bp:> nat;    idb: nat }.
 Record Ask: Type := Mk_ask { sp:> nat;    ida: nat }.
 \end{verbatim}
 
-In the above definition of bid \texttt{b}, \texttt{bp} (\texttt{b}) is the limit price of \texttt{b} and \texttt{idb} (\texttt{b}) is the unique identity of bid \texttt{b}. Similarily for the ask \texttt{a}, \texttt{sp} (\texttt{a}) is the limit price of \texttt{a} and \texttt{ida} (\texttt{a}) is the unique identity of ask \texttt{a}. In our work, each bid (ask) is a buy (sell) request for one unit of the item. If a trader wish to buy (sell) multiple units, he can create multiple bids (asks) with different ids. 
+For a bid \texttt{b},  (\texttt{bp b}) is the limit price and (\texttt{idb b}) is the unique identity of bid \texttt{b}. Similarly for an ask \texttt{a}, (\texttt{sp a}) is the limit price and (\texttt{ida a}) is the unique identity of ask \texttt{a}. In this work we assume that each bid is a buy request for one unit of the item. Similarly each ask is a sell request for one unit of the item. If a trader wish to buy or sell multiple units, he can create multiple bids or asks with different ids. 
 
-\subsubsection*{Matching}
-In double sided auctions, auctioneer collects all the bids (asks) for a duration. We can assume, all the bids are present in a list B. Similarily, all the asks are present in a list A. At the end of the duration, the auctioneer matches bids in B against asks in A. Furthermore, auctioneer assign a trade price to each matched bid-ask pair. The result of process is a matching M, which is also represented using list.
+Note: Mention about the coercion and Bid and asks are attached to eqType. Mention the lemma and canonical structres.
+
+\subsection{Matching in DSA}
+In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests (bids) can be assumed to be present in a list B. Similarily, all the sell requests (asks) can be present in a list A. At the end of the duration, the auctioneer matches bids in B against asks in A. Furthermore, the auctioneer also assigns a trade price to each matched bid-ask pair. The result of this process is a matching M, which consists of all the matched bid-ask pairs together with their trade prices. is also represented using list.
 
 In any matching M, a bid (ask) appears at most once in M. A bid \texttt{b} can be matched against an ask \texttt{a} if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. We say, a bid-ask pair (b,a) is matchable if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. Note that, there can be bids (asks) that are not matched in M. The collection of bids present in M is denoted as $B_{M}$ and collection of asks present in M is denoted as $A_M$. More precisely, for a given list of bids B and list of asks A, M is a matching iff, (1) All the bid-ask pairs in M are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$. Formaaly, Matching is,
 

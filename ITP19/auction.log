@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  15 MAR 2019 10:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  23 MAR 2019 17:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -990,35 +990,54 @@ Package: aliascnt 2009/09/08 v1.3 Alias counter (HO)
 
 (/Users/Abhishek/Library/texmf/tex/latex/llncs2e/remreset.sty))
 \c@theorem=\count136
-) (./auction.aux)
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2016/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+LaTeX Info: Redefining \color on input line 709.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(./auction.aux)
 \openout1 = `auction.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 69.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 69.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 70.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 69.
-LaTeX Font Info:    ... okay on input line 69.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 69.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 70.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 69.
+LaTeX Info: Redefining \microtypecontext on input line 70.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1064,9 +1083,9 @@ e
 \c@lstlisting=\count143
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 69.
+(lastpage)             ! on input line 70.
 \AtBeginShipoutBox=\box34
-Package hyperref Info: Link coloring OFF on input line 69.
+Package hyperref Info: Link coloring OFF on input line 70.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -1076,19 +1095,19 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count144
 )
-LaTeX Info: Redefining \ref on input line 69.
-LaTeX Info: Redefining \pageref on input line 69.
-LaTeX Info: Redefining \nameref on input line 69.
+LaTeX Info: Redefining \ref on input line 70.
+LaTeX Info: Redefining \pageref on input line 70.
+LaTeX Info: Redefining \nameref on input line 70.
 
 (./auction.out) (./auction.out)
 \@outlinefile=\write6
 \openout6 = `auction.out'.
 
-Package hyperref Info: Option `breaklinks' set `true' on input line 69.
+Package hyperref Info: Option `breaklinks' set `true' on input line 70.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 72.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 75.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1097,35 +1116,35 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 72.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 75.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 72.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 75.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 72.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 75.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 72.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 75.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 72.
+(Font)              <10> on input line 75.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 72.
+(Font)              <7> on input line 75.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 72.
-LaTeX Font Info:    Try loading font information for U+msa on input line 72.
+(Font)              <5> on input line 75.
+LaTeX Font Info:    Try loading font information for U+msa on input line 75.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -1133,7 +1152,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 72.
+LaTeX Font Info:    Try loading font information for U+msb on input line 75.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1144,16 +1163,16 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 \openout3 = `auction.vtc'.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 77.
+(Font)              <9> on input line 80.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 77.
+(Font)              <6> on input line 80.
 
 <cc-by.pdf, id=44, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
  <use cc-by.pdf>
-Package pdftex.def Info: cc-by.pdf used on input line 87.
+Package pdftex.def Info: cc-by.pdf used on input line 90.
 (pdftex.def)             Requested size: 39.74274pt x 14.0pt.
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 87.
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 90.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1162,13 +1181,14 @@ File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 File: lipics-logo-bw.pdf Graphic file (type pdf)
 
 <use lipics-logo-bw.pdf>
-Package pdftex.def Info: lipics-logo-bw.pdf used on input line 87.
+Package pdftex.def Info: lipics-logo-bw.pdf used on input line 90.
 (pdftex.def)             Requested size: 64.00354pt x 14.0pt.
  [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./cc-by
 .pdf> <./lipics-logo-bw.pdf>]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 98.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 100.
+
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1178,48 +1198,50 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [2] [3] [4]
-(./auction.bbl) [5] [6] 
+[5] (./auction.bbl) [6] [7] 
 AED: lastpage setting LastPage
-[7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 312.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 312.
+[8]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 343.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 343.
  (./auction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 312.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 312.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 343.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 343.
 Package rerunfilecheck Info: File `auction.out' has not changed.
-(rerunfilecheck)             Checksum: 64C01662466D240130646D23B0D37102;606.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 312.
+(rerunfilecheck)             Checksum: 57B3E795D3860D16BE629E9C284D3B5E;624.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 343.
  ) 
 Here is how much of TeX's memory you used:
- 14518 strings out of 493014
- 229403 string characters out of 6133351
- 375099 words of memory out of 5000000
- 17585 multiletter control sequences out of 15000+600000
- 109632 words of font info for 148 fonts, out of 8000000 for 9000
+ 14940 strings out of 493014
+ 234251 string characters out of 6133351
+ 383254 words of memory out of 5000000
+ 17987 multiletter control sequences out of 15000+600000
+ 110200 words of font info for 152 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  43i,10n,40p,1095b,472s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/20
 16/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2016/texmf-d
-ist/fonts/enc/dvips/lm/lm-ts1.enc}</usr/local/texlive/2016/texmf-dist/fonts/typ
-e1/public/lm/lmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/
-lm/lmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmmi7.p
-fb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/lo
-cal/texlive/2016/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/
-2016/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2016/texmf-d
-ist/fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2016/texmf-dist/fonts/
-type1/public/lm/lmri9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/publi
-c/lm/lmss10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmss8
-.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></u
-sr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/t
-exlive/2016/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2016
-/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dis
-t/fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/typ
-e1/public/amsfonts/symbols/msam10.pfb>
-Output written on auction.pdf (7 pages, 354322 bytes).
+ist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/
+dvips/lm/lm-ts1.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/l
+mbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmmi10.pfb>
+</usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local
+/texlive/2016/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/20
+16/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2016/texmf-dis
+t/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type
+1/public/lm/lmri10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/l
+m/lmri9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmss10.pf
+b></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmss8.pfb></usr/loc
+al/texlive/2016/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texli
+ve/2016/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2016/te
+xmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2016/texmf-dist/fo
+nts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/
+public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/l
+mtti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/symb
+ols/msam10.pfb>
+Output written on auction.pdf (8 pages, 378452 bytes).
 PDF statistics:
- 224 PDF objects out of 1000 (max. 8388607)
- 189 compressed objects within 2 object streams
- 50 named destinations out of 1000 (max. 500000)
- 32345 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 243 PDF objects out of 1000 (max. 8388607)
+ 205 compressed objects within 3 object streams
+ 57 named destinations out of 1000 (max. 500000)
+ 32857 words of extra memory for PDF output out of 35830 (max. 10000000)
 

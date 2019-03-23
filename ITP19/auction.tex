@@ -7,6 +7,7 @@
 %for section-numbered lemmas etc., use "numberwithinsect"
 %for enabling cleveref support, use "cleveref"
 %for enabling cleveref support, use "autoref"
+\usepackage{xcolor}
 
 
 %\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
@@ -68,6 +69,8 @@
 
 \begin{document}
 
+\newcommand{\tw}{\texttt}
+
 \maketitle
 
 %TODO mandatory: add short abstract of the document
@@ -90,33 +93,61 @@ Designing algorithms for double sided auctions is a well studied topic \cite{mca
 In this paper, we describe a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of the product and all the products are indistinguishable as well as indivisible. We have used the Coq proof assistant to formally  define the theory of double sided auctions.  Furthermore, we use this theory to validate various properties of matching algorithms. We formally prove some important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
 
 \section{Modeling double sided auctions}
-In this section we formally define various concepts involved in a double sided auction mechanism. List is a useful data struction for decribing various process and their properties  in a double sided auction mechanism. In this section, we describe some essential properties on lists which are used for stating important results on matching in double sided auctions.  
+In this section we formally define various concepts involved in a double sided auction mechanism. The list data structure turns out to be very useful for decribing various proceses and their properties  in a double sided auction mechanism. In this section, we also describe some essential properties on lists which are used for stating important results on matching in double sided auctions. 
 
 \subsection{Bid, Ask and limit price}
-An auction is a competetive event, where goods and services are sold to the highest bidders. In  a double sided auction multiple buyers and sellers place their orders to buy or sell an item to an agent. The agent, known as auctioneer, matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (bid), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (ask), is the price below which the seller doesn't want to sell one quantity of the item. The notions of bid as well ask can be represented as a record with two fields. 
-
+An auction is a competetive event, where goods and services are sold to the highest bidders. In  a double sided auction multiple buyers and sellers place their orders to buy or sell an item to an agent. The agent, known as auctioneer, matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (i.e. \emph{bid}), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (i.e. \emph{ask}), is the price below which the seller doesn't want to sell one quantity of the item. The notions of bid as well ask can be expressed usning records with two fields. 
 \begin{verbatim}
 Record Bid: Type := Mk_bid { bp:> nat;    idb: nat }.
 Record Ask: Type := Mk_ask { sp:> nat;    ida: nat }.
 \end{verbatim}
+For a bid $b$, $(bp \; b)$  is the limit price and $(idb \; b)$ is its unique identity. Similarly for an ask $a$, $(sp \; a)$ is the limit price and $(ida \; a)$ is the unique identity of $a$. The use of coercion symbol \tw{ :>} in the first field of $Bid$ declares $bp$ as a function which is applied automatically to any term of type $Bid$ that appears in a context where a term of type \tw{nat} is expected. Hence, we can use the simple expression $b$ instead of  ($bp \;b$) to express the limit price of $b$. Similarly we can use $a$ for the limit price of an ask $a$.
+\begin{note*} In this work we assume that each bid is a buy request for one unit of item. Similarly each ask is a sell request for one unit of item. If a trader wishes to buy or sell multiple units, he can create multiple bids or asks with different \emph{ids}. 
+\end{note*}
 
-For a bid \texttt{b},  (\texttt{bp b}) is the limit price and (\texttt{idb b}) is the unique identity of bid \texttt{b}. Similarly for an ask \texttt{a}, (\texttt{sp a}) is the limit price and (\texttt{ida a}) is the unique identity of ask \texttt{a}. In this work we assume that each bid is a buy request for one unit of the item. Similarly each ask is a sell request for one unit of the item. If a trader wish to buy or sell multiple units, he can create multiple bids or asks with different ids. 
+Since both the fields of $Bid$ as well as $Ask$ are from domain $nat$ in which the equality is decidable (i.e. \tw{nat: eqType}), the equality on $Bid$ as well as $Ask$ can also be proved  decidable. This is achieved by declaring two canonical instances \tw{bid\_eqType} and \tw{ask\_eqType} that connect $Bid$ and $Ask$ to the \tw{eqType}.  
 
-Note: Mention about the coercion and Bid and asks are attached to eqType. Mention the lemma and canonical structres.
-
-\subsection{Matching in DSA}
-In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests (bids) can be assumed to be present in a list B. Similarily, all the sell requests (asks) can be present in a list A. At the end of the duration, the auctioneer matches bids in B against asks in A. Furthermore, the auctioneer also assigns a trade price to each matched bid-ask pair. The result of this process is a matching M, which consists of all the matched bid-ask pairs together with their trade prices. is also represented using list.
-
-In any matching M, a bid (ask) appears at most once in M. A bid \texttt{b} can be matched against an ask \texttt{a} if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. We say, a bid-ask pair (b,a) is matchable if \texttt{bp (b)} $\ge$ \texttt {sp (a)}. Note that, there can be bids (asks) that are not matched in M. The collection of bids present in M is denoted as $B_{M}$ and collection of asks present in M is denoted as $A_M$. More precisely, for a given list of bids B and list of asks A, M is a matching iff, (1) All the bid-ask pairs in M are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$. Formaaly, Matching is,
-
-
+\subsection{Matching in Double Sided Auctions}
+In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests (i.e. bids) can be assumed to be present in a list $B$. Similarily, all the sell requests (i.e. asks) can be assumed to be present in the list $A$. At the time of auction, the auctioneer matches bids in $B$ against asks in $A$. Furthermore, the auctioneer assigns a trade price to each matched bid-ask pair. This  process results in  a matching $M$, which consists of all the matched bid-ask pairs together with their trade prices. We represent matching as a list whose entries are of type \tw{fill\_type}.
 \begin{verbatim}
-Definition matching (M: list fill_type):=
-  (All_matchable M) /\ (NoDup (bids_of M)) /\ (NoDup (asks_of M)).
-
-Definition matching_in (B:list Bid) (A:list Ask) (M:list fill_type):=
-(matching M) /\ ((bids_of M) [<=] B) /\ ((asks_of M) [<=] A).
+Record fill_type: Type:=  Mk_fill {bid_of: Bid;  ask_of: Ask;  tp: nat} 
 \end{verbatim}
+
+In any matching $M$, a bid or an ask appears at most once in $M$. We say a bid-ask pair $(b, a)$ is \emph{matchable} if $b \ge a$ (i.e. $bp \; b \ge sp \; a$). Note that there may be bids in $B$ which are not matched to any ask in a matching $M$. Similarly there may be asks in $A$ which are not matched to any bid in $M$. The collection of bids present in $M$ is denoted as $B_{M}$ and collection of asks present in $M$ is denoted as $A_M$. 
+
+For example consider  Fig. where the list of asks A is represented using left brackets and list of bids B is represented using right brackets. A matching in this case is all the pair of  matched brakets represented using same colors.   
+
+More precisely, for a given list of bids $B$ and list of asks $A$, $M$ is a matching iff, (1) All the bid-ask pairs in $M$ are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$.
+
+\begin{definition}
+\tw{ \textcolor{gray}{All\_matchable} M := $\forall$ m, In m M $\rightarrow$ (ask\_of m) $\leq$ (bid\_of m).}
+\end{definition}
+\begin{definition}
+\tw{ \textcolor{gray}{matching\_in} B A M := All\_matchable M $\land$ NoDup $B_M$ $\land$ NoDup $A_M$ $\land$ $B_M \subseteq B$ $\land$ $A_M \subseteq A$.}
+\end{definition}
+Note that the use of term (\emph{\tw{NoDup $B_M$}}) in the above definition expresses the fact that each bid or ask is a request to trade one unit of item and the items are indivisible. We use the term $B_M \subseteq B$  to represent \tw{Subset} relation between the lists $B_M$ and $B$. It expresses the fact that each entry in the list $B_M$ is also present in the list $B$.
+
+\subsection*{Lists, sublist and permutation}
+While predicate \tw{NoDup} and  binary relation \tw{Subset}  are sufficient to define the notion of matching in a double sided auction. We need few more definitions to describe various proerties of matching as well as processes that operate on matching.  For example, consider the Fig which describes three binary relations on list namely sublist, included and perm. 
+
+Insert Figure
+
+\subparagraph*{sublist} The idea of \tw{sublist} relation is similar to the subsequence relation. In Fig.a the list L1 is a \tw{sublist} of L2 because every entry in L1 is present in L2 as well as they appear in the same sequence.  In other words no two lines in Fig.a.  can intersect with each other. More precisely, consider the following lemmas decribing the sublist relation.  
+
+\subparagraph*{included}
+
+\subparagraph*{perm}
+
+
+
+
+
+
+%\begin{definition}
+%\tw{ \textcolor{gray}{Is\_MM} M B A := (matching\_in B A M) $\land$ 
+%  ($\forall$ X, matching\_in B A X $\rightarrow$ |X| $\leq$ |M|)}.
+%\end{definition}
+% For a given $B$ and $A$ the expression (\emph{\tw{\textcolor{gray}{Is\_MM} M B A}}) states that $M$ is a maximum matching for the list of bids $B$ and  list of asks $A$.
 
 
 

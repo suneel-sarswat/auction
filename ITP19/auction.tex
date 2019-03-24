@@ -93,29 +93,34 @@ Designing algorithms for double sided auctions is a well studied topic \cite{mca
 In this paper, we describe a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of the product and all the products are indistinguishable as well as indivisible. We have used the Coq proof assistant to formally  define the theory of double sided auctions.  Furthermore, we use this theory to validate various properties of matching algorithms. We formally prove some important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
 
 \section{Modeling double sided auctions}
-In this section we formally define various concepts involved in a double sided auction mechanism. The list data structure turns out to be very useful for decribing various proceses and their properties  in a double sided auction mechanism. In this section, we also describe some essential properties on lists which are used for stating important results on matching in double sided auctions. 
+In this section we formally define various concepts involved in a double sided auction mechanism. The list data structure turns out to be very useful for decribing various properties of matching and the proceses that operate on them in a double sided auction mechanism. In this section, we also describe some essential properties of lists which are used for stating important results on matching in a double sided auction. 
 
 \subsection{Bid, Ask and limit price}
-An auction is a competetive event, where goods and services are sold to the highest bidders. In  a double sided auction multiple buyers and sellers place their orders to buy or sell an item to an agent. The agent, known as auctioneer, matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (i.e. \emph{bid}), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (i.e. \emph{ask}), is the price below which the seller doesn't want to sell one quantity of the item. The notions of bid as well ask can be expressed usning records with two fields. 
+An auction is a competetive event, where goods and services are sold to the highest bidders. In  a double sided auction multiple buyers and sellers place their orders to buy or sell an item to an agent. The agent, known as auctioneer, matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (i.e. \emph{bid}), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (i.e. \emph{ask}), is the price below which the seller doesn't want to sell one quantity of the item. We can express bid as well ask using  records containing two fields. 
 \begin{verbatim}
 Record Bid: Type := Mk_bid { bp:> nat;    idb: nat }.
 Record Ask: Type := Mk_ask { sp:> nat;    ida: nat }.
 \end{verbatim}
-For a bid $b$, $(bp \; b)$  is the limit price and $(idb \; b)$ is its unique identity. Similarly for an ask $a$, $(sp \; a)$ is the limit price and $(ida \; a)$ is the unique identity of $a$. The use of coercion symbol \tw{ :>} in the first field of $Bid$ declares $bp$ as a function which is applied automatically to any term of type $Bid$ that appears in a context where a term of type \tw{nat} is expected. Hence, we can use the simple expression $b$ instead of  ($bp \;b$) to express the limit price of $b$. Similarly we can use $a$ for the limit price of an ask $a$.
+For a bid $b$, $(bp \; b)$  is the limit price and $(idb \; b)$ is its unique identity. Similarly for an ask $a$, $(sp \; a)$ is the limit price and $(ida \; a)$ is the unique identity of $a$. Note the use of coercion symbol \tw{ :>} in the first field of $Bid$. It declares $bp$ as a function which is applied automatically to any term of type $Bid$ that appears in a context where a term of type \tw{nat} is expected. Hence, we can use the simple expression $b$ instead of  ($bp \;b$) to express the limit price of $b$. Similarly we can use $a$ for the limit price of an ask $a$.
 \begin{note*} In this work we assume that each bid is a buy request for one unit of item. Similarly each ask is a sell request for one unit of item. If a trader wishes to buy or sell multiple units, he can create multiple bids or asks with different \emph{ids}. 
 \end{note*}
 
 Since both the fields of $Bid$ as well as $Ask$ are from domain $nat$ in which the equality is decidable (i.e. \tw{nat: eqType}), the equality on $Bid$ as well as $Ask$ can also be proved  decidable. This is achieved by declaring two canonical instances \tw{bid\_eqType} and \tw{ask\_eqType} that connect $Bid$ and $Ask$ to the \tw{eqType}.  
 
 \subsection{Matching in Double Sided Auctions}
-In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests (i.e. bids) can be assumed to be present in a list $B$. Similarily, all the sell requests (i.e. asks) can be assumed to be present in the list $A$. At the time of auction, the auctioneer matches bids in $B$ against asks in $A$. Furthermore, the auctioneer assigns a trade price to each matched bid-ask pair. This  process results in  a matching $M$, which consists of all the matched bid-ask pairs together with their trade prices. We represent matching as a list whose entries are of type \tw{fill\_type}.
+In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests can be assumed to be present in a list $B$. Similarily, all the sell requests can be assumed to be present in a list $A$. At the time of auction, the auctioneer matches bids in $B$ against asks in $A$. Furthermore, the auctioneer assigns a trade price to each matched bid-ask pair. This  process results in  a matching $M$, which consists of all the matched bid-ask pairs together with their trade prices. We represent matching as a list whose entries are of type \tw{fill\_type}.
 \begin{verbatim}
 Record fill_type: Type:=  Mk_fill {bid_of: Bid;  ask_of: Ask;  tp: nat} 
 \end{verbatim}
 
-In any matching $M$, a bid or an ask appears at most once in $M$. We say a bid-ask pair $(b, a)$ is \emph{matchable} if $b \ge a$ (i.e. $bp \; b \ge sp \; a$). Note that there may be bids in $B$ which are not matched to any ask in a matching $M$. Similarly there may be asks in $A$ which are not matched to any bid in $M$. The collection of bids present in $M$ is denoted as $B_{M}$ and collection of asks present in $M$ is denoted as $A_M$. 
+In any matching $M$, a bid or an ask appears at most once. We say a bid-ask pair $(b, a)$ is \emph{matchable} if $b \ge a$ (i.e. $bp \; b \ge sp \; a$). Note that there might remain some bids in $B$ which are not matched to any ask in a matching $M$. Similarly there might remain some asks in $A$ which are not matched to any bid in $M$. The list of bids present in $M$ is denoted as $B_{M}$ and the list of asks present in $M$ is denoted as $A_M$. For example, consider Fig.~\ref{fig:matching} which is a pictorial description of matching $M$ between a list of bids $B$ and a list of asks $A$. While the asks present in $A$ is shown using left brackets and their limit prices. The bids present in $B$ is shown using right brackets and their limit prices.  All the matched bid-ask pair of $M$ is then represented using matched brackets of same colors. For instance, the ask with limit price $53$ is matched to the bid with limit price $69$ in the matching $M$. Moreover, we can see that the bid with limit price $37$ is not present in $B_M$ since it is not matched to any ask in $M$.    
 
-For example consider  Fig. where the list of asks A is represented using left brackets and list of bids B is represented using right brackets. A matching in this case is all the pair of  matched brakets represented using same colors.   
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{brack_matching.pdf}
+\caption{ Bids in $B$ and aks in $A$ are represented using right and left brackets respectively. Every matched bid-ask pair in $M$ is shown using the matched brackets of same colors. Note that the bids with limit prices $37$, $83$ and $120$ are not matched to any ask in the matching $M$.}
+\label{fig:matching}
+\end{figure}
 
 More precisely, for a given list of bids $B$ and list of asks $A$, $M$ is a matching iff, (1) All the bid-ask pairs in $M$ are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$.
 
@@ -125,24 +130,70 @@ More precisely, for a given list of bids $B$ and list of asks $A$, $M$ is a matc
 \begin{definition}
 \tw{ \textcolor{gray}{matching\_in} B A M := All\_matchable M $\land$ NoDup $B_M$ $\land$ NoDup $A_M$ $\land$ $B_M \subseteq B$ $\land$ $A_M \subseteq A$.}
 \end{definition}
-Note that the use of term (\emph{\tw{NoDup $B_M$}}) in the above definition expresses the fact that each bid or ask is a request to trade one unit of item and the items are indivisible. We use the term $B_M \subseteq B$  to represent \tw{Subset} relation between the lists $B_M$ and $B$. It expresses the fact that each entry in the list $B_M$ is also present in the list $B$.
+While term (\emph{\tw{NoDup $B_M$}}) in the above definition indicates that each bid is a request to trade one unit of item and the items are indivisible.  We use the term $B_M \subseteq B$  to represent \tw{Subset} relation between the lists $B_M$ and $B$. It expresses the fact that each entry in the list $B_M$ is also present in the list $B$.
 
 \subsection*{Lists, sublist and permutation}
-While predicate \tw{NoDup} and  binary relation \tw{Subset}  are sufficient to define the notion of matching in a double sided auction. We need few more definitions to describe various proerties of matching as well as processes that operate on matching.  For example, consider the Fig which describes three binary relations on list namely sublist, included and perm. 
+The predicate \tw{NoDup} and the \tw{Subset} relation on lists  are sufficient to define the notion of matching in a double sided auction. However, we need few more definitions to describe various proerties of matching as well as processes that operate on matching. In the following paragraphs we describe three such binary relations on lists namely \tw{sublist}, \tw{included} and \tw{perm} which are essential for stating some useful results on matching in double sided auctions. 
 
-Insert Figure
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.6\textwidth]{sub_inclu_perm.pdf}
+\caption{The dotted lines between entries of two lists confirm the presence of same entry in both the lists. (a) If $L_1$ is \tw{sublist} of $L_2$ then no two dotted lines can intersect. (b) A list $L_1$ is \tw{included} in $L_2$ if every entry in $L_1$ is also present in $L_2$. (c) Two lists $L_1$ and $L_2$ are permutation of each other if each entry has same number of ocuurences in both the lists $L_1$ and $L_2$. }
+\label{fig:list}
+\end{figure}
 
-\subparagraph*{sublist} The idea of \tw{sublist} relation is similar to the subsequence relation. In Fig.a the list L1 is a \tw{sublist} of L2 because every entry in L1 is present in L2 as well as they appear in the same sequence.  In other words no two lines in Fig.a.  can intersect with each other. More precisely, consider the following lemmas decribing the sublist relation.  
-\begin{verbatim}
+\subparagraph*{sublist $L_1$ $L_2$ :} The notion of \tw{sublist}  is analogous to the subsequence relation on sequences. For the given lists $L_1$ and $L_2$ the expression  \tw{sublist $L_1$ $L_2$} is \tw{true}  if every entry of $L_1$ is also present in $L_2$ and they apear in the same succesion.  In Fig.~\ref{fig:list}(a) the list $L_1$ is a \tw{sublist} of $L_2$ since there is a line incident on each entry of $L_1$ and no two lines intersect each other. 
 
-\end{verbatim}
+Let \tw{T} be an arbitrary \tw{eqType}. Then for any two lists $l$ and $s$ whoes elements are of type \tw{T} we have following lemmas specifying the \tw{sublist} relation.
 
-\subparagraph*{included}
+\begin{lemma} 
+\tw{ \textcolor{gray}{sublist\_intro1} (a:T): sublist l s-> sublist l (a::s).}
+\end{lemma}
+\begin{lemma}\label{lem:sublistInd} 
+\tw{ \textcolor{gray}{sublist\_elim3a} (a e:T): sublist (a::l)(e::s)-> sublist l s.}
+\end{lemma}
+\begin{lemma}\label{lem:subCount} 
+\tw{ \textcolor{gray}{sublist\_elim4}: sublist l s -> ($\forall$ a, count a l $\leq$ count a s).}
+\end{lemma}
+The term (\emph{\tw{count a l}}) in Lemma~\ref{lem:subCount}  represents the number of occurences of element $a$ in the list $l$. Note the recursive nature of \tw{sublist} as shown in Lemma~\ref{lem:sublistInd}. It usually makes inductive proofs easier for statements which contains \tw{sublist} in the antecedent. Whereas, this is  not true for the other relations (i.e. \tw{included} and \tw{perm}).
 
-\subparagraph*{perm}
+\subparagraph*{included $L_1$ $L_2$ :} A list $L_1$ is \tw{included} in the list $L_2$ if every entry of $L_1$ is also present in $L_2$. The notion of \tw{included}  is analogous to the subset relation in multisets. In Fig~\ref{fig:list}(b) the list $L_1$ is \tw{included} in $L_2$ since there is a line incident on each entry of $L_1$. More precisely, we have following lemmas specifying the \tw{included} relation.
+\begin{lemma}
+\tw{\textcolor{gray}{included\_intro}: ($\forall$ a, count a l $\leq$ count a s)-> included l s.}
+\end{lemma}
+\begin{lemma}
+\tw{ \textcolor{gray}{included\_elim}: included l s -> ($\forall$ a, count a l $\leq$ count a s).}
+\end{lemma}
+\begin{lemma}
+\tw{ \textcolor{gray}{included\_intro3}: sublist l s -> included l s. }
+\end{lemma}
 
+Note that if $l$ is \tw{sublsit} of $s$ then $l$ is also \tw{included} in $s$ but not the vice versa. However, if both the lists $l$ and $s$ are sorted based on some ordering on type \tw{T} then $l$ is \tw{sublist} of $s$ whenever $l$ is \tw{included} in $s$.
+\begin{lemma}
+\tw{ \textcolor{gray}{sorted\_included\_sublist}: Sorted l -> Sorted s -> included l s -> sublist l s.}
+\end{lemma}
 
+\subparagraph*{perm $L_1$ $L_2$ :} A list $L_1$  is permutation of list $L_2$  iff $L_1$  is included in $L_2$ and $L_2$ is included in $L_1$.  The notion of permutation for lists is analogus to the equality in multisets. In Fig~\ref{fig:list}(c) the list $L_1$  is perm of list $L_2$. We have following lemmas specifying the essential properties of the \tw{perm} relation.
 
+\begin{lemma}
+\tw{ \textcolor{gray}{ perm\_intro}: ($\forall$ a, count a l = count a s) -> perm l s.}
+\end{lemma}
+\begin{lemma}
+\tw{ \textcolor{gray}{perm\_elim}: perm l s -> ($\forall$ a, count a l = count a s).}
+\end{lemma}
+\begin{lemma}\label{lem:permSort}
+\tw{ \textcolor{gray}{perm\_sort}: perm l s -> perm  l (sort s).}
+\end{lemma}
+
+The term (\emph{\tw{sort s}}) in Lemma~\ref{lem:permSort} represents the list $s$ sorted using some ordering relation.  Note that any permutation of a matching is also a matching.  More precisely,  we have the following invariance lemma on matching.
+\begin{lemma}
+\tw{\textcolor{gray}{match\_inv}: perm M  M' -> perm B B' -> perm A A' -> matching\_in B A M -> matching\_in B' A' M'. }
+\end{lemma}
+\begin{lemma}
+\tw{ \textcolor{gray}{ } }
+\end{lemma}
+
+% Write about the projection functions  why needed and its  lemma and it's essence. 
 
 
 

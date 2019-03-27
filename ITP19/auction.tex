@@ -332,7 +332,43 @@ Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: N
 Theorem exists_fair_maximum (B: list Bid)(A: list Ask): exists M, (Is_fair M B A /\ Is_MM M B A).
 \end{verbatim}
 
-\section{Matching in financial markets}
+
+\section{Matching in financial markets} 
+An exchange is an organized financial market. There are various types of exchanges for example stock exchange, commodity exchange, foreign exchange etc. The job of the exchange is to facilitate trading between buyers and sellers for the products which are registered in the exchange. Many exchanges operates during a fix duartion in the day. Some exchanges devides the trading activities into multiple sessions for various reseaons. Many stock exchanges hold trading into two main session; pre-market or auction session and continous market or regular trading session. During the pre-market session an exchange collects all the bids and asks for fix duration and then apply double sided auction mechanism to these orders. At the end of the pre-market session an opening price for the product is deiscovered. During the regular sessions a bid (ask) is matched against the existing asks (bids) immedietly. If the bid (ask) is not matchable it is placed in the priority queue based on their limit price. 
+
+The pre-market session reduces uncertenity and volatilty for the regular sessions of trading. To avoid failure on behalf of the traders the exchange must match all the bids or asks withing their limit price. So any matching produced during this session must be indivdual rational. Furthermore, the exchange must be fair towards all the traders. So the matching produced during this session be should be fair matching. One of the most important aspects of the pre-market session is to descover the price of underlying product based on the total demand and supply. This means there must be a unique price at which all the matched bid-ask pairs shuold be traded. So any matching produced during this session should produce a uniform matching. 
+
+Most exchanges matches the bids and asks during the pre-market session at eqilibrium price.  An equlibrium price is the price at which maximum number of bids can be matched with maximum number of asks. We describe an algorithm which produces an equilibrium price. The algorithm \tw{UM} produces a individual rational matching which is fair and maximum amongst uniform matchings.
+
+\begin{verbatim}
+Fixpoint produce_UM (B:list Bid) (A:list Ask)  :=
+  match (B,A) with
+  |(nil, _) => nil
+  |(_,nil)=> nil
+  |(b::B',a::A') => match Nat.leb (sp a) (bp b) with
+                        |false =>nil
+                        |true  => ({|bid_of:= b ; ask_of:= a ; tp:=(bp b) |})::produce_UM B' A'
+  end
+end.
+
+Definition uniform_price (B: list Bid) (A: list Ask):=
+  (bp (bid_of (last (UM_matching B A) ((b0,a0),0)))).
+
+Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
+  replace_column (UM_matching B A) (uniform_price B A).
+
+\end{verbatim}
+
+
+The function \tw{produce\_UM} produces bid-ask pairs, \tw{uniform\_price} discover the uniform price and finally \tw{UM} produces a uniform matching. The function \tw{produce_UM} is a recursive function which matches the largest bid with the smallest ask at each iteration (See Fig~\ref{fig:UM.pdf}). The function terminates when a bid is not matchable with an ask. Observe that in any individual rational and uniform matching the number of bids above to the trade price is same as the number of asks below to the trade price. Let $M$ be any arbitrary IR and uniform matching of size $k$ with trade price $t$. Then there are atleast $k$ bids above $t$ and $k$ asks below $t$. So natuaraaly there are at least $k$ largest bids matchable with $k$ smallest asks. Since UM algorithm pair largest bid with the smallest bid in each iteration then UM must pair at least $k$ bids with $k$ asks. Hence UM produce a matching which of size at least $k$. Therefore UM produces an IR and fair matching which maximum amongst uniform matchings. 
+
+\begin{theorem}
+\tw{
+\textcolor{gray}{UM\_is\_maximal\_Uniform} (B: list Bid) (A:list Ask): $\forall$ M: list fill\_type, Is\_uniform M -> |M| $\leq$ | (UM B A ) |
+}
+\end{theorem}
+
+
 \newpage
 
  

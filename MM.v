@@ -70,6 +70,12 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
  Proof. revert no_dup_A. induction B. intros. simpl. case A eqn: H1. simpl. eauto.
  simpl. eauto. intros. case A eqn: H2. simpl. eauto. simpl. 
  destruct (a0 <=? a) eqn: Ha. simpl. Admitted.
+ 
+
+ Lemma produce_MM_fob (B: list Bid)(A: list Ask):
+   Sorted by_dbp B -> Sorted by_dsp A -> fair_on_bids (produce_MM B A) B.
+ Proof. Admitted.
+ 
            
  Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
    Sorted by_dbp B -> Sorted by_dsp A-> Is_MM (produce_MM B A) B A.
@@ -323,6 +329,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                assert (h3: matching_in B' A' M). eauto using matching_in_elim8.
                cut (|M| <= | produce_MM B' A'|). omega. apply H0. exact. }   } } } Qed.
                
+Theorem exists_fair_maximum (B: list Bid)(A: list Ask): exists M, (Is_fair M B A /\ Is_MM M B A).
+Proof. Admitted.
 
           
 (*
@@ -330,6 +338,8 @@ Definition B2:= ({|b_id:= 1 ; bp:= 125 |}) ::({|b_id:= 2 ; bp:= 120 |}) ::({|b_i
 
 Definition A2:= ({|s_id:= 1 ; sp:= 121 |}) ::({|s_id:= 3 ; sp:= 113 |}) ::({|s_id:= 5 ; sp:= 98 |}) ::({|s_id:= 9 ; sp:= 94 |}) ::({|s_id:= 90 ; sp:= 90 |}) ::({|s_id:= 78 ; sp:= 85 |}) ::({|s_id:= 67 ; sp:= 79 |}) ::({|s_id:= 45 ; sp:= 53 |}) ::nil.
 
-*)
+ *)
+
+
 
 End MM.

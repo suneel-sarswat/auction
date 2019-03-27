@@ -93,27 +93,28 @@ Designing algorithms for double sided auctions is a well studied topic \cite{mca
 In this paper, we describe a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of the product and all the products are indistinguishable as well as indivisible. We have used the Coq proof assistant to formally  define the theory of double sided auctions.  Furthermore, we use this theory to validate various properties of matching algorithms. We formally prove some important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
 
 \section{Modeling double sided auctions}
-In this section we formally define various concepts involved in a double sided auction mechanism. The list data structure turns out to be very useful for decribing various properties of matching and the proceses that operate on them in a double sided auction mechanism. In this section, we also describe some essential properties of lists which are used for stating important results on matching in a double sided auction. 
+To formalize the notion of matching in a double sided auction we use the list data structure.  List is also used to define various processes that operate on  a matching. However, to conviniently express the properties of these processes we need some  relations on lists which are analogous to the relations on multisets. In this section we formally define these relations which are then used for stating important results on matching in a double sided auction.
 
 \subsection{Bid, Ask and limit price}
-An auction is a competetive event, where goods and services are sold to the highest bidders. In  a double sided auction multiple buyers and sellers place their orders to buy or sell an item to an agent. The agent, known as auctioneer, matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (i.e. \emph{bid}), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (i.e. \emph{ask}), is the price below which the seller doesn't want to sell one quantity of the item. We can express bid as well ask using  records containing two fields. 
+An auction is a competetive event, where goods and services are sold to the highest bidders. In  any double sided auction multiple buyers and sellers place their orders to buy or sell a unit of the underlying product. The  auctioneer matches these buy-sell requests  based on their \emph{limit prices}. While the limit price for a buy order (i.e. \emph{bid}), is the price above which the buyer doesn't want to buy one quantity of the item. The limit price of a sell order (i.e. \emph{ask}), is the price below which the seller doesn't want to sell one quantity of the item.  In this work we assume that each bid is a buy request for one unit of item. Similarly each ask is a sell request for one unit of item. If a trader wishes to buy or sell multiple units, he can create multiple bids or asks with different \emph{ids}. 
+
+We can express bid as well ask using  records containing two fields. 
 \begin{verbatim}
-Record Bid: Type := Mk_bid { bp:> nat;    idb: nat }.
-Record Ask: Type := Mk_ask { sp:> nat;    ida: nat }.
+  Record Bid: Type := Mk_bid { bp:> nat;    idb: nat }.
+  Record Ask: Type := Mk_ask { sp:> nat;    ida: nat }.
 \end{verbatim}
 For a bid $b$, $(bp \; b)$  is the limit price and $(idb \; b)$ is its unique identity. Similarly for an ask $a$, $(sp \; a)$ is the limit price and $(ida \; a)$ is the unique identity of $a$. Note the use of coercion symbol \tw{ :>} in the first field of $Bid$. It declares $bp$ as a function which is applied automatically to any term of type $Bid$ that appears in a context where a term of type \tw{nat} is expected. Hence, we can use the simple expression $b$ instead of  ($bp \;b$) to express the limit price of $b$. Similarly we can use $a$ for the limit price of an ask $a$.
-\begin{note*} In this work we assume that each bid is a buy request for one unit of item. Similarly each ask is a sell request for one unit of item. If a trader wishes to buy or sell multiple units, he can create multiple bids or asks with different \emph{ids}. 
-\end{note*}
 
-Since both the fields of $Bid$ as well as $Ask$ are from domain $nat$ in which the equality is decidable (i.e. \tw{nat: eqType}), the equality on $Bid$ as well as $Ask$ can also be proved  decidable. This is achieved by declaring two canonical instances \tw{bid\_eqType} and \tw{ask\_eqType} that connect $Bid$ and $Ask$ to the \tw{eqType}.  
+
+Since both the fields of $Bid$ as well as $Ask$ are from domain $nat$ in which the equality is decidable (i.e. \tw{nat: eqType}), the equality on $Bid$ as well as $Ask$ can also be proved  decidable. This is achieved by declaring two canonical instances \tw{bid\_eqType} and \tw{ask\_eqType} which connect $Bid$ and $Ask$ to the \tw{eqType}.  
 
 \subsection{Matching in Double Sided Auctions}
 In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests can be assumed to be present in a list $B$. Similarily, all the sell requests can be assumed to be present in a list $A$. At the time of auction, the auctioneer matches bids in $B$ against asks in $A$. Furthermore, the auctioneer assigns a trade price to each matched bid-ask pair. This  process results in  a matching $M$, which consists of all the matched bid-ask pairs together with their trade prices. We represent matching as a list whose entries are of type \tw{fill\_type}.
 \begin{verbatim}
-Record fill_type: Type:=  Mk_fill {bid_of: Bid;  ask_of: Ask;  tp: nat} 
+  Record fill_type: Type:=  Mk_fill {bid_of: Bid;  ask_of: Ask;  tp: nat} 
 \end{verbatim}
 
-In any matching $M$, a bid or an ask appears at most once. We say a bid-ask pair $(b, a)$ is \emph{matchable} if $b \ge a$ (i.e. $bp \; b \ge sp \; a$). Note that there might remain some bids in $B$ which are not matched to any ask in a matching $M$. Similarly there might remain some asks in $A$ which are not matched to any bid in $M$. The list of bids present in $M$ is denoted as $B_{M}$ and the list of asks present in $M$ is denoted as $A_M$. For example, consider Fig.~\ref{fig:matching} which is a pictorial description of matching $M$ between a list of bids $B$ and a list of asks $A$. While the asks present in $A$ is shown using left brackets and their limit prices. The bids present in $B$ is shown using right brackets and their limit prices.  All the matched bid-ask pair of $M$ is then represented using matched brackets of same colors. For instance, the ask with limit price $53$ is matched to the bid with limit price $69$ in the matching $M$. Moreover, we can see that the bid with limit price $37$ is not present in $B_M$ since it is not matched to any ask in $M$.    
+We say a bid-ask pair $(b, a)$ is \emph{matchable} if $b \ge a$ (i.e. $bp \; b \ge sp \; a$). In any matching $M$, a bid or an ask appears at most once. Note that there might remain some bids in $B$ which are not matched to any ask in a matching $M$. Similarly there might remain some asks in $A$ which are not matched to any bid in $M$. The list of bids present in $M$ is denoted as $B_{M}$ and the list of asks present in $M$ is denoted as $A_M$. For example, consider Fig.~\ref{fig:matching} which is a pictorial description of matching $M$ between a list of bids $B$ and a list of asks $A$. While the asks present in $A$ is shown using left brackets and their limit prices. The bids present in $B$ is shown using right brackets and their limit prices.  All the matched bid-ask pair of $M$ is then represented using matched brackets of same colors. For instance, the ask with limit price $53$ is matched to the bid with limit price $69$ in the matching $M$. Moreover, we can see that the bid with limit price $37$ is not present in $B_M$ since it is not matched to any ask in $M$.    
 
 \begin{figure}[h!]
 \centering
@@ -124,16 +125,16 @@ In any matching $M$, a bid or an ask appears at most once. We say a bid-ask pair
 
 More precisely, for a given list of bids $B$ and list of asks $A$, $M$ is a matching iff, (1) All the bid-ask pairs in $M$ are matchable, (2) $B_M$ is duplicate-free, (3) $A_M$ is duplicate-free, (4) $B_M \subseteq B$, and (5) $A_M \subseteq A$.
 
-\begin{definition}
-\tw{ \textcolor{gray}{All\_matchable} M := $\forall$ m, In m M $\rightarrow$ (ask\_of m) $\leq$ (bid\_of m).}
-\end{definition}
+%\begin{definition}
+%\tw{ \textcolor{gray}{All\_matchable} M := $\forall$ m, In m M $\rightarrow$ (ask\_of m) $\leq$ (bid\_of m).}
+%\end{definition}
 \begin{definition}
 \tw{ \textcolor{gray}{matching\_in} B A M := All\_matchable M $\land$ NoDup $B_M$ $\land$ NoDup $A_M$ $\land$ $B_M \subseteq B$ $\land$ $A_M \subseteq A$.}
 \end{definition}
-While term (\emph{\tw{NoDup $B_M$}}) in the above definition indicates that each bid is a request to trade one unit of item and the items are indivisible.  We use the term $B_M \subseteq B$  to represent \tw{Subset} relation between the lists $B_M$ and $B$. It expresses the fact that each entry in the list $B_M$ is also present in the list $B$.
+While term \emph{\tw{NoDup $B_M$}} in the above definition indicates that each bid is a request to trade one unit of item and the items are indivisible.  We use the term $B_M \subseteq B$  to represent \tw{Subset} relation between the lists $B_M$ and $B$. It expresses the fact that each entry in the list $B_M$ is also present in the list $B$.
 
 \subsection*{Lists, sublist and permutation}
-The predicate \tw{NoDup} and the \tw{Subset} relation on lists  are sufficient to define the notion of matching in a double sided auction. However, we need few more definitions to describe various proerties of matching as well as processes that operate on matching. In the following paragraphs we describe three such binary relations on lists namely \tw{sublist}, \tw{included} and \tw{perm} which are essential for stating some useful results on matching in double sided auctions. 
+While predicate \tw{NoDup} and  \tw{Subset}  are sufficient to define the notion of a matching. We need more definitions to describe the proerties of matching in a double sided auction.  In the following paragraphs we describe three such binary relations on lists namely \tw{sublist}, \tw{included} and \tw{perm} which are then used for stating  results on matching in double sided auctions. 
 
 \begin{figure}[h!]
 \centering
@@ -193,18 +194,145 @@ The term (\emph{\tw{sort s}}) in Lemma~\ref{lem:permSort} represents the list $s
 \tw{ \textcolor{gray}{ } }
 \end{lemma}
 
+-----> Motivate and explain projection functions and corresponding lemmas. 
 % Write about the projection functions  why needed and its  lemma and it's essence. 
 
 
 
-%\begin{definition}
-%\tw{ \textcolor{gray}{Is\_MM} M B A := (matching\_in B A M) $\land$ 
-%  ($\forall$ X, matching\_in B A X $\rightarrow$ |X| $\leq$ |M|)}.
-%\end{definition}
-% For a given $B$ and $A$ the expression (\emph{\tw{\textcolor{gray}{Is\_MM} M B A}}) states that $M$ is a maximum matching for the list of bids $B$ and  list of asks $A$.
 
 
+\section{Formal Analysis of Double sided auctions}
+Usually in a double sided auctions mechanism, the profit of an auctioneer is the difference between the limit prices of matched bid-ask pair. In this work we do not consider analysis of profit for the aiuctioneer. Therefore the buyer of matched bid-ask pair pays the same amout which seller recieves. This price for a matched  bid-ask pair is called the trade price for that pair. Since the limit price for a buyer is the price above which she doesn't want to buy, the trade price for this buyer is expected to be below its limit price. Similarly the limit price for a seller is the price below which he doesn't want to sell, hence the trade price for this seller is expected to be be below its limit price. Therefore it is desired that in any matching the trade price of a bid-ask pair lies between their limit prices. A matching which has this property is called an \emph{indivial rational (IR)} matching. Note that any matching can be converted to an IR matching without altering it's bid-ask pair (See Fig~\ref{fig:IR}).
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{brack_IR.pdf}
+\caption{ The colored dots represent the trade prices at which the corresponding matched bid-ask pairs are traded. While the matching $M_2$ is not IR since some dots lie outside the corresponding matched bid ask-pair. The matching $M_1$ is IR because trade prices for every matched bid-ask pair  lie inside the interval. Note that the matching $M_1$ and $M_2$ contains exactly same bid-ask pairs.}
+\label{fig:IR}
+\end{figure}
+
+The number of matched bid-ask pairs produced by any matching algorithm is crucial in the design of a double sided auction mechanism. Increasing the number of matched bid-ask pairs increases the liquidity in market. Therefor, producing a maximum matching is an important aspect of double sided auction mechanism design. For a given list of bids $B$ and list of asks $A$ we say a matching $M$ is a maximum matching if no other matching $M'$ on the same $B$ and $A$ contains more number of matched bid-ask pairs than $M$. 
+
+\begin{definition}
+\tw{ \textcolor{gray}{Is\_MM} M B A := (matching\_in B A M) $\land$ 
+($\forall$ M', matching\_in B A M' $\rightarrow$ |M'| $\leq$ |M|)}.
+\end{definition}
+
+In certain situations, to produce a maximum matching, different bid-ask pair must be assigned different trade prices. However, different prices for the same product in the same market simultaneausly leads to dissatisfaction amongst some of the traders. A machanism which clears all the matched bid-ask pairs at same trade price is called a \emph{uniform matching}. It is also known as percived-fairness (cite). In many situation it is not possible to produce an IR matching which is maximum and uniform at the same time. For example in Fig ~\ref{fig:mmum} a maximum matching of size two is possible but any uniform matching of size more than one in not possible. 
+
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.5\textwidth]{mm_um.pdf}
+\caption{In this figure two bids with limit prices 100 and 80 respectively are matched against two asks of limit price 70 and 90. There is only one matching $M_2$ of size two possible and it is not uniform.}
+\label{fig:mmum}
+\end{figure}
+
+
+\subsection{Fairness}  
+
+A bid with higher limit price is more competitive campared to bids with lower limit prices. Similaly an ask with lower limit price is more competitive campared to asks with higher limit prices. In a campetitive market, like double sided auction, it is neccesory to priortise more competitive traders for matching. A matching which priortise competitive traders is a fair matching. Consider the following predicates \tw{fair\_on\_bids} and  \tw{fair\_on\_asks} which can be used to describe a fair matching. 
+
+\begin{definition}
+\tw{ \textcolor{gray}{fair\_on\_bids} M B:=
+$\forall$ b b', In b B $\land$ In b' B -> b $>$ b' -> In b' $B_M$ -> In b $B_M$.}
+ \end{definition}
+\begin{definition}
+\tw{ \textcolor{gray}{fair\_on\_asks} M A:=
+$\forall$ s s', In s A $\land$ In s' A -> s $<$ s' -> In s' $A_M$ -> In s $A_M$. }
+\end{definition}
+\begin{definition}
+\tw{ \textcolor{gray}{Is\_fair} M B A:=
+fair\_on\_asks M A $\land$ fair\_on\_bids M B.}
+\end{definition}
+
+Here, the predicate \tw{fair\_on\_bids M B}  denotes that the matching $M$  is fair for the list of buyers $B$. Similarly,  the predecate \tw{fair\_on\_asks M A} assures that the matching $M$  is fair for the list of sellers $A$.  A matching which is fair on both the traders (i.e. $B$ and $A$) is expessed using the predecate \tw{Is\_fair M B A}.
+
+Unlike the uniform matching a fair matching can always be achieved without compromising the the size the matching. We can accopmlish this by converting any matching into a fair matching without changing its size. For example consider the following function \tw{make\_FOB}.
+
+\begin{verbatim}
+Fixpoint Make_FOB (M:list fill_type) (B: list Bid):=
+match (M,B) with 
+|(nil,_) => nil
+|(m::M',nil) => nil
+|(m::M',b::B') => (Mk_fill b (ask_of m) (tp m))::(Make_FOB M' B')
+end.
+\end{verbatim}
+
+
+The function \tw{make\_FOB} produces \tw{fair\_on\_bids} matching from a given matching M and a list of bids B, both sorted in decresing order bid prices (See Fig~\ref{fig:fair}). The function \tw{make\_FOB} is a recursive function and it replaces the largest bid in M with the largest bid in B. Since at any moment the largest bid in B is bigger than the largest bid in M, the new bid-ask pair is still matchable. Note that \tw{make\_FOB} doesn't change any of the ask in M and due to recursive nature of \tw{make\_FOB} on B, a bid is not repeated in the process of replacement.  This ensure that the new $B_M$ is duplicate-free. Once a matching is modified to a fair matching on bids, we use similar function \tw{make\_FOA} on this matching to produce a fair on ask matching. Hence the final result is a fair matching. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{make_fair.pdf}
+\caption{The dotted lines in this figure respresent  matched bid-ask pairs in  matching $M_1$, $M_2$ and $M_3$. In the first step function \tw{make\_FOB} operates on $M_1$ recursively. At each step it picks the top bid-ask pair, say $(b,a)$ in $M_1$ and replaces the bid  $b$ with most competitive bid available in $B$. The result of this process is a \tw{fair\_on\_bids} matching $M_2$. In a similar way the function \tw{make\_FOA} changes $M_2$ intro a fair on ask matching $M_3$.  }
+\label{fig:fair}
+\end{figure}
+
+For the function \tw{make\_FOB} we have following lemma prooving it fair on bids. 
+
+\begin{verbatim}
+Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
+  (Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
+  fair_on_bids (Make_FOB M B) B. 
+\end{verbatim}
+The proof of above fact is using induction on the size of matching. Note we have not kept matching in the antecedent. For example we get stuck in induction if we try to prove the following claim directly using induction.
+
+--> Insert Claim.
+Try to signify the role of sublist and how it helps. 
+
+---> Explain the final result on fairness
+\begin{verbatim}
+Theorem exists_fair_matching (M: list fill_type) (B: list Bid) (A:list Ask) (NDB: NoDup B) (NDA: NoDup A):
+  matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
+\end{verbatim}
+
+
+\subsection{Maximum Matching}
+
+The liquidity in any market is a meausre of how quickly one can trade in the market without much cost. A highly liquid market boosts the investor's confidence in the market. One way to increase the liquidity in a double sided auction is to maximize the number of matched bid-ask pair. In the previous section we have seen that any matching can be changed to a fair matching without altering its size. Therefore, we can have a maximum matching without compromising on the fairness of the matching. In this section we describe a matching which fair as well as maximum. For a given bid B and ask A, a maximum and fair matching can achieved in two steps. In first we have function \tw{produce\_MM} which produce a matching which is maximum and fair on bids. In the next step we apply \tw{make\_FOA} to this maximum matching to produce a fair on ask matching (See Fig~\ref{fig:mm}).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=.8\textwidth]{MM.pdf}
+\caption{In the first step, the function \tw{produce\_MM} operates reccursively on the list of bids B and list of asks A. At each step the function \tw{produce\_MM} selects the most competitive available bid and then pairs it with the largest mathchable ask. Note that the output of this function is fair on bid since it doesn't leave any bid from top. In the second step, the function \tw{make\_FOA} converts the $M_1$ into fair matching $M_2$. }
+\label{fig:mm}
+\end{figure}
+
+\begin{verbatim}
+Fixpoint produce_MM (B:list Bid) (A: list Ask): (list fill_type) :=
+  match (B, A) with
+  |(nil, _) => nil
+  |(b::B', nil) => nil              
+  |(b::B', a::A') => match (Nat.leb (sp a) (bp b)) with
+                    |true => ({|bid_of:= b ; ask_of:= a ; tp:=(bp b) |})::(produce_MM B' A')
+                    |false => produce_MM B A'
+                    end
+  end. 
+\end{verbatim}
+--> edit the above definition.
+
+The function \tw{produce\_MM} produces a maximum matching from a given lists of bids B and a list of asks A, both sorted in decresing order by limit prices (See Fig~\ref{fig:MM}). At each iteration it generates a matchable bid-ask pair. Due to the recursive nature of  function  \tw{produce\_MM} on both B and A, it never pair any bid with more than two asks. This ensures that the list of bids in matching $B_M$ is duplicate-free. Note that the function \tw{produce\_MM} tries to match a bid until it finds a matchable ask before pairing the next bid. The function terminates when either all the bids are matched or it encounters a bid for which no matchable ask is available. Therefore, it produces a matching which is fair on bid.
+
+\begin{verbatim}
+ Lemma produce_MM_fob (B: list Bid)(A: list Ask):
+   Sorted by_dbp B -> Sorted by_dsp A -> fair_on_bids (produce_MM B A) B.
+\end{verbatim}
+
+Talk about the maximality proof. 
+\begin{verbatim}
+Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
+   Sorted by_dbp B -> Sorted by_dsp A-> Is_MM (produce_MM B A) B A.
+\end{verbatim}
+---> Insert the proof diagram 
+---> Proof Idea. 
+
+---> Final lemmas stating that there exists a maximal and fair matching.
+\begin{verbatim}
+Theorem exists_fair_maximum (B: list Bid)(A: list Ask): exists M, (Is_fair M B A /\ Is_MM M B A).
+\end{verbatim}
+
+\section{Matching in financial markets}
 \newpage
 
  

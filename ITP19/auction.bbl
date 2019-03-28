@@ -1,5 +1,18 @@
 \begin{thebibliography}{1}
 
+\bibitem{standLib}
+\mbox{The Coq Standard Library}.
+\newblock {\verb+https://coq.inria.fr/library/+}.
+
+\bibitem{oai:HAL:hal-01673716v1}
+The coq proof assistant, version 87.1, December~15 2017.
+\newblock URL: \url{https://hal.inria.fr/hal-01673716}.
+
+\bibitem{Deshmukh:2002:TCD}
+Kaustubh Deshmukh, Andrew~V. Goldberg, Jason~D. Hartline, and Anna~R. Karlin.
+\newblock Truthful and competitive double auctions.
+\newblock {\em Lecture Notes in Computer Science}, 2461:361--??, 2002.
+
 \bibitem{friedman}
 Daniel Friedman.
 \newblock The double auction market institution: A survey.
@@ -18,6 +31,14 @@ Jinzhong Niu and Simon Parsons.
   Systems, AAMAS '13, Saint Paul, MN, USA, May 6-10, 2013}, pages 1283--1284.
   IFAAMAS, 2013.
 \newblock URL: \url{http://dl.acm.org/citation.cfm?id=2484920}.
+
+\bibitem{PassmoreI17}
+Grant~Olney Passmore and Denis Ignatovich.
+\newblock Formal verification of financial algorithms.
+\newblock In Leonardo de~Moura, editor, {\em Automated Deduction - CADE 26 -
+  26th International Conference on Automated Deduction, Gothenburg, Sweden,
+  August 6-11, 2017, Proceedings}, volume 10395 of {\em Lecture Notes in
+  Computer Science}, pages 26--41. Springer, 2017.
 
 \bibitem{WurmanWW98}
 Peter~R. Wurman, William~E. Walsh, and Michael~P. Wellman.

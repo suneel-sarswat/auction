@@ -320,11 +320,38 @@ The following theorem states that when the function \tw{produce\_MM} is given a 
 \begin{theorem}
 \tw{\textcolor{gray}{produce\_MM\_is\_MM}(Nb:NoDup B)(Na:NoDup A): Sorted  B -> Sorted A -> Is\_MM (produce\_MM B A) B A. }
 \end{theorem}
+\textbf{Proof}: We prove this result using induction on the size of list $A$. 
+\begin{itemize}
+\item Induction hypothesis (\tw{IH}): \emph{ \tw{ $\forall$ A', |A'| < |A| -> $\forall$ B, Sorted  B -> Sorted A' -> Is\_MM (produce\_MM B A') B A'.} }
+\end{itemize}
+Let $M$ be an arbitrary matching on the list of bids $B$ and list of asks $A$. Moreover, assume that $b$ and $a$ are the topmost bid and ask present in $B$ and $A$ respectively (i.e. $A = (a::A')$ and $B = (b::B')$). We need to prove that $|M| \leq$ |\tw{produce\_MM} $B$ $A$|.  We prove this inequality in  the following two cases.
+\begin{itemize}
+\item \textbf{Case-1} ($b<a$): In this case the limit price of $a$ is strictly more than the limit price of $b$.  In this case the function \tw{produce\_MM} computes a matching on $B$ and $A'$. Note that due to the induction hypotheses (i.e. \tw{IH}) this is a maximum matching for $B$ and $A'$. Since the limit price of ask $a$ is more than the most competitive bid $b$ in $B$ it cannot be present in any matching of $B$ and $A$. Therefore a maximum matching on $B$ and $A'$ is also a maximum matching on $B$ and $A$. Hence we have |$M$| $\leq$ | \tw{produce\_MM} $B$ $A$ |.
+\item \textbf{Case-2} ($a \leq b$): In this case the function \tw{produce\_MM} produces a matching of size $m + 1$ where $m$ is the size of matching \tw{produce\_MM $B'$ $A'$}.  Hence we need to prove that \tw{$|M|$ $\leq$ $m+1$}. Note that due to induction hypothesis (i.e. \tw{IH}) the matching \tw{produce\_MM $B'$ $A'$} is a maximum matching on $B'$ and $A'$.  Hence no matching on $B'$ and $A'$ can have size bigger than $m$. Without loss of generality we can assume that $M$ is also sorted in decreasing order of bid prices. Now we further split this case into the following five sub cases (see Fig~\ref{fig:mmProof}).
 
----> Insert the proof diagram 
----> Proof Idea. 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{mm_proof.pdf}
+\caption{Dotted line expresses the presense of the connected pair in the matching M. }
+\label{fig:mmProof}
+\end{figure}
 
----> Final lemmas stating that there exists a maximal and fair matching.
+\begin{itemize}
+\item \textbf{Case-2A} ($M = (b,a)::M'$) : In this case  bid $b$ is matched to ask $a$ in the matching $M$ (see Fig~\ref{fig:mmProof} (a)). Note that $M'$ is a matching on $B'$ and $A'$. Since $M' \leq m$ we have $|M|= |M'|+1 \leq m+1$.
+\item \textbf{Case-2B} (\tw{$b \notin B_M  \land a \notin A_M$}) : In this case neither bid $b$ nor ask $a$ is present in matching $M$ (see Fig~\ref{fig:mmProof} (b)). Therefore $M$ is a matching on $B'$ and $A'$. Hence we have $|M| \leq m < m+1$.
+\item \textbf{Case-2C} $(b,a') \in M \land (b',a) \in M$ : In this case we have $(b,a') \in M$ and  $(b',a) \in M$ where $a' \in A'$ and $b' \in B'$. We can obtain another matching $M_1$ of same size as $M$ (see Fig~\ref{fig:mmProof} (c)) where $(b,a) \in M_1$ and $(b',a') \in M_1$. Note that all other entries of $M_1$ is same as $M$. Therefore we have $M_1 = (b,a)::M'$ where $M'$ is a matching on $B'$ and $A'$. Since $|M'| \leq m$ we have $|M|=|M_1| \leq m+1$.
+\item \textbf{Case-2D}: $(b,a')\in M \land a \notin A_M$ : In this case we have $(b,a')\in M$ and $a \notin A_M$ where $a'\in A'$. We can obtain another matching $M_1$ of same size as $M$ (see Fig~\ref{fig:mmProof} (d)) where $(b,a) \in M_1$. 
+Therefore we have $M_1 = (b,a)::M'$ where $M'$ is a matching on $B'$ and $A'$.
+Since $|M'| \leq m$ we have $|M|=|M_1| \leq m+1$.
+\item \textbf{Case-2E}: $(b',a)\in M \land b \notin B_M$ : In this case we have $(b',a)\in M$ and $b \notin B_M$ where $b'\in B'$. We can obtain another matching $M_1$ of same size as $M$ (see Fig~\ref{fig:mmProof} (e)) where $(b,a) \in M_1$. 
+Therefore we have $M_1 = (b,a)::M'$ where $M'$ is a matching on $B'$ and $A'$.
+Since $|M'| \leq m$ we have $|M|=|M_1| \leq m+1$.
+\end{itemize}
+\end{itemize}
+Note that all the cases in the above proof correspond to the membership predicates on lists. Since we have  decidable equality on the elements of list all these predicates are also decidable. Hence, we can do case analysis on them without assuming any axiom. $\square$
+
+Now that we have prooved maximality property of \tw{produce\_MM}  one can produce a fair as well as maximum matching by applying the functions \tw{Make\_FOA}  and \tw{Make\_FOB} to the output of \tw{produce\_MM}. More precisely, for a given list of bids $B$ and list of asks $A$, we have  following result stating that there exists a matching which is both maximum and fair. 
+
 \begin{theorem}
 \tw{\textcolor{gray}{exists\_fair\_maximum} (B: list Bid)(A: list Ask): $\exists$ M, (Is\_fair M B A $\land$ Is\_MM M B A).}
 \end{theorem}

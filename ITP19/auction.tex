@@ -188,18 +188,23 @@ The term (\emph{\tw{sort s}}) in Lemma~\ref{lem:permSort} represents the list $s
 \begin{lemma}
 \tw{\textcolor{gray}{match\_inv}: perm M  M' -> perm B B' -> perm A A' -> matching\_in B A M -> matching\_in B' A' M'. }
 \end{lemma}
------> Motivate and explain projection functions and corresponding lemmas. 
-% Write about the projection functions  why needed and its  lemma and it's essence. 
+We use $B_M$ to represent the list of bids from $B$ that are matched in  $M$. Simailarly we  use notation $P_M$ to represent  a list containing trade prices of matched bid-ask pair in $M$. While proving various properties of a matching $M$ we very often base our arguments solely on the information present in $B_M$, $A_M$ and $P_M$. Therefore it is useful to have lemmas establishing the interaction of  $B_M$, $A_M$ and $P_M$ with above mentioned relations on lists. 
 
 \begin{lemma}
-\tw{ \textcolor{gray}{ } }
+\tw{\textcolor{gray}{included\_M\_imp\_included\_bids}:included $M$  $M'$ -> included $B_M$ $B_{M'}$ }.
 \end{lemma}
 
+\begin{lemma}
+\tw{\textcolor{gray}{included\_M\_imp\_included\_asks}:included $M$  $M'$ -> included $A_M$ $A_{M'}$ }
+\end{lemma}
 
+\begin{lemma}
+\tw{\textcolor{gray}{included\_M\_imp\_included\_tps}:included $M$  $M'$ -> included $P_M$ $P_{M'}$  }
+\end{lemma}
 
-
-
-
+\begin{lemma}
+\tw{\textcolor{gray}{sorted\_nodup\_is\_sublistB}: Sorted $B$ -> Sorted  $B'$ -> NoDup $B$ -> NoDup $B'$ ->  $ B \subseteq B'$  -> sublist $P_B$ $P_B'$. }
+\end{lemma}
 
 \section{Analysis of Double sided auctions}
 Usually in a double sided auctions mechanism, the profit of an auctioneer is the difference between the limit prices of matched bid-ask pair. In this work we do not consider analysis of profit for the aiuctioneer. Therefore the buyer of matched bid-ask pair pays the same amout which seller recieves. This price for a matched  bid-ask pair is called the trade price for that pair. Since the limit price for a buyer is the price above which she doesn't want to buy, the trade price for this buyer is expected to be below its limit price. Similarly the limit price for a seller is the price below which he doesn't want to sell, hence the trade price for this seller is expected to be be below its limit price. Therefore it is desired that in any matching the trade price of a bid-ask pair lies between their limit prices. A matching which has this property is called an \emph{indivial rational (IR)} matching. Note that any matching can be converted to an IR matching without altering it's bid-ask pair (See Fig~\ref{fig:IR}).
@@ -220,14 +225,12 @@ The number of matched bid-ask pairs produced by any matching algorithm is crucia
 
 In certain situations, to produce a maximum matching, different bid-ask pair must be assigned different trade prices. However, different prices for the same product in the same market simultaneausly leads to dissatisfaction amongst some of the traders. A machanism which clears all the matched bid-ask pairs at same trade price is called a \emph{uniform matching}. It is also known as percived-fairness (cite). In many situation it is not possible to produce an IR matching which is maximum and uniform at the same time. For example in Fig ~\ref{fig:mmum} a maximum matching of size two is possible but any uniform matching of size more than one in not possible. 
 
-
 \begin{figure}[h!]
 \centering
 \includegraphics[width=.5\textwidth]{mm_um.pdf}
 \caption{In this figure two bids with limit prices 100 and 80 respectively are matched against two asks of limit price 70 and 90. There is only one matching $M_2$ of size two possible and it is not uniform.}
 \label{fig:mmum}
 \end{figure}
-
 
 \subsection{Fairness}  
 
@@ -259,7 +262,6 @@ Unlike the uniform matching a fair matching can always be achieved without compr
 	  end.
 \end{verbatim}
 
-
 The function \tw{make\_FOB} produces \tw{fair\_on\_bids} matching from a given matching M and a list of bids B, both sorted in decresing order bid prices (See Fig~\ref{fig:fair}). The function \tw{make\_FOB} is a recursive function and it replaces the largest bid in M with the largest bid in B. Since at any moment the largest bid in B is bigger than the largest bid in M, the new bid-ask pair is still matchable. Note that \tw{make\_FOB} doesn't change any of the ask in M and due to recursive nature of \tw{make\_FOB} on B, a bid is not repeated in the process of replacement.  This ensure that the new $B_M$ is duplicate-free. Once a matching is modified to a fair matching on bids, we use similar function \tw{make\_FOA} on this matching to produce a fair on ask matching. Hence the final result is a fair matching. 
 
 \begin{figure}[h!]
@@ -270,28 +272,24 @@ The function \tw{make\_FOB} produces \tw{fair\_on\_bids} matching from a given m
 \end{figure}
 
 For the function \tw{make\_FOB} we have following lemma prooving it fair on bids. 
-\begin{lemma}
-\tw{ \textcolor{gray}{mfob\_fair\_on\_bid} M B A:
-  (Sorted M) -> (Sorted B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
-  fair_on_bids (Make_FOB M B) B.  }
+\begin{lemma}\label{lem:fob}
+\tw{ \textcolor{gray}{mfob\_fair\_on\_bid} M B:
+  (Sorted M) -> (Sorted B) -> sublist $P_{B_M}$ $P_B$ ->
+  fair\_on\_bids (Make\_FOB M B) B.  }
 \end{lemma}
 
-\begin{verbatim}
-Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
-  (Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
-  fair_on_bids (Make_FOB M B) B. 
-\end{verbatim}
-The proof of above fact is using induction on the size of matching. Note we have not kept matching in the antecedent. For example we get stuck in induction if we try to prove the following claim directly using induction.
+\begin{lemma}\label{lem:foa}
+\tw{ \textcolor{gray}{mfob\_fair\_on\_ask} M A: 
+ (Sorted M) -> (Sorted A) -> sublist $P_{A_M}$ $P_A$ ->
+  fair\_on\_asks (Make\_FOA M A) A.  }
+\end{lemma}
 
---> Insert Claim.
-Try to signify the role of sublist and how it helps. 
+\begin{theorem}\label{thm:fairMatching}
+\tw{ \textcolor{gray}{exists\_fair\_matching} (Nb: NoDup B)(Na: NoDup A): 
+ matching\_in B A M -> ( $\exists$ M', matching\_in B A M' $\land$ Is\_fair M' B A $\land$ |M| = |M'|). }
+\end{theorem}
 
----> Explain the final result on fairness
-\begin{verbatim}
-Theorem exists_fair_matching (M: list fill_type) (B: list Bid) (A:list Ask) (NDB: NoDup B) (NDA: NoDup A):
-  matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
-\end{verbatim}
-
+Proof of Theorem~\ref{thm:fairMatching} depends on Lemma \ref{lem:foa} and Lemma \ref{lem:fob}. Furthermore, Lemma \ref{lem:foa} and Lemma \ref{lem:fob} can be proved using induction on M. 
 
 \subsection{Maximum Matching}
 
@@ -309,33 +307,27 @@ Fixpoint produce_MM (B:list Bid) (A: list Ask): (list fill_type) :=
   match (B, A) with
   |(nil, _) => nil
   |(b::B', nil) => nil              
-  |(b::B', a::A') => match (Nat.leb (sp a) (bp b)) with
-                    |true => ({|bid_of:= b ; ask_of:= a ; tp:=(bp b) |})::(produce_MM B' A')
-                    |false => produce_MM B A'
-                    end
+  |(b::B', a::A') =>  match (a <= b) with
+     |true => ({|bid_of:= b; ask_of:= a; tp:=(bp b)|})::(produce_MM B' A')
+     |false => produce_MM B A'
+    end
   end. 
 \end{verbatim}
---> edit the above definition.
 
-The function \tw{produce\_MM} produces a maximum matching from a given lists of bids B and a list of asks A, both sorted in decresing order by limit prices (See Fig~\ref{fig:MM}). At each iteration it generates a matchable bid-ask pair. Due to the recursive nature of  function  \tw{produce\_MM} on both B and A, it never pair any bid with more than two asks. This ensures that the list of bids in matching $B_M$ is duplicate-free. Note that the function \tw{produce\_MM} tries to match a bid until it finds a matchable ask before pairing the next bid. The function terminates when either all the bids are matched or it encounters a bid for which no matchable ask is available. Therefore, it produces a matching which is fair on bid.
+At each iteration the above function generates a matchable bid-ask pair (See Fig~\ref{fig:mm}). Due to the recursive nature of  function  \tw{produce\_MM} on both B and A, it never pair any bid with more than two asks. This ensures that the list of bids in matching $B_M$ is duplicate-free. Note that the function \tw{produce\_MM} tries to match a bid until it finds a matchable ask. The function terminates when either all the bids are matched or it encounters a bid for which no matchable ask is available.  Therefore, the function \tw{produce\_MM} produces a matching from a given lists of bids B and a list of asks A, both sorted in decresing order by limit prices.  
 
-\begin{verbatim}
- Lemma produce_MM_fob (B: list Bid)(A: list Ask):
-   Sorted by_dbp B -> Sorted by_dsp A -> fair_on_bids (produce_MM B A) B.
-\end{verbatim}
+The following theorem states that when the function \tw{produce\_MM} is given a list of bids B and list of asks A, both sorted in decreasing order by limit prices, then it produces a maximum matching.
+\begin{theorem}
+\tw{\textcolor{gray}{produce\_MM\_is\_MM}(Nb:NoDup B)(Na:NoDup A): Sorted  B -> Sorted A -> Is\_MM (produce\_MM B A) B A. }
+\end{theorem}
 
-Talk about the maximality proof. 
-\begin{verbatim}
-Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
-   Sorted by_dbp B -> Sorted by_dsp A-> Is_MM (produce_MM B A) B A.
-\end{verbatim}
 ---> Insert the proof diagram 
 ---> Proof Idea. 
 
 ---> Final lemmas stating that there exists a maximal and fair matching.
-\begin{verbatim}
-Theorem exists_fair_maximum (B: list Bid)(A: list Ask): exists M, (Is_fair M B A /\ Is_MM M B A).
-\end{verbatim}
+\begin{theorem}
+\tw{\textcolor{gray}{exists\_fair\_maximum} (B: list Bid)(A: list Ask): $\exists$ M, (Is\_fair M B A $\land$ Is\_MM M B A).}
+\end{theorem}
 
 
 \section{Matching in financial markets} 
@@ -350,18 +342,13 @@ Fixpoint produce_UM (B:list Bid) (A:list Ask)  :=
   match (B,A) with
   |(nil, _) => nil
   |(_,nil)=> nil
-  |(b::B',a::A') => match Nat.leb (sp a) (bp b) with
-                 |false =>nil
-                  |true  => ({|bid_of:= b ; ask_of:= a ; tp:=(bp b) |})::produce_UM B' A'
+  |(b::B',a::A') =>  match (a <= b) with
+     |false =>nil
+     |true  => ({|bid_of:= b; ask_of:= a; tp:=(bp b)|})::produce_UM B' A'
   end
 end.
-
-Definition uniform_price (B: list Bid) (A: list Ask):=
-  (bp (bid_of (last (UM_matching B A) ((b0,a0),0)))).
-
-Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
-  replace_column (UM_matching B A) (uniform_price B A).
-
+Definition uniform_price B A := bp (bid_of (last (UM_matching B A))).
+Definition UM B A:= replace_column (UM_matching B A) (uniform_price B A).
 \end{verbatim}
 
 

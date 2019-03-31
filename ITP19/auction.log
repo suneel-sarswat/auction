@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  31 MAR 2019 19:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  31 MAR 2019 20:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1271,17 +1271,13 @@ Package pdftex.def Info: MM.pdf used on input line 300.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[8 <./make_fair.pdf>] <mm_proof.pdf, id=500, 403.68015pt x 231.36739pt>
+[8 <./make_fair.pdf>] [9 <./MM.pdf>]
+<mm_proof.pdf, id=579, 403.68015pt x 231.36739pt>
 File: mm_proof.pdf Graphic file (type pdf)
-
-<use mm_proof.pdf>
+ <use mm_proof.pdf>
 Package pdftex.def Info: mm_proof.pdf used on input line 334.
 (pdftex.def)             Requested size: 398.33858pt x 228.31656pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[9 <./MM.pdf>] [10 <./mm_proof.pdf>] [11]
+ [10 <./mm_proof.pdf>] [11]
 Overfull \hbox (3.66002pt too wide) in paragraph at lines 387--388
 [][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-orem 26. [] []\T1/lmtt/m/it/10 UM_
 is_maximal_Uniform[] (B: list Bid) (A:list Ask): Sorted B ->
@@ -1299,8 +1295,9 @@ File: UM_matching.pdf Graphic file (type pdf)
 Package pdftex.def Info: UM_matching.pdf used on input line 401.
 (pdftex.def)             Requested size: 318.67207pt x 86.2513pt.
 
-[12 <./UM.pdf> <./UM_matching.pdf>] (./auction.bbl)
+Underfull \vbox (badness 1953) has occurred while \output is active []
 
+ [12 <./UM.pdf> <./UM_matching.pdf>] (./auction.bbl) 
 AED: lastpage setting LastPage
 [13]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 418.
@@ -1313,13 +1310,13 @@ Package rerunfilecheck Info: File `auction.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 418.
  ) 
 Here is how much of TeX's memory you used:
- 15009 strings out of 493014
- 235107 string characters out of 6133351
+ 15013 strings out of 493014
+ 235153 string characters out of 6133351
  384251 words of memory out of 5000000
  18016 multiletter control sequences out of 15000+600000
- 103234 words of font info for 156 fonts, out of 8000000 for 9000
+ 103494 words of font info for 158 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,10n,46p,1100b,521s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,10n,46p,1100b,464s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
 16/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2016/texmf-d
@@ -1345,7 +1342,7 @@ exmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /public/lm/lmtti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msam10.pfb>
-Output written on auction.pdf (13 pages, 838043 bytes).
+Output written on auction.pdf (13 pages, 838378 bytes).
 PDF statistics:
  916 PDF objects out of 1000 (max. 8388607)
  380 compressed objects within 4 object streams

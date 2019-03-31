@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  31 MAR 2019 19:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  31 MAR 2019 19:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1303,14 +1303,14 @@ Package pdftex.def Info: UM_matching.pdf used on input line 401.
 
 AED: lastpage setting LastPage
 [13]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 416.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 416.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 418.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 418.
  (./auction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 416.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 416.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 418.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 418.
 Package rerunfilecheck Info: File `auction.out' has not changed.
 (rerunfilecheck)             Checksum: 89704CDEFF77BB22DF6EB5255ED981B6;646.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 416.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 418.
  ) 
 Here is how much of TeX's memory you used:
  15009 strings out of 493014
@@ -1345,7 +1345,7 @@ exmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /public/lm/lmtti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msam10.pfb>
-Output written on auction.pdf (13 pages, 837175 bytes).
+Output written on auction.pdf (13 pages, 838043 bytes).
 PDF statistics:
  916 PDF objects out of 1000 (max. 8388607)
  380 compressed objects within 4 object streams

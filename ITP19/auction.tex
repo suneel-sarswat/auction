@@ -87,7 +87,6 @@ theorem prover. This provides us a formal setting in which we prove some useful 
 in double sided auctions. Finally, we use this framework to verify properties of two important
 classes of double sided auction mechanisms. All the properties we discuss in this paper are completely
 formalized in the Coq proof assistant without adding any axiom to it. 
-This is the first work formalizing matching algorithms using double sided auctions for markets in a theorem prover. 
 \end{abstract}
 
 \section{Introduction}
@@ -426,14 +425,7 @@ Since at each step the function \tw{produce\_UM}  pairs the largest bid availabl
 
 
 \section{Conclusion}\label{sec:conclusion}
-There are several algorithms known for double sided auctions \cite{Deshmukh:2002:TCD}.
-For many applications of double sided auctions, fairness, individual rationality and uniformity are some of the essential properties required. Theorem provers can be a useful tool in the
-analysis of these properties \cite{oai:HAL:hal-01673716v1, standLib}. Formalizing an algorithm for double sided auctions in a theorem prover
-increases its reliability. 
-
-
-Previously there have been two works that formalizes some of the concepts in auctions and an attempt to formalize financial markets \cite{PassmoreI17} in a theorem prover \cite{toolbox,nash}. Prior to our work, to the best best of our knowledge, there has been no work formalizing matchings in markets. This is the first work formalizing matching algorithms using double sided auctions for markets in a theorem prover. 
-
+There are several algorithms known for double sided auctions \cite{Deshmukh:2002:TCD}. For many applications of double sided auctions, fairness, individual rationality and uniformity are some of the essential properties required. Theorem provers can be a useful tool in the analysis of these properties \cite{oai:HAL:hal-01673716v1}. Formalizing an algorithm for double sided auctions in a theorem prover increases its reliability. Previously there have been works that formalizes some of the concepts from auctions theory \cite{toolbox} in a theorem prover. There is also an  attempt by Passmore et.al. to formalize financial markets \cite{PassmoreI17}. Our work, to the best of our knowledge, is the first attempt to formalize double sided auction in a theorem prover.
 
 We formally define various notions of double sided auctions in the Coq Proof Assistant.
 Moreover, we prove some general results on matchings in a double sided auction. We use
@@ -446,8 +438,6 @@ and uniform price algorithms. In this work, we assume that each trader wishes
 to trade a single unit of product and the product is indivisible. In future this work can be
 extended to accommodate trades involving multiple units of an item. Another interesting direction of work
 would be extending this framework to include the analysis of continuous markets as well.
-
-
 
 %% Bibliography
 \bibliography{auction}

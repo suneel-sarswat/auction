@@ -4,10 +4,6 @@
 Coq formalization of auctions.
 \newblock {\verb+https://github.com/suneel-sarswat/auction+}.
 
-\bibitem{standLib}
-\mbox{The Coq Standard Library}.
-\newblock {\verb+https://coq.inria.fr/library/+}.
-
 \bibitem{oai:HAL:hal-01673716v1}
 The coq proof assistant, version 87.1, December~15 2017.
 \newblock URL: \url{https://hal.inria.fr/hal-01673716}.
@@ -21,6 +17,11 @@ Kaustubh Deshmukh, Andrew~V. Goldberg, Jason~D. Hartline, and Anna~R. Karlin.
 Daniel Friedman.
 \newblock The double auction market institution: A survey.
 \newblock 01 1993.
+
+\bibitem{toolbox}
+Manfred Kerber, Christoph Lange, Colin Rowat, and Wolfgang Windsteiger.
+\newblock Developing an auction theory toolbox.
+\newblock In {\em AISB}, volume 2013, pages 1--4. Citeseer, 2013.
 
 \bibitem{mcafee1992}
 R~Preston McAfee.

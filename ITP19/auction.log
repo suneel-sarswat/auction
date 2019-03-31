@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  31 MAR 2019 18:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  31 MAR 2019 19:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1310,10 +1310,6 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 416.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 416.
 Package rerunfilecheck Info: File `auction.out' has not changed.
 (rerunfilecheck)             Checksum: 89704CDEFF77BB22DF6EB5255ED981B6;646.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 416.
  ) 
 Here is how much of TeX's memory you used:
@@ -1349,7 +1345,7 @@ exmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /public/lm/lmtti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msam10.pfb>
-Output written on auction.pdf (13 pages, 837167 bytes).
+Output written on auction.pdf (13 pages, 837175 bytes).
 PDF statistics:
  916 PDF objects out of 1000 (max. 8388607)
  380 compressed objects within 4 object streams

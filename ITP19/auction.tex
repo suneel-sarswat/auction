@@ -76,7 +76,7 @@
 %TODO mandatory: add short abstract of the document
 \begin{abstract}
 
-In this paper we introduce a formal framework for analyzing double sided auction mechanisms in a theorem prover. In a double sided auction multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfy certain properties. For example, fairness, percieved-fairness, individual rationality are some of the important properties. These are important properties and to verify them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally, we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties we discuss in this paper are completely formalized in the Coq proof assistant without adding any axiom to it.  
+In this paper we introduce a formal framework for analysing double sided auction mechanisms in a theorem prover. In a double sided auction multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfy certain properties. For example, fairness, perceived-fairness, individual rationality are some of the important properties. These are important properties and to verify them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally, we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties we discuss in this paper are completely formalized in the Coq proof assistant without adding any axiom to it.  
 \end{abstract}
 
 \section{Introduction}
@@ -84,15 +84,15 @@ In this paper we introduce a formal framework for analyzing double sided auction
 
 Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted trading, the volume and liquidity in the markets has improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match buy requests (demands) with sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders  in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. Hence, the analysis of markets is no more feasible without the help of computers. 
 
-A potential trader (buyer or seller) places orders in the markets through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continous markets and post markets. While in the pre-markets session an opening price of a product is discovered through double sided auction. In the continous markets session the incoming buyers and sellers are continously matched against each other on a priority basis. In the post-markets session clearing of the remaining orders is done and a closing price is discovered.
+A potential trader (buyer or seller) places orders in the markets through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continuous markets and post markets. While in the pre-markets session an opening price of a product is discovered through double sided auction. In the continuous markets session the incoming buyers and sellers are continuously matched against each other on a priority basis. In the post-markets session clearing of the remaining orders is done and a closing price is discovered.
 
 A double sided auction mechanism allows multiple buyers and sellers to trade simultaneously \cite{friedman}. In double sided auctions,  auctioneer (e.g. stock exchange) collects buy and sell requests over a period. Each potential trader places the orders with a \emph{limit price}: below which a seller will not sell and above which a buyer will not buy. The exchange at the end of this period matches these orders based on their limit prices. This entire process is completed using a matching algorithm for double sided auctions.  
 
-Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}.  A major emphasis of many of these algorithms is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. While an algorithm which clears each matched bid-ask pair at a single price is referred as uniform price algorithm.  An algorithm which may clear each matched bid-ask pair at different prices is refered as  dynamic price algorithm. There are other important properties besides the number of macthes which are considered while evaluating the effectiveness of a matching algorithm. For example, fairness, uniform pricing, individual rationality are some of the relevant features used to compare these matching algorithms. However, it is known that no single algorithm can posses all of these properties \cite{WurmanWW98,mcafee1992}. 
+Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}.  A major emphasis of many of these algorithms is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. While an algorithm which clears each matched bid-ask pair at a single price is referred as uniform price algorithm.  An algorithm which may clear each matched bid-ask pair at different prices is referred as  dynamic price algorithm. There are other important properties besides the number of matches which are considered while evaluating the effectiveness of a matching algorithm. For example, fairness, uniform pricing, and individual rationality are some of the relevant features used to compare these matching algorithms. However, it is known that no single algorithm can posses all of these properties \cite{WurmanWW98,mcafee1992}. 
 
-In this paper, we describe a formal framework to analyze double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of the product and all the products are indistinguishable as well as indivisible. We have used the Coq proof assistant to formally  define the theory of double sided auctions.  Furthermore, we use this theory to validate various properties of matching algorithms. We formally prove some important properties of two algorithms; a uniform price algorithm and a dynamic price algorithm. 
+In this paper, we present a formal framework to analyse double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of product and  the product is  indivisible. In Section~\ref{sec:modeling} we formally define the theory of double sided auctions in the Coq proof assistant.  In Section~\ref{sec:analysis} we define and prove some important properties of matching algorithms in double sided auctions. In particular we present a dynamic price matching algorithm which produces a maximum as well as fair matching. In Section~\ref{sec:matchingInMarkets} we describe a uniform price matching algorithm used for price discovery in financial markets. Moreover, we prove that it produces a matching which is maximum among all possible uniform matchings.  We summarise the work in Section~\ref{sec:conclusion}  with an overview of possible future works. The Coq formalization for this paper is available at \cite{auctiongithub}.  
 
-\section{Modeling double sided auctions}
+\section{Modeling double sided auctions}\label{sec:modeling}
 To formalize the notion of matching in a double sided auction we use  list data structure.  List is also used to define various processes that operate on  a matching. However, to express the properties of these processes we need some  relations on lists which are analogous to  relations on multisets. In this section we formally define these relations which are further used for stating some important results on matching in a double sided auction.
 
 \subsection{Bid, Ask and limit price}
@@ -106,7 +106,7 @@ We can express bid as well ask using  records containing two fields.
 For a bid $b$, $(bp \; b)$  is the limit price and $(idb \; b)$ is its unique identity. Similarly for an ask $a$, $(sp \; a)$ is the limit price and $(ida \; a)$ is the unique identity of $a$. Note the use of coercion symbol \tw{ :>} in the first field of $Bid$. It declares $bp$ as an implicit function which is applied  to any term of type $Bid$ appearing in a context where a natural number is expected. Hence, now onward we can simply use $b$ instead of  ($bp \;b$) to express the limit price of $b$. Similarly we can use $a$ for the limit price of an ask $a$.
 
 
-Since equality for both the fields of $Bid$ as well as $Ask$ is decidable (i.e. \tw{nat: eqType}), the equality on $Bid$ as well as $Ask$ can also be prooved decidable. This is achieved by declaring two canonical instances \tw{bid\_eqType} and \tw{ask\_eqType} which connect $Bid$ and $Ask$ to the \tw{eqType}.  
+Since equality for both the fields of $Bid$ as well as $Ask$ is decidable (i.e. \tw{nat: eqType}), the equality on $Bid$ as well as $Ask$ can also be proved decidable. This is achieved by declaring two canonical instances \tw{bid\_eqType} and \tw{ask\_eqType} which connect $Bid$ and $Ask$ to the \tw{eqType}.  
 
 \subsection{Matching in Double Sided Auctions}
 In a double sided auction (DSA), the auctioneer collects all the buy and sell requests for a fixed duration. All the buy requests can be assumed to be present in a list $B$. Similarly, all the sell requests can be assumed to be present in a list $A$. At the time of auction, the auctioneer matches bids in $B$ against asks in $A$. We say a bid-ask pair $(b, a)$ is \emph{matchable} if $b \ge a$ (i.e. $bp \; b \ge sp \; a$).  Furthermore, the auctioneer assigns a trade price to each matched bid-ask pair. This  process results in  a matching $M$, which consists of all the matched bid-ask pairs together with their trade prices. We define matching as a list whose entries are of type \tw{fill\_type}.
@@ -172,7 +172,7 @@ Note that if $l$ is \tw{sublsit} of $s$ then $l$ is also \tw{included} in $s$ bu
 \tw{ \textcolor{gray}{sorted\_included\_sublist}: Sorted l -> Sorted s -> included l s -> sublist l s.}
 \end{lemma}
 
-\subparagraph*{perm $L_1$ $L_2$ :} A list $L_1$  is permutation of list $L_2$  iff $L_1$  is included in $L_2$ and $L_2$ is included in $L_1$.  The notion of permutation for lists is simmilar to the equality in multisets. In Fig~\ref{fig:list}(c) the list $L_1$  is perm of list $L_2$. We have following lemmas specifying the essential properties of the \tw{perm} relation.
+\subparagraph*{perm $L_1$ $L_2$ :} A list $L_1$  is permutation of list $L_2$  iff $L_1$  is included in $L_2$ and $L_2$ is included in $L_1$.  The notion of permutation for lists is similar to the equality in multisets. In Fig~\ref{fig:list}(c) the list $L_1$  is perm of list $L_2$. We have following lemmas specifying the essential properties of the \tw{perm} relation.
 
 \begin{lemma}
 \tw{ \textcolor{gray}{ perm\_intro}: ($\forall$ a, count a l = count a s) -> perm l s.}
@@ -184,11 +184,11 @@ Note that if $l$ is \tw{sublsit} of $s$ then $l$ is also \tw{included} in $s$ bu
 \tw{ \textcolor{gray}{perm\_sort}(e: T-> T-> bool): perm l s -> perm  l (sort e s).}
 \end{lemma}
 
-The term (\emph{\tw{sort s}}) in Lemma~\ref{lem:permSort} represents the list $s$ sorted using an ordering relation \tw{e}. The definition of matching as a list is neccessary for describing processes that operate on it. However, while describing various properties of a matching we can always consider it as a collection. For example, consider the following lemma which states that the property of  being a matching is invariant over permutation. 
+The term (\emph{\tw{sort s}}) in Lemma~\ref{lem:permSort} represents the list $s$ sorted using an ordering relation \tw{e}. The definition of matching as a list is necessary for describing processes that operate on it. However, while describing various properties of a matching we can always consider it as a collection. For example, consider the following lemma which states that the property of  being a matching is invariant over permutation. 
 \begin{lemma}
 \tw{\textcolor{gray}{match\_inv}: perm M  M' -> perm B B' -> perm A A' -> matching\_in B A M -> matching\_in B' A' M'. }
 \end{lemma}
-We use $B_M$ to represent the list of bids from $B$ that are matched in  $M$. Simailarly we  use notation $P_M$ to represent  a list containing trade prices of matched bid-ask pair in $M$. While proving various properties of a matching $M$ we very often base our arguments solely on the information present in $B_M$, $A_M$ and $P_M$. Therefore it is useful to have lemmas establishing the interaction of  $B_M$, $A_M$ and $P_M$ with above mentioned relations on lists. 
+We use $B_M$ to represent the list of bids from $B$ that are matched in  $M$. Similarly we  use notation $P_M$ to represent  a list containing trade prices of matched bid-ask pair in $M$. While proving various properties of a matching $M$ we very often base our arguments solely on the information present in $B_M$, $A_M$ and $P_M$. Therefore it is useful to have lemmas establishing the interaction of  $B_M$, $A_M$ and $P_M$ with above mentioned relations on lists. 
 
 \begin{lemma}
 \tw{\textcolor{gray}{included\_M\_imp\_included\_bids}:included $M$  $M'$ -> included $B_M$ $B_{M'}$ }.
@@ -206,7 +206,7 @@ We use $B_M$ to represent the list of bids from $B$ that are matched in  $M$. Si
 \tw{\textcolor{gray}{sorted\_nodup\_is\_sublistB}: Sorted $B$ -> Sorted  $B'$ -> NoDup $B$ -> NoDup $B'$ ->  $ B \subseteq B'$  -> sublist $P_B$ $P_B'$. }
 \end{lemma}
 
-\section{Analysis of Double sided auctions}
+\section{Analysis of Double sided auctions}\label{sec:analysis}
 Usually in a double sided auctions mechanism, the profit of an auctioneer is the difference between the limit prices of matched bid-ask pair. In this work we do not consider analysis of profit for the aiuctioneer. Therefore the buyer of matched bid-ask pair pays the same amout which seller recieves. This price for a matched  bid-ask pair is called the trade price for that pair. Since the limit price for a buyer is the price above which she doesn't want to buy, the trade price for this buyer is expected to be below its limit price. Similarly the limit price for a seller is the price below which he doesn't want to sell, hence the trade price for this seller is expected to be be below its limit price. Therefore it is desired that in any matching the trade price of a bid-ask pair lies between their limit prices. A matching which has this property is called an \emph{indivial rational (IR)} matching. Note that any matching can be converted to an IR matching without altering it's bid-ask pair (See Fig~\ref{fig:IR}).
 
 \begin{figure}[h!]
@@ -357,12 +357,12 @@ Now that we have prooved maximality property of \tw{produce\_MM}  one can produc
 \end{theorem}
 
 
-\section{Matching in financial markets} 
-An exchange is an organized financial market. There are various types of exchanges for example stock exchange, commodity exchange, foreign exchange etc. The job of the exchange is to facilitate trading between buyers and sellers for the products which are registered in the exchange. Many exchanges operates during a fix duartion in the day. Some exchanges devides the trading activities into multiple sessions for various reseaons. Many stock exchanges hold trading into two main session; pre-market or auction session and continous market or regular trading session. During the pre-market session an exchange collects all the bids and asks for fix duration and then apply double sided auction mechanism to these orders. At the end of the pre-market session an opening price for the product is deiscovered. During the regular sessions a bid (ask) is matched against the existing asks (bids) immedietly. If the bid (ask) is not matchable it is placed in the priority queue based on their limit price. 
+\section{Matching in financial markets}\label{sec:matchingInMarkets} 
+An exchange is an organised financial market. There are various types of exchanges for example stock exchange, commodity exchange, foreign exchange etc. The job of an exchange is to facilitate trading between buyers and sellers for the products which are registered in the exchange. Many exchanges operate during a fix duration in the day. Some exchanges divide the trading activities into multiple sessions for various reasons. Most stock exchanges hold trading into two main session; pre-market (or auction session) and continuous  market (or regular trading session). During the pre-market session an exchange collects all the bids and asks for fix duration and then apply double sided auction mechanism to these orders. At the end of the pre-market session an opening price for the product is discovered. During the regular sessions a bid (ask) is matched against the existing asks (bids) immediately. If the bid (ask) is not matchable it is placed in a priority queue based on its limit price. 
 
-The pre-market session reduces uncertenity and volatilty for the regular sessions of trading. To avoid failure on behalf of the traders the exchange must match all the bids or asks withing their limit price. So any matching produced during this session must be indivdual rational. Furthermore, the exchange must be fair towards all the traders. So the matching produced during this session be should be fair matching. One of the most important aspects of the pre-market session is to descover the price of underlying product based on the total demand and supply. This means there must be a unique price at which all the matched bid-ask pairs shuold be traded. So any matching produced during this session should produce a uniform matching. 
+The pre-market session reduces uncertainty and volatility for the regular sessions of trading. To avoid failure on behalf of the traders the exchange must match all the bids and asks within their limit prices. So any matching produced during this session must be individual rational. One of the most important aspects of the pre-market session is to discover the price of underlying product based on the total demand and supply. Furthermore, the exchange must be fair towards all the traders. So the matching produced during this session should be a fair matching.  This means discovering  a unique price at which maximum number of  bid-ask pairs can be traded. This price is also known as equilibrium price. 
 
-Most exchanges matches the bids and asks during the pre-market session at eqilibrium price.  An equlibrium price is the price at which maximum number of bids can be matched with maximum number of asks. We describe an algorithm which produces an equilibrium price. The algorithm \tw{UM} produces a individual rational matching which is fair and maximum amongst uniform matchings.
+Most exchanges matches the bids and asks during the pre-market session at equilibrium price.   We describe an algorithm which produces an equilibrium price. The algorithm \tw{UM} produces a individual rational matching which is fair and maximum amongst all uniform matchings.
 
 \begin{verbatim}
 Fixpoint produce_UM (B:list Bid) (A:list Ask)  :=
@@ -379,16 +379,34 @@ Definition UM B A:= replace_column (UM_matching B A) (uniform_price B A).
 \end{verbatim}
 
 
-The function \tw{produce\_UM} produces bid-ask pairs, \tw{uniform\_price} discover the uniform price and finally \tw{UM} produces a uniform matching. The function \tw{produce\_UM} is a recursive function which matches the largest bid with the smallest ask at each iteration (See Fig~\ref{fig:UM.pdf}). The function terminates when a bid is not matchable with an ask. Observe that in any individual rational and uniform matching the number of bids above to the trade price is same as the number of asks below to the trade price. Let $M$ be any arbitrary IR and uniform matching of size $k$ with trade price $t$. Then there are atleast $k$ bids above $t$ and $k$ asks below $t$. So natuaraaly there are at least $k$ largest bids matchable with $k$ smallest asks. Since UM algorithm pair largest bid with the smallest bid in each iteration then UM must pair at least $k$ bids with $k$ asks. Hence UM produce a matching which of size at least $k$. Therefore UM produces an IR and fair matching which maximum amongst uniform matchings. 
+The function \tw{produce\_UM} produces bid-ask pairs, \tw{uniform\_price} discover the uniform price and finally \tw{UM} produces a uniform matching. The function \tw{produce\_UM} is a recursive function which matches the largest available bid in $B$ with the smallest available ask in $A$ at each iteration (See Fig~\ref{fig:UM}). The function  \tw{produce\_UM} terminates at a step when the most competitive bid available in $B$ is not matchable with any available ask in $A$. The following theorem states that when the function \tw{produce\_UM} is given a list of bids $B$ and list of asks $A$, where $B$ is sorted in decreasing order by limit prices and $A$ is sorted in increasing order by limit prices,  it produces a maximum matching among all uniform matchings.
 
 \begin{theorem}
 \tw{
-\textcolor{gray}{UM\_is\_maximal\_Uniform} (B: list Bid) (A:list Ask): $\forall$ M: list fill\_type, Is\_uniform M -> |M| $\leq$ | (UM B A ) |
+\textcolor{gray}{UM\_is\_maximal\_Uniform} (B: list Bid) (A:list Ask): Sorted  B -> Sorted A ->$\forall$ M: list fill\_type, Is\_uniform M -> |M| $\leq$ | (UM B A ) |
 }
 \end{theorem}
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.5\textwidth]{UM.pdf}
+\caption{Dotted line expresses the presense of the connected pair in the matching M. }
+\label{fig:UM}
+\end{figure}
 
-\section{Conclusion}
+\textbf{Proof}: Let $M$ be any arbitrary IR and uniform matching on the list of bids $B$ and list of asks $A$ where each matched bid-ask pair is traded at price $t$. We need to prove that $m \leq$ |\tw{(UM $B$ $A$)}| where $m$ is the number of matched bid-ask pairs in the matching $M$. Observe that in any individual rational and uniform matching the number of bids above  trade price is same as the number of asks below the trade price (See Fig~\ref{fig:UM_match}). Therefore, there are at least $m$ bids above $t$ and $m$ asks below $t$ in $B$ and $A$ respectively. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{UM_matching.pdf}
+\caption{To be explained}
+\label{fig:UM_match}
+\end{figure}
+
+Since at each step the function \tw{produce\_UM}  pairs the largest bid available in $B$ with the smallest ask available in $A$ it must produce  at least $m$ bid-ask pairs. Hence for the list of bids $B$ and list of asks $A$ the function \tw{UM} produces a uniform matching which of size at least $m$. $\square$
+
+
+\section{Conclusion}\label{sec:conclusion}
 There has been many attempt in past to design various algorithms for double sided auctions \cite{Deshmukh:2002:TCD}. Fairness, individual rationality and uniformity are some of the critical properties on which effectiveness of these algorithms are evaluated. Theorem provers can be a  useful  tool in the analysis of these properties \cite{oai:HAL:hal-01673716v1, standLib}. There is an attempt to formalize the financial markets in theorem prover \cite{PassmoreI17}. Our work is the first attempt in formalizing double sided auction in a theorem prover. Formalizing the double sided auction in a theorem proover increases the reliability of the mechanism. Our work in future can be extended for any number of units.  
 
 

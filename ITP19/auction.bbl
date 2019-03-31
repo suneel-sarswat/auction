@@ -1,4 +1,8 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{auctiongithub}
+Coq formalization of auctions.
+\newblock {\verb+https://github.com/suneel-sarswat/auction+}.
 
 \bibitem{standLib}
 \mbox{The Coq Standard Library}.

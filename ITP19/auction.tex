@@ -18,15 +18,15 @@
 
 \titlerunning{}%optional, please use if title is longer than one line
 
-
-\author{Abhishek Kr Singh}{Tata Institute of Fundamental Research, India} {abhishek.uor@gmail.com}
-{}{}
 \author{Suneel Sarswat}{Tata Institute of Fundamental Research, India} {suneel.sarswat@gmail.com}
 {}{}
+\author{Abhishek Kr Singh}{Tata Institute of Fundamental Research, India} {abhishek.uor@gmail.com}
+{}{}
 
-\authorrunning{Abhishek and Suneel}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
 
-\Copyright{Abhishek Kr. Singh and Suneel Sarswat}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\authorrunning{Suneel and Abhishek}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{Suneel Sarswat and Abhishek Kr. Singh}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
 
 \ccsdesc[500]{Information systems~Online auctions}
 \ccsdesc[500]{Software and its engineering~Formal software verification}
@@ -76,13 +76,13 @@
 %TODO mandatory: add short abstract of the document
 \begin{abstract}
 
-In this paper we introduce a formal framework for analysing double sided auction mechanisms in a theorem prover. In a double sided auction multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfy certain properties. For example, fairness, perceived-fairness, individual rationality are some of the important properties. These are important properties and to verify them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally, we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties we discuss in this paper are completely formalized in the Coq proof assistant without adding any axiom to it.  
+In this paper we introduce a formal framework for analysing double sided auction mechanisms in a theorem prover. In a double sided auction multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfy certain properties. For example, fairness, perceived-fairness, and individual rationality are some of the important properties and  to verify them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally, we use this framework to analyse properties of two important class of double sided auction mechanism. All the properties we discuss in this paper are completely formalized in the Coq proof assistant without adding any axiom to it.  
 \end{abstract}
 
 \section{Introduction}
 \label{section1}
 
-Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted trading, the volume and liquidity in the markets has improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match buy requests (demands) with sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders  in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. Hence, the analysis of markets is no more feasible without the help of computers. 
+Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted trading, the volume and liquidity in the markets have improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match buy requests (demands) with sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders  in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. Hence, the analysis of markets is no more feasible without the help of computers. 
 
 A potential trader (buyer or seller) places orders in the markets through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continuous markets and post markets. While in the pre-markets session an opening price of a product is discovered through double sided auction. In the continuous markets session the incoming buyers and sellers are continuously matched against each other on a priority basis. In the post-markets session clearing of the remaining orders is done and a closing price is discovered.
 
@@ -207,7 +207,7 @@ We use $B_M$ to represent the list of bids from $B$ that are matched in  $M$. Si
 \end{lemma}
 
 \section{Analysis of Double sided auctions}\label{sec:analysis}
-Usually in a double sided auctions mechanism, the profit of an auctioneer is the difference between the limit prices of matched bid-ask pair. In this work we do not consider analysis of profit for the aiuctioneer. Therefore the buyer of matched bid-ask pair pays the same amout which seller recieves. This price for a matched  bid-ask pair is called the trade price for that pair. Since the limit price for a buyer is the price above which she doesn't want to buy, the trade price for this buyer is expected to be below its limit price. Similarly the limit price for a seller is the price below which he doesn't want to sell, hence the trade price for this seller is expected to be be below its limit price. Therefore it is desired that in any matching the trade price of a bid-ask pair lies between their limit prices. A matching which has this property is called an \emph{indivial rational (IR)} matching. Note that any matching can be converted to an IR matching without altering it's bid-ask pair (See Fig~\ref{fig:IR}).
+Usually in a double sided auctions mechanism, the profit of an auctioneer is the difference between the limit prices of matched bid-ask pair. In this work we do not consider analysis of profit for the auctioneer. Therefore the buyer of matched bid-ask pair pays the same amount which the seller receives. This price for a matched  bid-ask pair is called the trade price for that pair. Since the limit price for a buyer is the price above which she doesn't want to buy, the trade price for this buyer is expected to be below its limit price. Similarly the limit price for a seller is the price below which he doesn't want to sell, hence the trade price for this seller is expected to be be below its limit price. Therefore it is desired that in any matching the trade price of a bid-ask pair lies between their limit prices. A matching which has this property is called an \emph{indivial rational (IR)} matching. Note that any matching can be converted to an IR matching without altering it's bid-ask pair (See Fig~\ref{fig:IR}).
 
 \begin{figure}[h!]
 \centering
@@ -223,7 +223,7 @@ The number of matched bid-ask pairs produced by any matching algorithm is crucia
 ($\forall$ M', matching\_in B A M' $\rightarrow$ |M'| $\leq$ |M|)}.
 \end{definition}
 
-In certain situations, to produce a maximum matching, different bid-ask pair must be assigned different trade prices. However, different prices for the same product in the same market simultaneausly leads to dissatisfaction amongst some of the traders. A machanism which clears all the matched bid-ask pairs at same trade price is called a \emph{uniform matching}. It is also known as percived-fairness (cite). In many situation it is not possible to produce an IR matching which is maximum and uniform at the same time. For example in Fig ~\ref{fig:mmum} a maximum matching of size two is possible but any uniform matching of size more than one in not possible. 
+In certain situations, to produce a maximum matching, different bid-ask pair must be assigned different trade prices. However, different prices for the same product in the same market simultaneously leads to dissatisfaction amongst some of the traders. A mechanism which clears all the matched bid-ask pairs at same trade price is called a \emph{uniform matching}. It is also known as perceived-fairness (cite). In many situation it is not possible to produce an IR matching which is maximum and uniform at the same time. For example in Fig ~\ref{fig:mmum} a maximum matching of size two is possible but any uniform matching of size more than one in not possible. 
 
 \begin{figure}[h!]
 \centering
@@ -234,7 +234,7 @@ In certain situations, to produce a maximum matching, different bid-ask pair mus
 
 \subsection{Fairness}  
 
-A bid with higher limit price is more competitive campared to bids with lower limit prices. Similaly an ask with lower limit price is more competitive campared to asks with higher limit prices. In a campetitive market, like double sided auction, it is neccesory to priortise more competitive traders for matching. A matching which priortise competitive traders is a fair matching. Consider the following predicates \tw{fair\_on\_bids} and  \tw{fair\_on\_asks} which can be used to describe a fair matching. 
+A bid with higher limit price is more competitive compared to bids with lower limit prices. Similarly an ask with lower limit price is more competitive compared to asks with higher limit prices. In a competitive market, like double sided auction, it is necessary to prioritise more competitive traders for matching. A matching which prioritise competitive traders is a fair matching. Consider the following predicates \tw{fair\_on\_bids} and  \tw{fair\_on\_asks} which can be used to describe a fair matching. 
 
 \begin{definition}
 \tw{ \textcolor{gray}{fair\_on\_bids} M B:=
@@ -249,9 +249,9 @@ $\forall$ s s', In s A $\land$ In s' A -> s $<$ s' -> In s' $A_M$ -> In s $A_M$.
 fair\_on\_asks M A $\land$ fair\_on\_bids M B.}
 \end{definition}
 
-Here, the predicate \tw{fair\_on\_bids M B}  denotes that the matching $M$  is fair for the list of buyers $B$. Similarly,  the predecate \tw{fair\_on\_asks M A} assures that the matching $M$  is fair for the list of sellers $A$.  A matching which is fair on both the traders (i.e. $B$ and $A$) is expessed using the predecate \tw{Is\_fair M B A}.
+Here, the predicate \tw{fair\_on\_bids M B}  denotes that the matching $M$  is fair for the list of buyers $B$. Similarly,  the predicate \tw{fair\_on\_asks M A} assures that the matching $M$  is fair for the list of sellers $A$.  A matching which is fair on both the traders (i.e. $B$ and $A$) is expressed using the predicate \tw{Is\_fair M B A}.
 
-Unlike the uniform matching a fair matching can always be achieved without compromising the the size the matching. We can accopmlish this by converting any matching into a fair matching without changing its size. For example consider the following function \tw{make\_FOB}.
+Unlike the uniform matching a fair matching can always be achieved without compromising the size the matching. We can accomplish this by converting any matching into a fair matching without changing its size. For example, consider the following function \tw{make\_FOB}.
 
 \begin{verbatim}
 	  Fixpoint Make_FOB (M:list fill_type) (B: list Bid):=
@@ -262,12 +262,12 @@ Unlike the uniform matching a fair matching can always be achieved without compr
 	  end.
 \end{verbatim}
 
-The function \tw{make\_FOB} produces \tw{fair\_on\_bids} matching from a given matching M and a list of bids B, both sorted in decresing order bid prices (See Fig~\ref{fig:fair}). The function \tw{make\_FOB} is a recursive function and it replaces the largest bid in M with the largest bid in B. Since at any moment the largest bid in B is bigger than the largest bid in M, the new bid-ask pair is still matchable. Note that \tw{make\_FOB} doesn't change any of the ask in M and due to recursive nature of \tw{make\_FOB} on B, a bid is not repeated in the process of replacement.  This ensure that the new $B_M$ is duplicate-free. Once a matching is modified to a fair matching on bids, we use similar function \tw{make\_FOA} on this matching to produce a fair on ask matching. Hence the final result is a fair matching. 
+The function \tw{make\_FOB} produces \tw{fair\_on\_bids} matching from a given matching M and a list of bids B, both sorted in decreasing order bid prices (See Fig~\ref{fig:fair}). The function \tw{make\_FOB} is a recursive function and it replaces the largest bid in M with the largest bid in B. Since at any moment the largest bid in B is bigger than the largest bid in M, the new bid-ask pair is still matchable. Note that \tw{make\_FOB} doesn't change any of the ask in M and due to recursive nature of \tw{make\_FOB} on B, a bid is not repeated in the process of replacement.  This ensure that the new $B_M$ is duplicate-free. Once a matching is modified to a fair matching on bids, we use similar function \tw{make\_FOA} on this matching to produce a fair on ask matching. Hence the final result is a fair matching. 
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=.8\textwidth]{make_fair.pdf}
-\caption{The dotted lines in this figure respresent  matched bid-ask pairs in  matching $M_1$, $M_2$ and $M_3$. In the first step function \tw{make\_FOB} operates on $M_1$ recursively. At each step it picks the top bid-ask pair, say $(b,a)$ in $M_1$ and replaces the bid  $b$ with most competitive bid available in $B$. The result of this process is a \tw{fair\_on\_bids} matching $M_2$. In a similar way the function \tw{make\_FOA} changes $M_2$ intro a fair on ask matching $M_3$.  }
+\caption{The dotted lines in this figure represent  matched bid-ask pairs in  matching $M_1$, $M_2$ and $M_3$. In the first step function \tw{make\_FOB} operates on $M_1$ recursively. At each step it picks the top bid-ask pair, say $(b,a)$ in $M_1$ and replaces the bid  $b$ with most competitive bid available in $B$. The result of this process is a \tw{fair\_on\_bids} matching $M_2$. In a similar way the function \tw{make\_FOA} changes $M_2$ intro a fair on ask matching $M_3$.  }
 \label{fig:fair}
 \end{figure}
 
@@ -293,12 +293,12 @@ Proof of Theorem~\ref{thm:fairMatching} depends on Lemma \ref{lem:foa} and Lemma
 
 \subsection{Maximum Matching}
 
-The liquidity in any market is a meausre of how quickly one can trade in the market without much cost. A highly liquid market boosts the investor's confidence in the market. One way to increase the liquidity in a double sided auction is to maximize the number of matched bid-ask pair. In the previous section we have seen that any matching can be changed to a fair matching without altering its size. Therefore, we can have a maximum matching without compromising on the fairness of the matching. In this section we describe a matching which fair as well as maximum. For a given bid B and ask A, a maximum and fair matching can achieved in two steps. In first we have function \tw{produce\_MM} which produce a matching which is maximum and fair on bids. In the next step we apply \tw{make\_FOA} to this maximum matching to produce a fair on ask matching (See Fig~\ref{fig:mm}).
+The liquidity in any market is a measure of how quickly one can trade in the market without much cost. A highly liquid market boosts the investor's confidence in the market. One way to increase the liquidity in a double sided auction is to maximize the number of matched bid-ask pair. In the previous section we have seen that any matching can be changed to a fair matching without altering its size. Therefore, we can have a maximum matching without compromising on the fairness of the matching. In this section we describe a matching which fair as well as maximum. For a given bid B and ask A, a maximum and fair matching can achieved in two steps. In first we have function \tw{produce\_MM} which produce a matching which is maximum and fair on bids. In the next step we apply \tw{make\_FOA} to this maximum matching to produce a fair on ask matching (See Fig~\ref{fig:mm}).
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=.8\textwidth]{MM.pdf}
-\caption{In the first step, the function \tw{produce\_MM} operates reccursively on the list of bids B and list of asks A. At each step the function \tw{produce\_MM} selects the most competitive available bid and then pairs it with the largest mathchable ask. Note that the output of this function is fair on bid since it doesn't leave any bid from top. In the second step, the function \tw{make\_FOA} converts the $M_1$ into fair matching $M_2$. }
+\caption{In the first step, the function \tw{produce\_MM} operates recursively on the list of bids B and list of asks A. At each step the function \tw{produce\_MM} selects the most competitive available bid and then pairs it with the largest matchable ask. Note that the output of this function is fair on bid since it doesn't leave any bid from top. In the second step, the function \tw{make\_FOA} converts the $M_1$ into fair matching $M_2$. }
 \label{fig:mm}
 \end{figure}
 
@@ -314,7 +314,7 @@ Fixpoint produce_MM (B:list Bid) (A: list Ask): (list fill_type) :=
   end. 
 \end{verbatim}
 
-At each iteration the above function generates a matchable bid-ask pair (See Fig~\ref{fig:mm}). Due to the recursive nature of  function  \tw{produce\_MM} on both B and A, it never pair any bid with more than two asks. This ensures that the list of bids in matching $B_M$ is duplicate-free. Note that the function \tw{produce\_MM} tries to match a bid until it finds a matchable ask. The function terminates when either all the bids are matched or it encounters a bid for which no matchable ask is available.  Therefore, the function \tw{produce\_MM} produces a matching from a given lists of bids B and a list of asks A, both sorted in decresing order by limit prices.  
+At each iteration the above function generates a matchable bid-ask pair (See Fig~\ref{fig:mm}). Due to the recursive nature of  function  \tw{produce\_MM} on both B and A, it never pair any bid with more than two asks. This ensures that the list of bids in matching $B_M$ is duplicate-free. Note that the function \tw{produce\_MM} tries to match a bid until it finds a matchable ask. The function terminates when either all the bids are matched or it encounters a bid for which no matchable ask is available.  Therefore, the function \tw{produce\_MM} produces a matching from a given lists of bids B and a list of asks A, both sorted in decreasing order by limit prices.  
 
 The following theorem states that when the function \tw{produce\_MM} is given a list of bids B and list of asks A, both sorted in decreasing order by limit prices, then it produces a maximum matching.
 \begin{theorem}
@@ -332,7 +332,7 @@ Let $M$ be an arbitrary matching on the list of bids $B$ and list of asks $A$. M
 \begin{figure}[h!]
 \centering
 \includegraphics[width=1\textwidth]{mm_proof.pdf}
-\caption{Dotted line expresses the presense of the connected pair in the matching M. }
+\caption{This figure shows all the five sub cases of Case-2 (i.e. when $b \geq a$). The dotted line shows presence of the connected pair in matching $M$.  Both the list of bids $B$ and list of asks $A$ are sorted in decreasing order of their limit prices. Moreover, we assume $B = b::B'$ and $A = a::A'$.  }
 \label{fig:mmProof}
 \end{figure}
 
@@ -348,9 +348,9 @@ Therefore we have $M_1 = (b,a)::M'$ where $M'$ is a matching on $B'$ and $A'$.
 Since $|M'| \leq m$ we have $|M|=|M_1| \leq m+1$.
 \end{itemize}
 \end{itemize}
-Note that all the cases in the above proof correspond to the membership predicates on lists. Since we have  decidable equality on the elements of list all these predicates are also decidable. Hence, we can do case analysis on them without assuming any axiom. $\square$
+Note that all the cases in the above proof correspond to  predicates which can be expressed using  membership predicate on lists. Since we have  decidable equality on the elements of list all these predicates are also decidable. Hence, we can do case analysis on them without assuming any axiom. $\square$
 
-Now that we have prooved maximality property of \tw{produce\_MM}  one can produce a fair as well as maximum matching by applying the functions \tw{Make\_FOA}  and \tw{Make\_FOB} to the output of \tw{produce\_MM}. More precisely, for a given list of bids $B$ and list of asks $A$, we have  following result stating that there exists a matching which is both maximum and fair. 
+Now that we  proved maximality property of \tw{produce\_MM}  one can produce a fair as well as maximum matching by applying the functions \tw{Make\_FOA}  and \tw{Make\_FOB} to the output of \tw{produce\_MM}. More precisely, for a given list of bids $B$ and list of asks $A$, we have  following result stating that there exists a matching which is both maximum and fair. 
 
 \begin{theorem}
 \tw{\textcolor{gray}{exists\_fair\_maximum} (B: list Bid)(A: list Ask): $\exists$ M, (Is\_fair M B A $\land$ Is\_MM M B A).}
@@ -383,14 +383,14 @@ The function \tw{produce\_UM} produces bid-ask pairs, \tw{uniform\_price} discov
 
 \begin{theorem}
 \tw{
-\textcolor{gray}{UM\_is\_maximal\_Uniform} (B: list Bid) (A:list Ask): Sorted  B -> Sorted A ->$\forall$ M: list fill\_type, Is\_uniform M -> |M| $\leq$ | (UM B A ) |
+\textcolor{gray}{UM\_is\_maximal\_Uniform} (B: list Bid) (A:list Ask): Sorted  B -> Sorted A -> $\forall$ M: list fill\_type, Is\_uniform M -> |M| $\leq$ | (UM B A ) |
 }
 \end{theorem}
 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth]{UM.pdf}
-\caption{Dotted line expresses the presense of the connected pair in the matching M. }
+\caption{(a) The dotted lines indicate all the bid-ask pair  produced by function \tw{produce\_UM}. In each iteration function \tw{produce\_UM}  matches the largest available bid in $B$ with the smallest available ask in $A$.  (b) The dotted lines here indicate a maximum matching for the list of bids $B$ and list of asks $A$. Note that in this case the matching produced by \tw{UM} is not a maximum matching. }
 \label{fig:UM}
 \end{figure}
 
@@ -399,7 +399,7 @@ The function \tw{produce\_UM} produces bid-ask pairs, \tw{uniform\_price} discov
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.8\textwidth]{UM_matching.pdf}
-\caption{To be explained}
+\caption{ Trade price $p$ for the matching $M$ is shown using a dot that lies between the ask with limit price 90 and bid with limit price 91. Note that since $M$ is individual rational the number of matched asks below the trade price $p$ is same as number of matched bids above the trade price $p$. }
 \label{fig:UM_match}
 \end{figure}
 
@@ -407,7 +407,7 @@ Since at each step the function \tw{produce\_UM}  pairs the largest bid availabl
 
 
 \section{Conclusion}\label{sec:conclusion}
-There has been many attempt in past to design various algorithms for double sided auctions \cite{Deshmukh:2002:TCD}. Fairness, individual rationality and uniformity are some of the critical properties on which effectiveness of these algorithms are evaluated. Theorem provers can be a  useful  tool in the analysis of these properties \cite{oai:HAL:hal-01673716v1, standLib}. There is an attempt to formalize the financial markets in theorem prover \cite{PassmoreI17}. Our work is the first attempt in formalizing double sided auction in a theorem prover. Formalizing the double sided auction in a theorem proover increases the reliability of the mechanism. Our work in future can be extended for any number of units.  
+There has been many attempt in past to design various algorithms for double sided auctions \cite{Deshmukh:2002:TCD}. Fairness, individual rationality and uniformity are some of the critical properties on which effectiveness of these algorithms are evaluated. Theorem provers can be a  useful  tool in the analysis of these properties \cite{oai:HAL:hal-01673716v1, standLib}. There is an attempt to formalize the financial markets in theorem prover \cite{PassmoreI17}. Our work is the first attempt in formalizing double sided auction in a theorem prover. Formalizing the double sided auction in a theorem prover increases the reliability of the mechanism. Our work in future can be extended for any number of units.  
 
 
 %% Bibliography

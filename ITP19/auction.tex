@@ -76,21 +76,40 @@
 %TODO mandatory: add short abstract of the document
 \begin{abstract}
 
-In this paper we introduce a formal framework for analysing double sided auction mechanisms in a theorem prover. In a double sided auction multiple buyers and sellers participate for trade. Any mechanism for double sided auctions to match buyers and sellers should satisfy certain properties. For example, fairness, perceived-fairness, and individual rationality are some of the important properties and  to verify them we need a formal setting. We formally define all these notions in a theorem prover. This provides us a  formal setting in which we prove some useful results on matching in a double sided auction. Finally, we use this framework to verify properties of two important class of double sided auction mechanism. All the properties we discuss in this paper are completely formalized in the Coq proof assistant without adding any axiom to it.  
+
+In this paper we introduce a formal framework for analysing double sided auction mechanisms in
+a theorem prover. In financial markets double sided auctions are used for price discovery. 
+In a double sided auction multiple buyers and sellers participate for trade. Any
+mechanism for double sided auctions to match buyers and sellers should satisfy certain properties.
+For example, fairness, perceived-fairness, and individual rationality are some of the important
+properties and to verify them we need a formal setting. We formally define all these notions in a
+theorem prover. This provides us a formal setting in which we prove some useful results on matchings
+in double sided auctions. Finally, we use this framework to verify properties of two important
+classes of double sided auction mechanisms. All the properties we discuss in this paper are completely
+formalized in the Coq proof assistant without adding any axiom to it. 
+This is the first work formalizing matching algorithms using double sided auctions for markets in a theorem prover. 
 \end{abstract}
 
 \section{Introduction}
 \label{section1}
 
-Trading is a principal component of all modern economy. Over the century more and more complex instruments (for example, index, future, options etc.) are being introduced to trade in the financial markets. With the arrival of computer assisted trading, the volume and liquidity in the markets have improved significantly. Today all big stock exchanges use computer algorithms (matching algorithms) to match buy requests (demands) with sell requests (supplies) of traders. Computer algorithms are also used by many traders to place orders  in the markets. This is known as algorithmic trading.  As a result of all this the markets has become complex and large. Hence, the analysis of markets is no more feasible without the help of computers. 
+Trading is a principal component of all modern economy. Over the century more and more
+complex instruments (for example, index, future, options etc.) are being introduced to
+trade in the financial markets. With the arrival of computer assisted trading, the volume
+and liquidity in the markets have improved significantly. Today all big stock exchanges
+use computer algorithms (matching algorithms) to match buy requests (demands) with sell
+requests (supplies) of traders. Computer algorithms are also used by many traders to place
+orders in the markets \footnote{This is known as algorithmic trading.}. As a result of all this the
+markets has become complex and large. Hence, the analysis of markets is no more feasible
+without the help of computers. 
 
-A potential trader (buyer or seller) places orders in the markets through a broker. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as pre-markets, continuous markets and post markets. While in the pre-markets session an opening price of a product is discovered through double sided auction. In the continuous markets session the incoming buyers and sellers are continuously matched against each other on a priority basis. In the post-markets session clearing of the remaining orders is done and a closing price is discovered.
+A potential trader (buyer or seller) places orders in the markets. These orders are matched by the stock exchange to execute trades. Most stock exchanges divide the trading activity into three main sessions known as per-market, continuous market and post market. In the pre-market session an opening price of a product is discovered through a double sided auction. In the continuous market session the incoming buyers and sellers are continuously matched against each other on a priority basis. In the post-market session clearing of the remaining orders is done and a closing price is discovered.
 
-A double sided auction mechanism allows multiple buyers and sellers to trade simultaneously \cite{friedman}. In double sided auctions,  auctioneer (e.g. stock exchange) collects buy and sell requests over a period. Each potential trader places the orders with a \emph{limit price}: below which a seller will not sell and above which a buyer will not buy. The exchange at the end of this period matches these orders based on their limit prices. This entire process is completed using a matching algorithm for double sided auctions.  
+A double sided auction mechanism allows multiple buyers and sellers to trade simultaneously \cite{friedman}. In double sided auctions, the auctioneer (e.g. a stock exchange) collects buy and sell requests over a period of time. Each potential trader places the orders with a limit price: below which a seller will not sell and above which a buyer will not buy. The exchange at the end of this time period matches these orders based on their limit prices. This entire process is completed using a double sided auction matching algorithm.
 
-Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}.  A major emphasis of many of these algorithms is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. While an algorithm which clears each matched bid-ask pair at a single price is referred as uniform price algorithm.  An algorithm which may clear each matched bid-ask pair at different prices is referred as  dynamic price algorithm. There are other important properties besides the number of matches which are considered while evaluating the effectiveness of a matching algorithm. For example, fairness, uniform pricing, and individual rationality are some of the relevant features used to compare these matching algorithms. However, it is known that no single algorithm can posses all of these properties \cite{WurmanWW98,mcafee1992}. 
+Designing algorithms for double sided auctions is a well studied topic \cite{mcafee1992, WurmanWW98,NiuP13, ZhaoZKP10}. A major emphasis of many of these algorithms is to maximize the number of matches or maximize the profit of the auctioneer. Note that an increase in the number of matches increases the liquidity in the markets. A matching algorithm can produce a matching with a uniform price or a matching with dynamic prices. An algorithm which clears each matched bid-ask pair at a single price is called a uniform price algorithm. An algorithm which may clear each matched bid-ask pair at different prices is called a dynamic price algorithm. There are other important properties besides the number of matches which are considered while evaluating the effectiveness of a matching algorithm. For example, fairness, uniform pricing, and individual rationality are some of the relevant features used to compare these matching algorithms. However, it is known that no single algorithm can posses all of these properties simultaneously \cite{WurmanWW98,mcafee1992}.
 
-In this paper, we present a formal framework to analyse double sided auctions using a theorem prover.  For this work, we assume that each trader wishes to trade a single unit of product and  the product is  indivisible. In Section~\ref{sec:modeling} we formally define the theory of double sided auctions in the Coq proof assistant.  In Section~\ref{sec:analysis} we define and prove some important properties of matching algorithms in double sided auctions. In particular we present a dynamic price matching algorithm which produces a maximum as well as fair matching. In Section~\ref{sec:matchingInMarkets} we describe a uniform price matching algorithm used for price discovery in financial markets. Moreover, we prove that it produces a matching which is maximum among all possible uniform matchings.  We summarise the work in Section~\ref{sec:conclusion}  with an overview of possible future works. The Coq formalization for this paper is available at \cite{auctiongithub}.  
+In this paper, we present a formal framework to analyze double sided auctions using a theorem prover. For this work, we assume that each trader wishes to trade a single unit of product and the product is indivisible. In Section~\ref{sec:modeling} we formally define the theory of double sided auctions in the Coq proof assistant. In Section~\ref{sec:analysis} we define and prove some important properties of matching algorithms in double sided auctions. In particular we present a dynamic price matching algorithm which produces a maximum as well as a fair matching. In Section~\ref{sec:matchingInMarkets} we describe a uniform price matching algorithm used for price discovery in financial markets. Moreover, we prove that it produces a matching which is maximum among all possible uniform matchings. We summarize the work in Section~\ref{sec:conclusion} with an overview of possible future works. The Coq formalization for this paper is available at \cite{auctiongithub}.  
 
 \section{Modeling double sided auctions}\label{sec:modeling}
 To formalize the notion of matching in a double sided auction we use  list data structure.  List is also used to define various processes that operate on  a matching. However, to express the properties of these processes we need some  relations on lists which are analogous to  relations on multisets. In this section we formally define these relations which are further used for stating some important results on matching in a double sided auction.
@@ -271,7 +290,7 @@ The function \tw{make\_FOB} produces a \tw{fair\_on\_bids} matching from a given
 \label{fig:fair}
 \end{figure}
 
-More precisely, for the function \tw{make\_FOB} and \tw{make\_FOA} we have the following lemmas prooving it fair on bids and fair on asks respectively. 
+More precisely, for the function \tw{make\_FOB} and \tw{make\_FOA} we have the following lemmas proving it fair on bids and fair on asks respectively. 
 \begin{lemma}\label{lem:fob}
 \tw{ \textcolor{gray}{mfob\_fair\_on\_bid} M B:
   (Sorted M) -> (Sorted B) -> sublist $P_{B_M}$ $P_B$ ->
@@ -358,11 +377,11 @@ Now that we  proved maximality property of \tw{produce\_MM}  one can produce a f
 
 
 \section{Matching in financial markets}\label{sec:matchingInMarkets} 
-An exchange is an organised financial market. There are various types of exchanges for example stock exchange, commodity exchange, foreign exchange etc. The job of an exchange is to facilitate trading between buyers and sellers for the products which are registered in the exchange. Many exchanges operate during a fix duration in the day. Some exchanges divide the trading activities into multiple sessions for various reasons. Most stock exchanges hold trading into two main session; pre-market (or auction session) and continuous  market (or regular trading session). During the pre-market session an exchange collects all the bids and asks for fix duration and then apply double sided auction mechanism to these orders. At the end of the pre-market session an opening price for the product is discovered. During the regular sessions a bid (ask) is matched against the existing asks (bids) immediately. If the bid (ask) is not matchable it is placed in a priority queue based on its limit price. 
+An exchange is an organized financial market. There are various types of exchanges for example stock exchange, commodity exchange, foreign exchange etc. The job of an exchange is to facilitate trading between buyers and sellers for the products which are registered in the exchange. Many exchanges operate during a fix duration in the day. Some exchanges divide the trading activities into multiple sessions for various reasons. Most stock exchanges hold trading into two main session; pre-market (or auction session) and continuous  market (or regular trading session). During the pre-market session an exchange collects all the bids and asks for fix duration and then apply double sided auction mechanism to these orders. At the end of the pre-market session an opening price for the product is discovered. During the regular sessions a bid (ask) is matched against the existing asks (bids) immediately. If the bid (ask) is not matchable it is placed in a priority queue based on its limit price. 
 
 The pre-market session reduces uncertainty and volatility for the regular sessions of trading. To avoid failure on behalf of the traders the exchange must match all the bids and asks within their limit prices. So any matching produced during this session must be individual rational. One of the most important aspects of the pre-market session is to discover the price of underlying product based on the total demand and supply. Furthermore, the exchange must be fair towards all the traders. So the matching produced during this session should be a fair matching.  This means discovering  a unique price at which maximum number of  bid-ask pairs can be traded. This price is also known as equilibrium price. 
 
-Most exchanges matches the bids and asks during the pre-market session at equilibrium price.   We describe an algorithm which produces an equilibrium price. The algorithm \tw{UM} produces a individual rational matching which is fair and maximum amongst all uniform matchings.
+Most exchanges matches the bids and asks during the pre-market session at equilibrium price.   We describe an algorithm which produces an equilibrium price. The algorithm \tw{UM} produces a individual rational matching which is fair and maximum among all uniform matchings.
 
 \begin{verbatim}
 Fixpoint produce_UM (B:list Bid) (A:list Ask)  :=
@@ -407,9 +426,27 @@ Since at each step the function \tw{produce\_UM}  pairs the largest bid availabl
 
 
 \section{Conclusion}\label{sec:conclusion}
-There have been many attempts in past to design algorithms for double sided auctions \cite{Deshmukh:2002:TCD}. Fairness, individual rationality and uniformity are some of the essential properties on which effectiveness of these algorithms are evaluated. Theorem provers can be a  useful  tool in the analysis of these properties \cite{oai:HAL:hal-01673716v1, standLib}. Formalizing the double sided auction in a theorem prover increases the reliability of the mechanism. There is an attempt to formalize the financial markets in theorem prover \cite{PassmoreI17}. Our work is the first attempt to formalize double sided auction in a theorem prover.
+There are several algorithms known for double sided auctions \cite{Deshmukh:2002:TCD}.
+For many applications of double sided auctions, fairness, individual rationality and uniformity are some of the essential properties required. Theorem provers can be a useful tool in the
+analysis of these properties \cite{oai:HAL:hal-01673716v1, standLib}. Formalizing an algorithm for double sided auctions in a theorem prover
+increases its reliability. 
 
- We formally define various notions of double sided auctions in the Coq Proof Assistant. Moreover, we prove some general results on matching in a double sided auction. We use lists to define the notion of matching in a double sided auction. To express the properties of various processes operating on a matching we need some  relations on lists. We define these relations and develop a library of facts on these relations which is further used to prove  important results on matching in a double sided auction. Finally, we use this formal setting to verify properties of two important class of matching algorithms known as dynamic price algorithm and uniform price algorithm. In this work, we assume that each trader wishes to trade a single unit of product and  the product is  indivisible.  In future this work can be extended to accommodate trades involving multiple units of item. Another direction of work could be extending this framework to include the analysis of continuous markets as well.
+
+Previously there have been two works that formalizes some of the concepts in auctions and an attempt to formalize financial markets \cite{PassmoreI17} in a theorem prover \cite{toolbox,nash}. Prior to our work, to the best best of our knowledge, there has been no work formalizing matchings in markets. This is the first work formalizing matching algorithms using double sided auctions for markets in a theorem prover. 
+
+
+We formally define various notions of double sided auctions in the Coq Proof Assistant.
+Moreover, we prove some general results on matchings in a double sided auction. We use
+lists to define the notion of a matching. To express the properties
+of various processes operating on a matching we need some relations on lists. We define
+these relations and develop a library of facts on these relations which is further used to prove
+important results on matchings in a double sided auction. Finally, we use this formal setting
+to verify properties of two important classes of matching algorithms known as dynamic price
+and uniform price algorithms. In this work, we assume that each trader wishes
+to trade a single unit of product and the product is indivisible. In future this work can be
+extended to accommodate trades involving multiple units of an item. Another interesting direction of work
+would be extending this framework to include the analysis of continuous markets as well.
+
 
 
 %% Bibliography

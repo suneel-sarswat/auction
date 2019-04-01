@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  1 APR 2019 00:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  1 APR 2019 11:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1206,14 +1206,14 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [2]
-<brack_matching.pdf, id=106, 339.8266pt x 163.29907pt>
+<brack_matching.pdf, id=104, 339.8266pt x 163.29907pt>
 File: brack_matching.pdf Graphic file (type pdf)
 
 <use brack_matching.pdf>
 Package pdftex.def Info: brack_matching.pdf used on input line 139.
 (pdftex.def)             Requested size: 318.67207pt x 153.13734pt.
  [3 <./brack_matching.pdf>]
-<sub_inclu_perm.pdf, id=196, 417.96149pt x 209.46556pt>
+<sub_inclu_perm.pdf, id=194, 417.96149pt x 209.46556pt>
 File: sub_inclu_perm.pdf Graphic file (type pdf)
 
 <use sub_inclu_perm.pdf>
@@ -1239,13 +1239,13 @@ d_M_imp_included_asks[]:included $\OML/lmm/m/it/10 M$ $M[]$ \T1/lmtt/m/it/10 ->
  included $\OML/lmm/m/it/10 A[]$ $A[]$ 
  []
 
-[5] <brack_IR.pdf, id=308, 340.17638pt x 96.70729pt>
+[5] <brack_IR.pdf, id=306, 340.17638pt x 96.70729pt>
 File: brack_IR.pdf Graphic file (type pdf)
  <use brack_IR.pdf>
 Package pdftex.def Info: brack_IR.pdf used on input line 232.
 (pdftex.def)             Requested size: 318.67207pt x 90.5979pt.
 
-<mm_um.pdf, id=310, 224.3281pt x 81.62294pt>
+<mm_um.pdf, id=308, 224.3281pt x 81.62294pt>
 File: mm_um.pdf Graphic file (type pdf)
  <use mm_um.pdf>
 Package pdftex.def Info: mm_um.pdf used on input line 248.
@@ -1254,7 +1254,7 @@ Package pdftex.def Info: mm_um.pdf used on input line 248.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6 <./brack_IR.pdf>] <make_fair.pdf, id=380, 463.8369pt x 199.7874pt>
+[6 <./brack_IR.pdf>] <make_fair.pdf, id=378, 463.8369pt x 199.7874pt>
 File: make_fair.pdf Graphic file (type pdf)
 
 <use make_fair.pdf>
@@ -1270,7 +1270,7 @@ Overfull \hbox (3.66002pt too wide) in paragraph at lines 307--308
 sts_fair_matching[] (Nb: NoDup B)(Na: NoDup A): matching_in
  []
 
-[7 <./mm_um.pdf>] <MM.pdf, id=420, 463.8369pt x 199.7874pt>
+[7 <./mm_um.pdf>] <MM.pdf, id=418, 463.8369pt x 199.7874pt>
 File: MM.pdf Graphic file (type pdf)
  <use MM.pdf>
 Package pdftex.def Info: MM.pdf used on input line 318.
@@ -1280,7 +1280,7 @@ Package pdftex.def Info: MM.pdf used on input line 318.
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [8 <./make_fair.pdf>] [9 <./MM.pdf>]
-<mm_proof.pdf, id=582, 403.68015pt x 231.36739pt>
+<mm_proof.pdf, id=580, 403.68015pt x 231.36739pt>
 File: mm_proof.pdf Graphic file (type pdf)
  <use mm_proof.pdf>
 Package pdftex.def Info: mm_proof.pdf used on input line 352.
@@ -1291,13 +1291,13 @@ Overfull \hbox (3.66002pt too wide) in paragraph at lines 405--406
 is_maximal_Uniform[] (B: list Bid) (A:list Ask): Sorted B ->
  []
 
-<UM.pdf, id=681, 282.28261pt x 199.64587pt>
+<UM.pdf, id=679, 282.28261pt x 199.64587pt>
 File: UM.pdf Graphic file (type pdf)
  <use UM.pdf>
 Package pdftex.def Info: UM.pdf used on input line 410.
 (pdftex.def)             Requested size: 199.16928pt x 140.86305pt.
 
-<UM_matching.pdf, id=683, 348.19707pt x 94.24109pt>
+<UM_matching.pdf, id=681, 348.19707pt x 94.24109pt>
 File: UM_matching.pdf Graphic file (type pdf)
  <use UM_matching.pdf>
 Package pdftex.def Info: UM_matching.pdf used on input line 419.
@@ -1308,23 +1308,23 @@ Underfull \vbox (badness 1953) has occurred while \output is active []
  [12 <./UM.pdf> <./UM_matching.pdf>] (./auction.bbl) 
 AED: lastpage setting LastPage
 [13]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 445.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 445.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 444.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 444.
  (./auction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 445.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 445.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 444.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 444.
 Package rerunfilecheck Info: File `auction.out' has not changed.
 (rerunfilecheck)             Checksum: 89704CDEFF77BB22DF6EB5255ED981B6;646.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 445.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 444.
  ) 
 Here is how much of TeX's memory you used:
- 15068 strings out of 493014
- 236132 string characters out of 6133351
+ 15066 strings out of 493014
+ 236104 string characters out of 6133351
  383251 words of memory out of 5000000
  18057 multiletter control sequences out of 15000+600000
- 122029 words of font info for 181 fonts, out of 8000000 for 9000
+ 121899 words of font info for 180 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,10n,46p,1100b,464s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 43i,10n,46p,1089b,464s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
 16/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2016/texmf-d
@@ -1350,7 +1350,7 @@ exmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /public/lm/lmtti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msam10.pfb>
-Output written on auction.pdf (13 pages, 838401 bytes).
+Output written on auction.pdf (13 pages, 838304 bytes).
 PDF statistics:
  922 PDF objects out of 1000 (max. 8388607)
  386 compressed objects within 4 object streams

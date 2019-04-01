@@ -16,51 +16,48 @@ Warning--I'm ignoring NiuP13's extra "booktitle" field
 --line 84 of file auction.bib
 Warning--I'm ignoring PassmoreI17's extra "booktitle" field
 --line 128 of file auction.bib
-A bad cross reference---entry "ZhaoZKP10"
-refers to entry "conf/ausai/2010", which doesn't exist
-Warning--I didn't find a database entry for "conf/ausai/2010"
 Warning--to sort, need author or key in auctiongithub
 Warning--to sort, need author or key in oai:HAL:hal-01673716v1
 Warning--empty journal in friedman
 You've used 10 entries,
             2849 wiz_defined-function locations,
-            692 strings with 6899 characters,
-and the built_in function-call counts, 4764 in all, are:
-= -- 494
-> -- 165
-< -- 7
-+ -- 61
-- -- 48
-* -- 260
-:= -- 671
+            689 strings with 6904 characters,
+and the built_in function-call counts, 4622 in all, are:
+= -- 483
+> -- 151
+< -- 6
++ -- 56
+- -- 43
+* -- 240
+:= -- 648
 add.period$ -- 33
 call.type$ -- 10
-change.case$ -- 51
+change.case$ -- 49
 chr.to.int$ -- 0
 cite$ -- 13
-duplicate$ -- 151
-empty$ -- 453
-format.name$ -- 48
-if$ -- 1232
+duplicate$ -- 148
+empty$ -- 448
+format.name$ -- 43
+if$ -- 1205
 int.to.chr$ -- 0
 int.to.str$ -- 10
 missing$ -- 8
 newline$ -- 52
-num.names$ -- 22
+num.names$ -- 20
 pop$ -- 104
 preamble$ -- 1
-purify$ -- 41
+purify$ -- 39
 quote$ -- 0
-skip$ -- 337
+skip$ -- 332
 stack$ -- 0
-substring$ -- 231
-swap$ -- 50
-text.length$ -- 7
+substring$ -- 226
+swap$ -- 46
+text.length$ -- 6
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 40
 warning$ -- 3
-while$ -- 37
+while$ -- 36
 width$ -- 12
-write$ -- 112
-(There were 2 error messages)
+write$ -- 111
+(There was 1 error message)

@@ -418,6 +418,9 @@ Hint Resolve bids_of_elim1 asks_of_elim1: core.
 
 End BidAsk.
 
+Definition b0 := {|bp:=0;idb:=0|}.
+Definition a0 := {|sp:=0;ida:=0|}.
+Definition m0 := {|bid_of:=b0;ask_of:=a0;tp:=0|}.
 
 Hint Resolve b_eqb_ref b_eqP : core.
 Hint Immediate b_eqb_elim b_eqb_intro: core.

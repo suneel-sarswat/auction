@@ -306,6 +306,9 @@ Proof. { unfold Is_IR. intros H.  specialize H with m. simpl in H.
 Lemma Is_IR_elim1 (m: fill_type)(M: list fill_type): Is_IR (m::M)-> Is_IR M.
 Proof. unfold Is_IR. simpl. intros. eauto. Qed.
 
+Lemma Is_IR_elim2 (m: fill_type)(M: list fill_type): Is_IR M -> Is_IR (delete m M).
+Proof. unfold Is_IR. intros. eauto. Qed.
+
 Lemma Is_IR_intro (m: fill_type)(M: list fill_type): rational m -> Is_IR M -> Is_IR (m::M).
 Proof.  unfold Is_IR. intros. destruct H1. subst m0. exact. auto. Qed.  
 
@@ -325,8 +328,24 @@ Definition Is_fair (M: list fill_type) (B: list Bid) (A: list Ask)
 (*------------------Uniform matching------------------------------*)
 
 
-Definition Is_uniform (M : list fill_type) := uniform (trade_prices_of M).
+Definition Uniform (M : list fill_type) := uniform (trade_prices_of M).
 
+
+Lemma Uniform_intro (M:list fill_type) (m:fill_type) : Uniform M -> Uniform (delete m M).
+Proof. Admitted. 
+
+Lemma Uniform_intro1 (M:list fill_type) (m:fill_type) : Uniform (m::M) -> Uniform M.
+Proof. Admitted.
+
+Lemma Uniform_elim (M:list fill_type) (m1 m2:fill_type) : Uniform M -> In m1 M -> In m2 M -> tp m1= tp m2.
+Proof. Admitted.
+
+Lemma Uniform_intro2 (M:list fill_type) (m m':fill_type) : Uniform M -> 
+In m M -> tp m = tp m' -> Uniform (m'::M).
+Proof. Admitted.
+
+Hint Resolve Uniform_intro Uniform_elim Uniform_intro1 : core.
+Hint Immediate Uniform_intro2 : core.
 
 (*-------------- buyers_above and sellers_above relationship and results------------------*)
 
@@ -406,6 +425,8 @@ Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1: core.
 Hint Resolve matching_in_elim2 matching_in_elim3 matching_in_elim4: core.
 Hint Resolve matching_in_elim4a matching_in_elim5a: core. 
 Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
-
 Hint Immediate Is_IR_intro: core.
 Hint Resolve Is_IR_elim Is_IR_elim1: core.
+Hint Resolve Uniform_intro Uniform_elim Uniform_intro1 : core.
+Hint Immediate Uniform_intro2 : core.
+

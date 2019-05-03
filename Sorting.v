@@ -70,9 +70,12 @@ Section Sorting.
   Proof. intro H. inversion H;auto. Qed.
   Lemma Sorted_single (a:A) : (Sorted (a::nil)).
   Proof. constructor. constructor. intros;simpl;contradiction. Qed.
+  
+  Lemma last_in_Sorted (a d:A)(l:list A): Sorted l -> In a l -> lr a (last l d).
+  Proof. Admitted.
 
   Hint Resolve Sorted_elim1 Sorted_elim2 Sorted_elim3 Sorted_elim4
-       Sorted_single Sorted_intro: core.
+       Sorted_single Sorted_intro last_in_Sorted : core.
 
      
   Fixpoint putin (a: A) (l: list A) : list A:=
@@ -204,7 +207,7 @@ End Sorting.
 
 
 Hint Resolve Sorted_elim1 Sorted_elim2 Sorted_elim3 Sorted_elim4
-     Sorted_single Sorted_intro: core.
+     Sorted_single Sorted_intro last_in_Sorted : core.
 Hint Resolve putin_intro putin_intro1 putin_elim putin_correct nodup_putin : core.
 Hint Resolve sort_elim sort_intro sort_correct sort_same_size : core.
 Hint Resolve sort_equal sort_equal1 Sorted_equal Sorted_equal1 nodup_sort: core.

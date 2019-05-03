@@ -40,6 +40,12 @@ Proof. { induction l.
 Lemma uniform_elim2 (a:A) (l: list A): uniform (a::l)-> uniform l.
 Proof. intro H. inversion H. constructor. exact. Qed.
 
+Lemma uniform_elim3 (a:A) (l:list A): uniform l -> uniform (delete a l).
+Proof. Admitted.
+
+Lemma uniform_elim4 (a1 a2:A) (l: list A) : uniform l -> In a1 l -> In a2 l -> a1=a2.
+Proof. Admitted.
+
 Lemma uniform_intro (a:A)(l: list A): (forall x, In x l -> x=a) -> uniform (a::l).
 Proof. Admitted.     
 

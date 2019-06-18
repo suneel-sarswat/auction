@@ -1,0 +1,10 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Modeling double sided auctions}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Bid, Ask and limit price}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Matching in Double Sided Auctions}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Lists, sublist and permutation}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Analysis of Double sided auctions}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Fairness}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Maximum Matching}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Matching in financial markets}{}% 9
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 10

@@ -2,8 +2,14 @@
 (* -----------------Description------------------------------------------
 
 This file is about Individual Rational (IR) matchings. It contains a
- function to convert any matching to an IR matching, it also contains
-  existensial results of IR matching.
+function to convert any matching to an IR matching, it also contains
+existensial results of IR matching. The file contains a function produce_IR, which converts any matching M into a Individual Rational matching.
+
+Some important results:
+
+Theorem exists_IR_matching : matching_in B A M -> 
+(exists M': list fill_type, bids_of M = bids_of M' /\ asks_of M = asks_of M'
+/\ matching_in B A M' /\ Is_IR M').
 
 *)
 

@@ -4,8 +4,25 @@
 
 This file contains basic definitions of Bids, Asks and Fill (trade between
 Bid and Ask). They are also attached with eqType (i.e, domain with 
-decidable Equality). This file also contains three functions to compute 
-bids, asks and trade prices from a matching, and their specifications. ---- *)
+decidable Equality). We have also defined projection functions on list of Bids and Asks.
+
+Bid: is a recort with bid limit price and bid id.
+Ask: is a record with ask limit price and ask id.
+Fill_type: is a record with bid, ask and trade price of the pair.
+bid_prices: is a function to project bid prices from list of bids.
+ask_prices: is a function to project bid prices from list of asks.
+bids_of: is a function to project bids from list of fill_type.
+asks_of: is a function to project asks from list of fill_type.
+
+Some important results:
+
+Lemma included_M_imp_included_bids : included M1 M2 ->
+included (bids_of M1) (bids_of M2).
+Lemma bids_of_perm: perm M M' -> perm (bids_of M) (bids_of M').
+
+Similarily we have lemmas for Asks, trade prices.
+
+ ---- *)
 
 
 Require Import ssreflect ssrbool.

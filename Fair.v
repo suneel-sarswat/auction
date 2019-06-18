@@ -1,6 +1,32 @@
 
-(* Work to be done : write comment describing the file and organise the hints properly  *)
+(* Work to be done : organise the hints properly  *)
+(*This file contains all the important results about fair matching. The main result is existance of a fair matching without compromize of it's size.
 
+by_sp, by_dbp, m_dbp, m_sp are order relations between asks (increasing by price), bids (decreasing by price), fill_type (decreasing by bid prices) and fill_type (increasing by ask prices) respectively.
+
+Make_FOA is a function which takes a matching and list of asks to make the matching fair on bids. Similarily Make_FOB function converts a matching into fair on bids matching. 
+
+Some important results:
+
+Lemma mfob_matching :
+(Sorted m_dbp M) -> (Sorted by_dbp B) -> (matching_in B A M) -> matching (Make_FOB M B).
+
+Lemma mfob_fair_on_bid :
+(Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) -> fair_on_bids (Make_FOB M B) B. 
+
+Theorem exists_fair_on_bids :
+matching_in B A M-> (exists M':list fill_type, matching_in B A M'  /\ 
+(|M| = |M'|) /\ perm (asks_of M) (asks_of M') /\ fair_on_bids M' B).
+
+Similarily above results are proved for Make_FOA.
+
+Finaly we have our main result:
+
+
+Theorem exists_fair_matching :
+  matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
+
+*)
 
 
 
@@ -179,7 +205,10 @@ Proof. { intros h1 h2 h3 h4 h5.
          { auto using nodup_sub_is_includedB. }
          
          assert (h9: included (bid_prices B1) (bid_prices B2)).
-         { auto using included_B_imp_included_BP. }  eauto. }  Qed.
+         { auto using included_Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
+  (Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
+  fair_on_bids (Make_FOB M B) B. 
+B_imp_included_BP. }  eauto. }  Qed.
 
 Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_dbp M -> Sorted by_dbp (bids_of M).
 Proof. { induction M.

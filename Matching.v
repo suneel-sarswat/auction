@@ -2,9 +2,35 @@
 (* -----------------Description----------------------------------------------------------
 
 This file contains useful definitions and basic properties of fundamental concepts 
-about auctions such as matching, fair matching, individual rational matching, uniform 
-matching, maximum matching etc. This file also contains come counting results about 
-matching for example number of buyers above a price in matching etc.
+about auctions such as matching, maximum matching (MM), individual rational matching (IR), uniform matching, fair matching etc. This file also contains results on matchings, IR matchings, uniform matchings.
+
+Definition All_matchable := In all the bid-ask pairs, bid price is greater or equal to ask price.
+
+Definition matching := All_matchable and there is no duplicate in the bids of M and no duplicate in asks of M.
+
+Definition matching_in := M is matching and bids of M is subset of bids and asks of M is subset of asks.
+
+Definition Is_MM :=size of M is largest amongs the size of all other possible matchings.
+
+Definition rational :=trade price of a bid-ask pair is between the ask price and bid price of the pair.
+
+Definition Is_IR := Each bid-asks pair is rational.
+
+Definition Uniform (M : list fill_type) := The trade price for each bid-ask pair is same.
+
+Definition fair_on_bids := If a bid b is part of matching then all the bids above b must be part of matching.
+
+Definition fair_on_asks := If an ask a is part of matching then all the asks below a must be part of matching.
+ 
+Definition Is_fair :=  A matching is fair on bids as well as fair on asks.
+
+Some important results:
+
+Lemma matching_elim9 : matching M ->  matching (delete m M).
+
+Lemma Is_IR_intro : rational m -> Is_IR M -> Is_IR (m::M).
+
+Lemma Uniform_intro : Uniform M -> Uniform (delete m M).
 
 -----------------------------------------------------------------------------*)
 
@@ -158,8 +184,7 @@ intro h7. rewrite h7 in H6. contradiction. }
 Lemma matching_elim7 (m: fill_type) (M: list fill_type): In m M -> matching M ->
                                                          ~ In (ask_of m) (asks_of (delete m M)).
 Proof.  { intros H1 H2. unfold matching in H2. destruct H2. destruct H0.
-intro H3. assert (H4: exists m', (In m' (delete m M))/\ (ask_of m = ask_of m')). eauto. destruct H4 as [m' H4]. destruct H4 as [H4 H5]. assert (H6: In m' M). eauto. assert (H7: m'<>m). cut (NoDup M). eauto. apply matching_elim3.
-unfold matching. auto. eapply matching_elim15 in H7. symmetry in H5. contradiction. instantiate (1:=M). unfold matching. auto. exact. exact. } Qed.
+intro H3. assert (H4: exists m', (In m' (delete m M))/\ (ask_of m = ask_of m')). eauto. destruct H4 as [m' H4]. destruct H4 as [H4 H5]. assert (H6: In m' M). eapply included_elim2. eapply included_elim4. apply included_intro2. exact H1. apply included_intro2. exact H4. apply included_refl. assert (H7: m'<>m). cut (NoDup M). { intro. eapply delete_elim2. exact H7. exact H4. } apply matching_elim3. unfold matching. auto. eapply matching_elim15 in H7. symmetry in H5. contradiction. instantiate (1:=M). unfold matching. auto. exact. exact. } Qed.
  
   
 
@@ -332,10 +357,10 @@ Definition Uniform (M : list fill_type) := uniform (trade_prices_of M).
 
 
 Lemma Uniform_intro (M:list fill_type) (m:fill_type) : Uniform M -> Uniform (delete m M).
-Proof. Admitted. 
+Proof. unfold Uniform. induction M. simpl. auto. intros H. simpl.  case (m_eqb m a) eqn: H1.  assert (H2:uniform (trade_prices_of M)). assert (H2: uniform (trade_prices_of (a :: M))). exact H. revert H2. eapply uniform_elim2. exact H2. simpl in H. eapply uniform_elim2 in H as H2.  eapply IHM in H2. simpl.  Admitted.
 
 Lemma Uniform_intro1 (M:list fill_type) (m:fill_type) : Uniform (m::M) -> Uniform M.
-Proof. Admitted.
+Proof. unfold Uniform.  simpl.  eapply uniform_elim2. Qed.
 
 Lemma Uniform_elim (M:list fill_type) (m1 m2:fill_type) : Uniform M -> In m1 M -> In m2 M -> tp m1= tp m2.
 Proof. Admitted.

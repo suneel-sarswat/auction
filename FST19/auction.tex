@@ -77,16 +77,17 @@
 \begin{abstract}
 
 
-In this paper we introduce a formal framework for analyzing double sided auction mechanisms in
-a theorem prover. In financial markets double sided auctions are used for price discovery. 
-In a double sided auction multiple buyers and sellers participate for trade. Any
-mechanism for double sided auctions to match buyers and sellers should satisfy certain properties.
-For example, fairness, perceived-fairness, and individual rationality are some of the important
-properties and to verify them we need a formal setting. We formally define all these notions in a
-theorem prover. This provides us a formal setting in which we prove some useful results on matchings
-in double sided auctions. Finally, we use this framework to verify properties of two important
-classes of double sided auction mechanisms. All the properties we discuss in this paper are completely
-formalized in the Coq proof assistant without adding any axiom to it. 
+In this paper we introduce a formal framework for analyzing double sided auction mechanisms. In a
+double sided auction multiple buyers and sellers participate for trade.
+In financial markets double sided auctions are used for price discovery. A mechanism for double
+sided auctions to match buyers and sellers should satisfy certain guidelines.
+For example, market regulators enforce that a matching produced by double sided auctions should 
+be fair, uniform and individual rational. To verify these properties of matching we formally define these notions
+in a theorem prover. 
+In this formal setting, we prove some useful results on matchings in double sided
+auctions. Finally, we use this framework to verify properties of two important classes of double
+sided auction mechanisms. All the definitions and results present in the paper are completely formalized in
+the Coq proof assistant without adding any axiom to it. 
 \end{abstract}
 
 \section{Introduction}

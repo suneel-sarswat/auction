@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.1.23)  11 JUL 2019 18:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.1.23)  12 JUL 2019 19:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1175,50 +1175,44 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 \openout3 = `auction.vtc'.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 91.
+(Font)              <9> on input line 93.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 91.
-LaTeX Font Info:    Calculating math sizes for size <8.5> on input line 96.
+(Font)              <6> on input line 93.
+LaTeX Font Info:    Calculating math sizes for size <8.5> on input line 98.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8.5> on input line 96.
+(Font)              <8.5> on input line 98.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5.94997> on input line 96.
+(Font)              <5.94997> on input line 98.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <4.25> on input line 96.
-
-
-LaTeX Warning: Reference `' on page 1 undefined on input line 100.
-
-
-LaTeX Warning: Reference `' on page 1 undefined on input line 100.
-
-<cc-by.pdf, id=52, 88.33pt x 31.11626pt>
+(Font)              <4.25> on input line 98.
+<cc-by.pdf, id=64, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
 <use cc-by.pdf>
-Package pdftex.def Info: cc-by.pdf  used on input line 101.
+Package pdftex.def Info: cc-by.pdf  used on input line 103.
 (pdftex.def)             Requested size: 39.74274pt x 14.0pt.
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 101.
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 103.
+
 
 (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<lipics-logo-bw.pdf, id=55, 591.44762pt x 144.42657pt>
+<lipics-logo-bw.pdf, id=67, 591.44762pt x 144.42657pt>
 File: lipics-logo-bw.pdf Graphic file (type pdf)
 <use lipics-logo-bw.pdf>
-Package pdftex.def Info: lipics-logo-bw.pdf  used on input line 101.
+Package pdftex.def Info: lipics-logo-bw.pdf  used on input line 103.
 (pdftex.def)             Requested size: 64.00354pt x 14.0pt.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./cc-by.pdf> <./lipics-log
 o-bw.pdf>]
 
-LaTeX Warning: Reference `' on page 2 undefined on input line 102.
+LaTeX Warning: Reference `' on page 2 undefined on input line 104.
 
 
-LaTeX Warning: Reference `' on page 2 undefined on input line 102.
+LaTeX Warning: Reference `' on page 2 undefined on input line 104.
 
-[2]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 130.
+[2] [3]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 132.
 
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1227,162 +1221,160 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [3]
-<brack_matching.pdf, id=115, 339.8266pt x 163.29907pt>
+<brack_matching.pdf, id=127, 339.8266pt x 163.29907pt>
 File: brack_matching.pdf Graphic file (type pdf)
 <use brack_matching.pdf>
-Package pdftex.def Info: brack_matching.pdf  used on input line 149.
+Package pdftex.def Info: brack_matching.pdf  used on input line 151.
 (pdftex.def)             Requested size: 318.67207pt x 153.13734pt.
- [4 <./brack_matching.pdf>]
-<sub_inclu_perm.pdf, id=205, 417.96149pt x 209.46556pt>
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[4]
+<sub_inclu_perm.pdf, id=139, 417.96149pt x 209.46556pt>
 File: sub_inclu_perm.pdf Graphic file (type pdf)
 <use sub_inclu_perm.pdf>
-Package pdftex.def Info: sub_inclu_perm.pdf  used on input line 166.
+Package pdftex.def Info: sub_inclu_perm.pdf  used on input line 168.
 (pdftex.def)             Requested size: 239.00557pt x 119.78014pt.
-
-[5 <./sub_inclu_perm.pdf>]
-Overfull \hbox (6.66081pt too wide) in paragraph at lines 200--201
+ [5 <./brack_matching.pdf> <./sub_inclu_perm.pdf>]
+Overfull \hbox (6.66081pt too wide) in paragraph at lines 202--203
 [][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 Lemma 8. [] []\T1/lmtt/m/it/10 sorted_
 included_sublist[]: Sorted l -> Sorted s -> included l s ->
  []
 
-
-Overfull \hbox (3.92773pt too wide) in paragraph at lines 222--223
+[6]
+Overfull \hbox (3.92773pt too wide) in paragraph at lines 224--225
 [][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 Lemma 13. [][]\T1/lmtt/m/it/10 include
 d_M_imp_included_bids[]:included $\OML/lmm/m/it/10 M$ $M[]$ \T1/lmtt/m/it/10 ->
  included $\OML/lmm/m/it/10 B[]$ $B[]$
  []
 
 
-Overfull \hbox (3.7576pt too wide) in paragraph at lines 226--227
+Overfull \hbox (3.7576pt too wide) in paragraph at lines 228--229
 [][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 Lemma 14. [][]\T1/lmtt/m/it/10 include
 d_M_imp_included_asks[]:included $\OML/lmm/m/it/10 M$ $M[]$ \T1/lmtt/m/it/10 ->
  included $\OML/lmm/m/it/10 A[]$ $A[]$ 
  []
 
-[6]
-<brack_IR.pdf, id=317, 340.17638pt x 96.70729pt>
+<brack_IR.pdf, id=324, 340.17638pt x 96.70729pt>
 File: brack_IR.pdf Graphic file (type pdf)
 <use brack_IR.pdf>
-Package pdftex.def Info: brack_IR.pdf  used on input line 242.
+Package pdftex.def Info: brack_IR.pdf  used on input line 244.
 (pdftex.def)             Requested size: 318.67207pt x 90.5979pt.
-<mm_um.pdf, id=319, 224.3281pt x 81.62294pt>
+[7 <./brack_IR.pdf>]
+<mm_um.pdf, id=400, 224.3281pt x 81.62294pt>
 File: mm_um.pdf Graphic file (type pdf)
 <use mm_um.pdf>
-Package pdftex.def Info: mm_um.pdf  used on input line 258.
+Package pdftex.def Info: mm_um.pdf  used on input line 260.
 (pdftex.def)             Requested size: 199.16928pt x 72.47354pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[7 <./brack_IR.pdf>]
-<make_fair.pdf, id=390, 463.8369pt x 199.7874pt>
+ [8 <./mm_um.pdf>]
+<make_fair.pdf, id=432, 463.8369pt x 199.7874pt>
 File: make_fair.pdf Graphic file (type pdf)
 <use make_fair.pdf>
-Package pdftex.def Info: make_fair.pdf  used on input line 297.
+Package pdftex.def Info: make_fair.pdf  used on input line 299.
 (pdftex.def)             Requested size: 318.67207pt x 137.26509pt.
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Overfull \hbox (3.66002pt too wide) in paragraph at lines 317--318
+Overfull \hbox (3.66002pt too wide) in paragraph at lines 319--320
 [][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-o-rem 23. [] []\T1/lmtt/m/it/10 ex
 ists_fair_matching[] (Nb: NoDup B)(Na: NoDup A): matching_in
  []
 
-[8 <./mm_um.pdf>]
-<MM.pdf, id=429, 463.8369pt x 199.7874pt>
+<MM.pdf, id=439, 463.8369pt x 199.7874pt>
 File: MM.pdf Graphic file (type pdf)
 <use MM.pdf>
-Package pdftex.def Info: MM.pdf  used on input line 328.
+Package pdftex.def Info: MM.pdf  used on input line 330.
 (pdftex.def)             Requested size: 318.67207pt x 137.26509pt.
-
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [9 <./make_fair.pdf>] [10 <./MM.pdf>]
-<mm_proof.pdf, id=590, 403.68015pt x 231.36739pt>
+<mm_proof.pdf, id=604, 403.68015pt x 231.36739pt>
 File: mm_proof.pdf Graphic file (type pdf)
 <use mm_proof.pdf>
-Package pdftex.def Info: mm_proof.pdf  used on input line 362.
+Package pdftex.def Info: mm_proof.pdf  used on input line 364.
 (pdftex.def)             Requested size: 398.33858pt x 228.31656pt.
  [11 <./mm_proof.pdf>] [12]
-Overfull \hbox (3.66002pt too wide) in paragraph at lines 415--416
+Overfull \hbox (3.66002pt too wide) in paragraph at lines 417--418
 [][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-o-rem 26. [] []\T1/lmtt/m/it/10 UM
 _is_maximal_Uniform[] (B: list Bid) (A:list Ask): Sorted B ->
  []
 
-<UM.pdf, id=689, 282.28261pt x 199.64587pt>
+<UM.pdf, id=701, 282.28261pt x 199.64587pt>
 File: UM.pdf Graphic file (type pdf)
 <use UM.pdf>
-Package pdftex.def Info: UM.pdf  used on input line 420.
+Package pdftex.def Info: UM.pdf  used on input line 422.
 (pdftex.def)             Requested size: 199.16928pt x 140.86305pt.
-<UM_matching.pdf, id=691, 348.19707pt x 94.24109pt>
+<UM_matching.pdf, id=703, 348.19707pt x 94.24109pt>
 File: UM_matching.pdf Graphic file (type pdf)
 <use UM_matching.pdf>
-Package pdftex.def Info: UM_matching.pdf  used on input line 429.
+Package pdftex.def Info: UM_matching.pdf  used on input line 431.
 (pdftex.def)             Requested size: 318.67207pt x 86.2513pt.
-[13 <./UM.pdf> <./UM_matching.pdf>] (./auction.bbl [14])
 
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[13 <./UM.pdf>] (./auction.bbl
+Overfull \hbox (99.06897pt too wide) in paragraph at lines 4--5
+[][][]\T1/lmtt/m/n/9 https://www.sebi.gov.in/enforcement/orders/apr-2019/order-
+in-the-matter-of-nse-colocation_42880.html[]\T1/lmr/m/n/9 (-20) . 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 11--13
+[][]\T1/lmr/m/n/9 (+20) .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--18
+[][]\T1/lmr/m/n/9 (+20) .
+ []
+
+[14 <./UM_matching.pdf>]) 
 AED: lastpage setting LastPage
 [15]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 457.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 457.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 459.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 459.
  (./auction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 457.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 457.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 459.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 459.
+Package rerunfilecheck Info: File `auction.out' has not changed.
+(rerunfilecheck)             Checksum: ED419FEA8F39E4432CD797513667E000;902.
 
-
-Package rerunfilecheck Warning: File `auction.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `auction.out':
-(rerunfilecheck)             Before: 4A1165E7DCBAEDF21168BB27E9C863E4;731
-(rerunfilecheck)             After:  E959792B0DC63A17BF01CF2A53002A9B;956.
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 457.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 459.
  ) 
 Here is how much of TeX's memory you used:
- 15417 strings out of 494923
- 243060 string characters out of 6180742
+ 15429 strings out of 494923
+ 243150 string characters out of 6180742
  377640 words of memory out of 5000000
- 18173 multiletter control sequences out of 15000+600000
- 121994 words of font info for 181 fonts, out of 8000000 for 9000
+ 18177 multiletter control sequences out of 15000+600000
+ 122385 words of font info for 185 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 43i,10n,46p,1735b,508s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{section.5} has been referenced but does not exist
-, replaced by a fixed one
-
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvip
-s/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/sha
-re/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-t
-s1.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fon
-ts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.pf
-b></usr/share/texmf/fonts/type1/public/lm/lmmi5.pfb></usr/share/texmf/fonts/typ
-e1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi9.pfb></usr/
-share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/publi
-c/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/texm
-f/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10
-.pfb></usr/share/texmf/fonts/type1/public/lm/lmri9.pfb></usr/share/texmf/fonts/
-type1/public/lm/lmss8.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb>
-</usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type
-1/public/lm/lmsy5.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb></usr/s
-hare/texmf/fonts/type1/public/lm/lmsy7.pfb></usr/share/texmf/fonts/type1/public
-/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/te
-xmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texmf/fonts/type1/public/lm/lmt
-ti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msa
-m10.pfb>
-Output written on auction.pdf (15 pages, 843029 bytes).
+ 43i,10n,46p,1242b,517s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dv
+ips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/s
+hare/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm
+-ts1.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/f
+onts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi10.
+pfb></usr/share/texmf/fonts/type1/public/lm/lmmi5.pfb></usr/share/texmf/fonts/t
+ype1/public/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi9.pfb></us
+r/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/pub
+lic/lm/lmr6.pfb></usr/share/texmf/fonts/type1/public/lm/lmr7.pfb></usr/share/te
+xmf/fonts/type1/public/lm/lmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri
+10.pfb></usr/share/texmf/fonts/type1/public/lm/lmri9.pfb></usr/share/texmf/font
+s/type1/public/lm/lmss8.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pf
+b></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/ty
+pe1/public/lm/lmsy5.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb></usr
+/share/texmf/fonts/type1/public/lm/lmsy7.pfb></usr/share/texmf/fonts/type1/publ
+ic/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share/
+texmf/fonts/type1/public/lm/lmtt9.pfb></usr/share/texmf/fonts/type1/public/lm/l
+mtti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/m
+sam10.pfb>
+Output written on auction.pdf (15 pages, 845865 bytes).
 PDF statistics:
- 938 PDF objects out of 1000 (max. 8388607)
- 400 compressed objects within 4 object streams
+ 946 PDF objects out of 1000 (max. 8388607)
+ 407 compressed objects within 5 object streams
  80 named destinations out of 1000 (max. 500000)
- 37526 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 37542 words of extra memory for PDF output out of 42996 (max. 10000000)
 

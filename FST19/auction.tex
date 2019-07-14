@@ -387,9 +387,6 @@ Now that we  proved the maximality property of \tw{produce\_MM}  we can produce 
 
 
 \subsection{Matching in financial markets}\label{sec:matchingInMarkets} 
-An exchange is an organized financial market. There are various types of exchanges for example stock exchange, commodity exchange, foreign exchange etc. The job of an exchange is to facilitate trading between buyers and sellers for the products which are registered in the exchange. Many exchanges operate during a fixed duration of the day. Some exchanges divide the trading activities into multiple sessions for various reasons. Most stock exchanges hold trading into two main session; pre-market (or auction session) and continuous  market (or regular trading session). During the pre-market session an exchange collects all the bids and asks for a fixed duration and then applies the double sided auction mechanism to these orders. At the end of the pre-market session an opening price for the product is discovered. During the regular sessions a bid (ask) is matched against the existing asks (bids) immediately. If the bid (ask) is not matchable it is placed in a priority queue based on its limit price. 
-
-The pre-market session reduces uncertainty and volatility for the regular sessions of trading. To avoid failure on behalf of the traders the exchange must match all the bids and asks within their limit prices. So any matching produced during this session must be individually rational. One of the most important aspects of the pre-market session is to discover the price of an underlying product based on the total demand and supply. Furthermore, the exchange must be fair towards all the traders. So the matching produced during this session should be a fair matching.  This means discovering  a unique price at which the maximum number of  bid-ask pairs can be traded. This price is also known as an equilibrium price. 
 
 Most exchanges match the bids and asks during the pre-market session at an equilibrium price.   We describe an algorithm which produces an equilibrium price. The algorithm \tw{UM} produces an individually rational matching which is fair and maximal among all uniform matchings.
 
@@ -435,8 +432,11 @@ The function \tw{produce\_UM} produces bid-ask pairs, \tw{uniform\_price} comput
 Since at each step the function \tw{produce\_UM}  pairs the largest bid available in $B$ with the smallest ask available in $A$ it must produce  at least $m$ bid-ask pairs. Hence for the list of bids $B$ and list of asks $A$ the function \tw{UM} produces a uniform matching which is of size at least $m$. $\square$
 
 
-\subsection{Double sided auction in financial markets}
-TODO
+
+\section{Related work}
+There are very few works towards formalizing financial markets. Passmore et al. in \cite{PassmoreI17} highlights the significance, opportunities and challanges involved in formalizing financial markets. This work describes in great detail the whole spectrum of the financial algorithms to be verified for ensuring safe and fair markets. Matching algorithms used by exchanges are at the core of this whole spectrum. However, there are no work known to us which formalizes financial algorithms used by the exchanges.
+
+On the other hand there are quite a few works \cite{toolbox} formalizing variuos concepts from auction theory. Most of these works focus on the Vickrey auction mechanism. In Vickrey auction, there is a single seller with different items and multiple buyers with valuations for every subsets of items. Each buyer places bids for combinations of the items. At the end of the bidding, the seller devides the items to buyers. The aim if the seller is to compute a partition of the items which maximizes his profit.
 
 \section{Conclusion}\label{sec:conclusion}
 Trading activities in todays financial markets are mostly enabled using computer algorithms. These algorithms are extremely large and complex. Matching algorithms used by venues (exchanges) are at the core of this broad range of financial algorithms \cite{PassmoreI17}. To ensure safety and integrity in the markets, the market regulators introduce guidelines specifying different features for these algorithms. Traditional methods of software development, which focus on testing,  can’t guarantee that these softwares meet the guidelines. 

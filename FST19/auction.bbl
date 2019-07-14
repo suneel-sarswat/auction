@@ -1,12 +1,20 @@
 \begin{thebibliography}{10}
 
+\bibitem{nse}
+{\verb+https://www.sebi.gov.in/enforcement/orders/apr-2019/order-in-the-matter-of-nse-colocation_42880.html+}.
+
 \bibitem{auctiongithub}
 Coq formalization of auctions.
 \newblock {\verb+https://github.com/suneel-sarswat/auction+}.
 
-\bibitem{oai:HAL:hal-01673716v1}
-The coq proof assistant, version 87.1, December~15 2017.
-\newblock URL: \url{https://hal.inria.fr/hal-01673716}.
+\bibitem{nyse2}
+\mbox{NYSE to Pay 14 Million dollar Penalty for Multiple Violations}.
+\newblock {\verb+https://www.sec.gov/news/press-release/2018-31+}.
+
+\bibitem{nyse1}
+\mbox{SEC Charges NYSE for Repeated Failures to Operate in Accordance With
+  Exchange Rules}.
+\newblock {\verb+https://www.sec.gov/news/press-release/2014-87+}.
 
 \bibitem{Deshmukh:2002:TCD}
 Kaustubh Deshmukh, Andrew~V. Goldberg, Jason~D. Hartline, and Anna~R. Karlin.

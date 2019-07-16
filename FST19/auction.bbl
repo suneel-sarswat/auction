@@ -1,7 +1,7 @@
 \begin{thebibliography}{10}
 
 \bibitem{nse}
-{\verb+https://www.sebi.gov.in/enforcement/orders/apr-2019/order-in-the-matter-of-nse-colocation_42880.html+}.
+\href{https://www.sebi.gov.in/enforcement/orders/apr-2019/order-in-the-matter-of-nse-colocation_42880.html}{NSE}.
 
 \bibitem{auctiongithub}
 Coq formalization of auctions.
@@ -16,26 +16,40 @@ Coq formalization of auctions.
   Exchange Rules}.
 \newblock {\verb+https://www.sec.gov/news/press-release/2014-87+}.
 
-\bibitem{Deshmukh:2002:TCD}
-Kaustubh Deshmukh, Andrew~V. Goldberg, Jason~D. Hartline, and Anna~R. Karlin.
-\newblock Truthful and competitive double auctions.
-\newblock {\em Lecture Notes in Computer Science}, 2461:361--??, 2002.
+\bibitem{blast}
+Dirk Beyer, Thomas~A. Henzinger, Ranjit Jhala, and Rupak Majumdar.
+\newblock The software model checker blast.
+\newblock 9(5):505--525, 2007.
+\newblock URL: \url{http://dx.doi.org/10.1007/s10009-007-0044-z}.
 
 \bibitem{friedman}
 Daniel Friedman.
 \newblock The double auction market institution: A survey.
 \newblock 01 1993.
 
-\bibitem{welfare}
-Cezary Kaliszyk and Julian Parsert.
-\newblock Formal microeconomic foundations and the first welfare theorem.
-\newblock In {\em Proceedings of the 7th ACM SIGPLAN International Conference
-  on Certified Programs and Proofs}, pages 91--101. ACM, 2018.
+\bibitem{seqcir}
+{J.R. Burch}, {E.M. Clarke}, and {K.L. McMillan}.
+\newblock Sequential circuit verification using symbolic model checking.
+\newblock In {\em 27th Design Automation Conference}, pages 46--51, 1990.
 
 \bibitem{toolbox}
 Manfred Kerber, Christoph Lange, Colin Rowat, and Wolfgang Windsteiger.
 \newblock Developing an auction theory toolbox.
 \newblock In {\em AISB}, volume 2013, pages 1--4. Citeseer, 2013.
+
+\bibitem{sel4}
+Gerwin Klein, Kevin Elphinstone, Gernot Heiser, June Andronick, David Cock,
+  Philip Derrin, Dhammika Elkaduwe, Kai Engelhardt, Rafal Kolanski, Michael
+  Norrish, et~al.
+\newblock sel4: Formal verification of an os kernel.
+\newblock In {\em Proceedings of the ACM SIGOPS 22nd symposium on Operating
+  systems principles}, pages 207--220. ACM, 2009.
+
+\bibitem{compcert}
+Xavier Leroy.
+\newblock A formally verified compiler back-end.
+\newblock {\em CoRR}, abs/0902.2137, 2009.
+\newblock URL: \url{http://arxiv.org/abs/0902.2137}.
 
 \bibitem{mcafee1992}
 R~Preston McAfee.

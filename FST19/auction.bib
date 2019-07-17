@@ -7,38 +7,25 @@
 		 Checking",
   year = 	"1990",
 }
-@Article{blast,
-  title =	"The software model checker Blast",
-  author =	"Dirk Beyer and Thomas A. Henzinger and Ranjit Jhala
-		 and Rupak Majumdar",
-  publisher =	"Springer-Verlag",
-  year = 	"2007",
-  number =	"5",
-  volume =	"9",
-  ISSN = 	"1433-2787",
-  bibsource =	"OAI-PMH server at oai.columbia.edu",
-  identifier =	"International Journal on Software Tools for Technology
-		 Transfer 9(5), 505-525. (2007)",
-  language =	"En",
-  oai =  	"oai:oai.columbia.edu:epic/nsdl/1/325434",
-  pages =	"505--525",
-  relation =	"1433-2779; 1433-2787",
-  subject =	"Computer Science; Theory of Computation; Software
-		 Engineering/Programming and Operating Systems; Software
-		 Engineering",
-  URL =  	"http://dx.doi.org/10.1007/s10009-007-0044-z",
+@inproceedings{blast,
+  title={Software verification with BLAST},
+  author={Henzinger, Thomas A and Jhala, Ranjit and Majumdar, Rupak and Sutre, Gr{\'e}goire},
+  booktitle={International SPIN Workshop on Model Checking of Software},
+  pages={235--239},
+  year={2003},
+  organization={Springer}
 }
 
-@Article{compcert,
-  title =	"A formally verified compiler back-end",
-  author =	"Xavier Leroy",
-  journal =	"CoRR",
-  year = 	"2009",
-  volume =	"abs/0902.2137",
-  bibdate =	"2018-08-13",
-  bibsource =	"DBLP,
-		 http://dblp.uni-trier.de/db/journals/corr/corr0902.html#abs-0902-2137",
-  URL =  	"http://arxiv.org/abs/0902.2137",
+
+@article{compcert,
+  title={A formally verified compiler back-end},
+  author={Leroy, Xavier},
+  journal={Journal of Automated Reasoning},
+  volume={43},
+  number={4},
+  pages={363},
+  year={2009},
+  publisher={Springer}
 }
 
 @InProceedings{sel4,
@@ -65,15 +52,6 @@ pages="495--503",
 isbn="978-3-319-94821-8"
 }
 
-@inproceedings{toolbox,
-  title={Developing an auction theory toolbox},
-  author={Kerber, Manfred and Lange, Christoph and Rowat, Colin and Windsteiger, Wolfgang},
-  booktitle={AISB},
-  volume={2013},
-  pages={1--4},
-  year={2013},
-  organization={Citeseer}
-}
 
 @inproceedings{welfare,
   title={Formal microeconomic foundations and the first welfare theorem},
@@ -93,7 +71,22 @@ isbn="978-3-319-94821-8"
   organization={Springer}
 }
 
-
+@InProceedings{frank,
+  title =	"Abstracting and Verifying Strategy-Proofness for
+		 Auction Mechanisms",
+  author =	"Emmanuel M. Tadjouddine and Frank Guerin and Wamberto
+		 Weber Vasconcelos",
+  publisher =	"Springer",
+  year = 	"2008",
+  volume =	"5397",
+  bibdate =	"2017-05-19",
+  booktitle =	"DALT",
+  editor =	"Matteo Baldoni and Tran Cao Son and M. Birna van
+		 Riemsdijk and Michael Winikoff",
+  ISBN = 	"978-3-540-93919-1",
+  pages =	"197--214",
+  series =	"Lecture Notes in Computer Science",
+}
 
 @article{mcafee1992,
   title={A dominant strategy double auction},
@@ -132,14 +125,12 @@ isbn="978-3-319-94821-8"
   booktitle =	"International conference on Autonomous Agents and
 		 Multi-Agent Systems, AAMAS '13, Saint Paul, MN, USA,
 		 May 6-10, 2013",
-  publisher =	"IFAAMAS",
   year = 	"2013",
   booktitle =	"AAMAS",
   editor =	"Maria L. Gini and Onn Shehory and Takayuki Ito and
 		 Catholijn M. Jonker",
   ISBN = 	"978-1-4503-1993-5",
   pages =	"1283--1284",
-  URL =  	"http://dl.acm.org/citation.cfm?id=2484920",
 }
 
 
@@ -184,16 +175,15 @@ isbn="978-3-319-94821-8"
   pages =	"26--41",
   series =	"Lecture Notes in Computer Science",
 }
-
 @article{friedman,
-author = {Friedman, Daniel},
-year = {1993},
-month = {01},
-pages = {},
-title = {The double auction market institution: A survey},
-booktitle = {The Double Auction Market: Institutions, Theories and Evidence}
+  title={The double auction market institution: A survey},
+  author={Friedman, Daniel},
+  journal={The double auction market: Institutions, theories, and evidence},
+  volume={14},
+  pages={3--25},
+  year={1993},
+  publisher={Addison-Wesley Reading, Mass.}
 }
-
 @Article{Deshmukh:2002:TCD,
   author =	"Kaustubh Deshmukh and Andrew V. Goldberg and Jason D.
 		 Hartline and Anna R. Karlin",
@@ -226,6 +216,35 @@ booktitle = {The Double Auction Market: Institutions, Theories and Evidence}
 		 Languages [cs.PL]",
   type = 	"info:eu-repo/semantics/other ; Other publications",
   URL =  	"https://hal.inria.fr/hal-01673716",
+}
+
+@inproceedings{lange,
+  title={A qualitative comparison of the suitability of four theorem provers for basic auction theory},
+  author={Lange, Christoph and Caminati, Marco B and Kerber, Manfred and Mossakowski, Till and Rowat, Colin and Wenzel, Makarius and Windsteiger, Wolfgang},
+  booktitle={International Conference on Intelligent Computer Mathematics},
+  pages={200--215},
+  year={2013},
+  organization={Springer}
+}
+@InProceedings{toolbox,
+  title =	"Sound Auction Specification and Implementation",
+  author =	"Marco B. Caminati and Manfred Kerber and Christoph
+		 Lange 0002 and Colin Rowat",
+  bibdate =	"2018-11-06",
+  bibsource =	"DBLP,
+		 http://dblp.uni-trier.de/https://doi.org/10.1145/2764468.2764511;
+		 DBLP,
+		 http://dblp.uni-trier.de/db/conf/sigecom/sigecom2015.html#CaminatiK0R15",
+  booktitle =	"Proceedings of the Sixteenth ACM Conference on
+		 Economics and Computation, EC '15, Portland, OR, USA,
+		 June 15-19, 2015",
+  publisher =	"ACM",
+  year = 	"2015",
+  booktitle =	"EC",
+  editor =	"Tim Roughgarden and Michal Feldman and Michael
+		 Schwarz",
+  ISBN = 	"978-1-4503-3410-5",
+  pages =	"547--564",
 }
 
 

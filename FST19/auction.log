@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  14 JUL 2019 19:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.7.14)  17 JUL 2019 21:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1009,35 +1009,39 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 )
+(/usr/local/texlive/2016/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2015/08/02 v2.2a e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count137
+)
 (./auction.aux)
 \openout1 = `auction.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 84.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 84.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 70.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 84.
+LaTeX Font Info:    ... okay on input line 84.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 84.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Info: Redefining \microtypecontext on input line 70.
+LaTeX Info: Redefining \microtypecontext on input line 84.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1054,16 +1058,16 @@ File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman
 )
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count137
+\scratchcounter=\count138
 \scratchdimen=\dimen148
 \scratchbox=\box33
-\nofMPsegments=\count138
-\nofMParguments=\count139
+\nofMPsegments=\count139
+\nofMParguments=\count140
 \everyMPshowfont=\toks41
-\MPscratchCnt=\count140
+\MPscratchCnt=\count141
 \MPscratchDim=\dimen149
-\MPnumerator=\count141
-\makeMPintoPDFobject=\count142
+\MPnumerator=\count142
+\makeMPintoPDFobject=\count143
 \everyMPtoPDFconversion=\toks42
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -1080,12 +1084,12 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count143
+\c@lstlisting=\count144
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 70.
+(lastpage)             ! on input line 84.
 \AtBeginShipoutBox=\box34
-Package hyperref Info: Link coloring OFF on input line 70.
+Package hyperref Info: Link coloring OFF on input line 84.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -1093,21 +1097,21 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count144
+\c@section@level=\count145
 )
-LaTeX Info: Redefining \ref on input line 70.
-LaTeX Info: Redefining \pageref on input line 70.
-LaTeX Info: Redefining \nameref on input line 70.
+LaTeX Info: Redefining \ref on input line 84.
+LaTeX Info: Redefining \pageref on input line 84.
+LaTeX Info: Redefining \nameref on input line 84.
 
 (./auction.out) (./auction.out)
 \@outlinefile=\write6
 \openout6 = `auction.out'.
 
-Package hyperref Info: Option `breaklinks' set `true' on input line 70.
+Package hyperref Info: Option `breaklinks' set `true' on input line 84.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 75.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 89.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -1116,35 +1120,35 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 75.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 89.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 75.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 89.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 75.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 89.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 75.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 89.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 75.
+(Font)              <10> on input line 89.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 75.
+(Font)              <7> on input line 89.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 75.
-LaTeX Font Info:    Try loading font information for U+msa on input line 75.
+(Font)              <5> on input line 89.
+LaTeX Font Info:    Try loading font information for U+msa on input line 89.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -1152,7 +1156,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 75.
+LaTeX Font Info:    Try loading font information for U+msb on input line 89.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1163,193 +1167,147 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 \openout3 = `auction.vtc'.
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 93.
+(Font)              <9> on input line 107.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 93.
-LaTeX Font Info:    Calculating math sizes for size <8.5> on input line 98.
+(Font)              <6> on input line 107.
+LaTeX Font Info:    Calculating math sizes for size <8.5> on input line 112.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8.5> on input line 98.
+(Font)              <8.5> on input line 112.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5.94997> on input line 98.
+(Font)              <5.94997> on input line 112.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <4.25> on input line 98.
+(Font)              <4.25> on input line 112.
 
-<cc-by.pdf, id=64, 88.33pt x 31.11626pt>
+<cc-by.pdf, id=61, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
  <use cc-by.pdf>
-Package pdftex.def Info: cc-by.pdf used on input line 103.
+Package pdftex.def Info: cc-by.pdf used on input line 117.
 (pdftex.def)             Requested size: 39.74274pt x 14.0pt.
-LaTeX Font Info:    Try loading font information for TS1+lmr on input line 103.
+LaTeX Font Info:    Try loading font information for TS1+lmr on input line 117.
 
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<lipics-logo-bw.pdf, id=67, 591.44762pt x 144.42657pt>
+<lipics-logo-bw.pdf, id=64, 591.44762pt x 144.42657pt>
 File: lipics-logo-bw.pdf Graphic file (type pdf)
 
 <use lipics-logo-bw.pdf>
-Package pdftex.def Info: lipics-logo-bw.pdf used on input line 103.
+Package pdftex.def Info: lipics-logo-bw.pdf used on input line 117.
 (pdftex.def)             Requested size: 64.00354pt x 14.0pt.
  [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./cc-by
-.pdf> <./lipics-logo-bw.pdf>]
+.pdf> <./lipics-logo-bw.pdf>] [2] [3]
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 146.
 
-LaTeX Warning: Reference `' on page 2 undefined on input line 104.
 
-
-LaTeX Warning: Reference `' on page 2 undefined on input line 104.
-
-[2] [3]
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 131.
-
- (/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmtt.fd
+(/usr/local/texlive/2016/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-
-<brack_matching.pdf, id=127, 339.8266pt x 163.29907pt>
+ [4]
+<brack_matching.pdf, id=154, 339.8266pt x 163.29907pt>
 File: brack_matching.pdf Graphic file (type pdf)
 
 <use brack_matching.pdf>
-Package pdftex.def Info: brack_matching.pdf used on input line 150.
-(pdftex.def)             Requested size: 318.67207pt x 153.13734pt.
+Package pdftex.def Info: brack_matching.pdf used on input line 166.
+(pdftex.def)             Requested size: 239.00557pt x 114.85425pt.
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[4] <sub_inclu_perm.pdf, id=138, 417.96149pt x 209.46556pt>
+<sub_inclu_perm.pdf, id=156, 417.96149pt x 209.46556pt>
 File: sub_inclu_perm.pdf Graphic file (type pdf)
 
 <use sub_inclu_perm.pdf>
-Package pdftex.def Info: sub_inclu_perm.pdf used on input line 167.
-(pdftex.def)             Requested size: 239.00557pt x 119.78014pt.
+Package pdftex.def Info: sub_inclu_perm.pdf used on input line 184.
+(pdftex.def)             Requested size: 199.16928pt x 99.81677pt.
+ [5 <./brack_matching.pdf> <./sub_inclu_perm.pdf>]
+<brack_IR.pdf, id=319, 340.17638pt x 96.70729pt>
+File: brack_IR.pdf Graphic file (type pdf)
+ <use brack_IR.pdf>
+Package pdftex.def Info: brack_IR.pdf used on input line 232.
+(pdftex.def)             Requested size: 239.00557pt x 67.94548pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[5 <./brack_matching.pdf>]
-Overfull \hbox (6.66081pt too wide) in paragraph at lines 201--202
-[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 Lemma 8. [] []\T1/lmtt/m/it/10 sorted_
-included_sublist[]: Sorted l -> Sorted s -> included l s ->
- []
-
-[6 <./sub_inclu_perm.pdf>]
-Overfull \hbox (3.92773pt too wide) in paragraph at lines 223--224
-[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 Lemma 13. [][]\T1/lmtt/m/it/10 include
-d_M_imp_included_bids[]:included $\OML/lmm/m/it/10 M$ $M[]$ \T1/lmtt/m/it/10 ->
- included $\OML/lmm/m/it/10 B[]$ $B[]$
- []
-
-
-Overfull \hbox (3.7576pt too wide) in paragraph at lines 227--228
-[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 Lemma 14. [][]\T1/lmtt/m/it/10 include
-d_M_imp_included_asks[]:included $\OML/lmm/m/it/10 M$ $M[]$ \T1/lmtt/m/it/10 ->
- included $\OML/lmm/m/it/10 A[]$ $A[]$ 
- []
-
-<brack_IR.pdf, id=324, 340.17638pt x 96.70729pt>
-File: brack_IR.pdf Graphic file (type pdf)
- <use brack_IR.pdf>
-Package pdftex.def Info: brack_IR.pdf used on input line 243.
-(pdftex.def)             Requested size: 318.67207pt x 90.5979pt.
- [7 <./brack_IR.pdf>] <mm_um.pdf, id=400, 224.3281pt x 81.62294pt>
+[6] <mm_um.pdf, id=337, 224.3281pt x 81.62294pt>
 File: mm_um.pdf Graphic file (type pdf)
  <use mm_um.pdf>
-Package pdftex.def Info: mm_um.pdf used on input line 259.
-(pdftex.def)             Requested size: 199.16928pt x 72.47354pt.
- [8 <./mm_um.pdf>] <make_fair.pdf, id=431, 463.8369pt x 199.7874pt>
+Package pdftex.def Info: mm_um.pdf used on input line 248.
+(pdftex.def)             Requested size: 139.42093pt x 50.73148pt.
+ [7 <./brack_IR.pdf> <./mm_um.pdf>] <make_fair.pdf, id=430, 463.8369pt x 199.78
+74pt>
 File: make_fair.pdf Graphic file (type pdf)
- <use make_fair.pdf>
-Package pdftex.def Info: make_fair.pdf used on input line 298.
-(pdftex.def)             Requested size: 318.67207pt x 137.26509pt.
 
-Overfull \hbox (3.66002pt too wide) in paragraph at lines 318--319
-[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-orem 23. [] []\T1/lmtt/m/it/10 exi
+<use make_fair.pdf>
+Package pdftex.def Info: make_fair.pdf used on input line 287.
+(pdftex.def)             Requested size: 239.00557pt x 102.945pt.
+
+Overfull \hbox (3.66002pt too wide) in paragraph at lines 307--308
+[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-orem 17. [] []\T1/lmtt/m/it/10 exi
 sts_fair_matching[] (Nb: NoDup B)(Na: NoDup A): matching_in
  []
 
-[9 <./make_fair.pdf>] <MM.pdf, id=521, 463.8369pt x 199.7874pt>
+<MM.pdf, id=437, 463.8369pt x 199.7874pt>
 File: MM.pdf Graphic file (type pdf)
  <use MM.pdf>
-Package pdftex.def Info: MM.pdf used on input line 329.
-(pdftex.def)             Requested size: 318.67207pt x 137.26509pt.
-
-[10 <./MM.pdf>] <mm_proof.pdf, id=604, 403.68015pt x 231.36739pt>
-File: mm_proof.pdf Graphic file (type pdf)
-
-<use mm_proof.pdf>
-Package pdftex.def Info: mm_proof.pdf used on input line 363.
-(pdftex.def)             Requested size: 398.33858pt x 228.31656pt.
- [11 <./mm_proof.pdf>] [12]
-Overfull \hbox (3.66002pt too wide) in paragraph at lines 416--417
-[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-orem 26. [] []\T1/lmtt/m/it/10 UM_
-is_maximal_Uniform[] (B: list Bid) (A:list Ask): Sorted B ->
- []
-
-<UM.pdf, id=701, 282.28261pt x 199.64587pt>
-File: UM.pdf Graphic file (type pdf)
- <use UM.pdf>
-Package pdftex.def Info: UM.pdf used on input line 421.
-(pdftex.def)             Requested size: 199.16928pt x 140.86305pt.
-
-<UM_matching.pdf, id=703, 348.19707pt x 94.24109pt>
-File: UM_matching.pdf Graphic file (type pdf)
- <use UM_matching.pdf>
-Package pdftex.def Info: UM_matching.pdf used on input line 430.
-(pdftex.def)             Requested size: 318.67207pt x 86.2513pt.
+Package pdftex.def Info: MM.pdf used on input line 318.
+(pdftex.def)             Requested size: 239.00557pt x 102.945pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[13 <./UM.pdf>] (./auction.bbl
-Overfull \hbox (99.06897pt too wide) in paragraph at lines 4--5
-[][]\T1/lmtt/m/n/9 https://www.sebi.gov.in/enforcement/orders/apr-2019/order-in
--the-matter-of-nse-colocation_42880.html\T1/lmr/m/n/9 (-20) . 
+[8 <./make_fair.pdf>] [9 <./MM.pdf>]
+<mm_proof.pdf, id=603, 403.68015pt x 231.36739pt>
+File: mm_proof.pdf Graphic file (type pdf)
+ <use mm_proof.pdf>
+Package pdftex.def Info: mm_proof.pdf used on input line 350.
+(pdftex.def)             Requested size: 278.83578pt x 159.82018pt.
+ [10 <./mm_proof.pdf>]
+Overfull \hbox (3.66002pt too wide) in paragraph at lines 400--401
+[][]$\U/msa/m/n/10 I$[] \T1/lmss/bx/n/10 The-orem 20. [] []\T1/lmtt/m/it/10 UM_
+is_maximal_Uniform[] (B: list Bid) (A:list Ask): Sorted B ->
  []
 
+<UM.pdf, id=697, 282.28261pt x 199.64587pt>
+File: UM.pdf Graphic file (type pdf)
+ <use UM.pdf>
+Package pdftex.def Info: UM.pdf used on input line 405.
+(pdftex.def)             Requested size: 139.42093pt x 98.60414pt.
+ [11 <./UM.pdf>]
+<UM_matching.pdf, id=755, 348.19707pt x 94.24109pt>
+File: UM_matching.pdf Graphic file (type pdf)
+ <use UM_matching.pdf>
+Package pdftex.def Info: UM_matching.pdf used on input line 414.
+(pdftex.def)             Requested size: 239.00557pt x 64.68848pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 11--13
-[][]\T1/lmr/m/n/9 (+20) .
- []
-
-[14 <./UM_matching.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 16--18
-[][]\T1/lmr/m/n/9 (+20) .
- []
-
-) 
+(./auction.bbl [12 <./UM_matching.pdf>]) 
 AED: lastpage setting LastPage
-[15]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 453.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 453.
+[13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 436.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 436.
  (./auction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 453.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 453.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 436.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 436.
 Package rerunfilecheck Info: File `auction.out' has not changed.
-(rerunfilecheck)             Checksum: ABFC4272F426DC5E986F219EBF7F1A23;901.
-
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 453.
+(rerunfilecheck)             Checksum: 9FB60DBD79F43A4F29A2974EED8F335C;795.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 436.
  ) 
 Here is how much of TeX's memory you used:
- 15093 strings out of 493014
- 236362 string characters out of 6133351
- 383262 words of memory out of 5000000
- 18063 multiletter control sequences out of 15000+600000
- 122598 words of font info for 187 fonts, out of 8000000 for 9000
+ 15374 strings out of 493014
+ 239608 string characters out of 6133351
+ 389993 words of memory out of 5000000
+ 18356 multiletter control sequences out of 15000+600000
+ 122036 words of font info for 182 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 43i,10n,46p,1271b,517s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
+ 43i,10n,46p,1461b,519s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/
 texlive/2016/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/20
-16/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2016/texmf-d
-ist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/
+16/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/2016/texmf-dist/
+fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2016/texmf-dist/fonts/enc/
 dvips/lm/lm-ts1.enc}</usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/l
 mbx10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmbx12.pfb>
 </usr/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/loca
@@ -1371,10 +1329,10 @@ exmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/public/lm/lmtt9.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
 /public/lm/lmtti10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
 msfonts/symbols/msam10.pfb>
-Output written on auction.pdf (15 pages, 846095 bytes).
+Output written on auction.pdf (13 pages, 840809 bytes).
 PDF statistics:
- 943 PDF objects out of 1000 (max. 8388607)
- 404 compressed objects within 5 object streams
- 80 named destinations out of 1000 (max. 500000)
- 37542 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 933 PDF objects out of 1000 (max. 8388607)
+ 397 compressed objects within 4 object streams
+ 74 named destinations out of 1000 (max. 500000)
+ 37534 words of extra memory for PDF output out of 42996 (max. 10000000)
 

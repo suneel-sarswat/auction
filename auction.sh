@@ -15,7 +15,8 @@ coqc Matching.v
 coqc AuctionInvar.v
 coqc IndRat.v
 coqc Fair.v
-
+coqc MM.v
+coqc UM.v
 
 
 

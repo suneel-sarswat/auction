@@ -1,15 +1,21 @@
-(* This file contains results of Uniform matchings. The file contains a
- function produce_UM, which produces a uniform matching from any list of
-  bids and list of aks. We prove that matching produced by this function is
-   largest amongs any other possible uniform matching. We also prove that
-    the matching is IR and uniform.
+
+
+
+
+(* ---------------------------------------------------------------------------------
+
+     This file contains results of Uniform matchings. function produce_UM, which 
+     produces a uniform matching from any list of bids B and list of aks A. 
+     We prove that matching produced by this function is largest among 
+     all possible uniform matching on B and A. We also prove that matching 
+     produced is IR and uniform.
 
 Important results:
 
 Theorem UM_is_maximal_Uniform: Sorted by_dbp B -> Sorted by_sp A-> 
 (forall M: list fill_type, Is_uniform M B A-> |M| <= | (produce_UM B A ) |).
 
-*)
+------------------------------------------------------------------------------------*)
 
 
 

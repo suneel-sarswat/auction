@@ -1,32 +1,44 @@
 
-(* Work to be done : organise the hints properly  *)
-(*This file contains all the important results about fair matching. The main result is existance of a fair matching without compromize of it's size.
+(* ------------   Work to be done : organise the hints properly ------------- *)
 
-by_sp, by_dbp, m_dbp, m_sp are order relations between asks (increasing by price), bids (decreasing by price), fill_type (decreasing by bid prices) and fill_type (increasing by ask prices) respectively.
 
-Make_FOA is a function which takes a matching and list of asks to make the matching fair on bids. Similarily Make_FOB function converts a matching into fair on bids matching. 
+
+(* -------------------------------------------------------------------------------------
+
+      This file contains all the important results about fair matching.
+      The main result is existance of a fair matching without compromize of it's size.
+
+       by_sp                 <===>   order by increasing sp
+       by_dbp                <===>   order by decreasing bp
+       Make_FOA M A          <===>   makes M fair on asks A
+       Make_FOB M B          <===>   makes M fair on bids B
+
 
 Some important results:
 
 Lemma mfob_matching :
 (Sorted m_dbp M) -> (Sorted by_dbp B) -> (matching_in B A M) -> matching (Make_FOB M B).
 
-Lemma mfob_fair_on_bid :
-(Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) -> fair_on_bids (Make_FOB M B) B. 
+Lemma mfob_fair_on_bid : (Sorted m_dbp M) -> (Sorted by_dbp B) -> 
+ sublist (bid_prices (bids_of M)) (bid_prices B) -> fair_on_bids (Make_FOB M B) B. 
 
 Theorem exists_fair_on_bids :
-matching_in B A M-> (exists M':list fill_type, matching_in B A M'  /\ 
-(|M| = |M'|) /\ perm (asks_of M) (asks_of M') /\ fair_on_bids M' B).
+   matching_in B A M-> (exists M':list fill_type, matching_in B A M'  /\ 
+   (|M| = |M'|) /\ perm (asks_of M) (asks_of M') /\ fair_on_bids M' B).
 
-Similarily above results are proved for Make_FOA.
+Lemma mfoa_fair_on_ask : (Sorted m_sp M) -> (Sorted by_sp A) -> 
+sublist (ask_prices (asks_of M)) (ask_prices A) -> fair_on_asks (Make_FOA M A) A. 
 
-Finaly we have our main result:
+Theorem exists_fair_on_asks :
+  matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\  
+(|M| = |M'|) /\ perm (bids_of M) (bids_of M') /\ fair_on_asks M' A).
 
 
 Theorem exists_fair_matching :
-  matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
+  matching_in B A M-> 
+  (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
 
-*)
+------------------------------------------------------------------------------------------*)
 
 
 
@@ -723,8 +735,9 @@ Proof. { assert (HmP: transitive m_sp /\ comparable m_sp). apply m_sp_P.
           apply mfoa_matching_in. all:auto.   
           apply match_inv with (M:=M)(B:=B)(A:=A);auto.
           eapply match_inv with
-              (B:= B) (M:=(Make_FOA (sort m_sp M) (sort by_sp A))) (A:=(sort by_sp A)). all:auto.
-           } split.
+              (B:= B) (M:=(Make_FOA (sort m_sp M) (sort by_sp A))) (A:=(sort by_sp A)).
+          all:auto.  }
+        split.
         { replace (|M|) with (|sort m_sp M|). eapply mfoa_is_same_size.
           apply M_is_smaller_than_A with (B:= B).
           eapply match_inv with (B:= B)(A:= A)(M:= M). all: auto. } split.
@@ -738,7 +751,8 @@ Proof. { assert (HmP: transitive m_sp /\ comparable m_sp). apply m_sp_P.
              { assert (H1: NoDup (bids_of M)). apply H. unfold matching_in in H.
              unfold matching in H. destruct H. destruct H. destruct H2.
               eauto. }
-             { assert (H2: bids_of M [<=] B). apply H. eapply perm_subset with (l1:= asks_of M)(s1:= A).
+             { assert (H2: bids_of M [<=] B). apply H.
+               eapply perm_subset with (l1:= asks_of M)(s1:= A).
                auto. all: auto. apply H. } }
            unfold fair_on_asks.
            intros a a' h1 h2 h3.
@@ -750,8 +764,9 @@ Proof. { assert (HmP: transitive m_sp /\ comparable m_sp). apply m_sp_P.
 
 
 
-Theorem exists_fair_matching (M: list fill_type) (B: list Bid) (A:list Ask) (NDB: NoDup B) (NDA: NoDup A):
-  matching_in B A M-> (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
+Theorem exists_fair_matching(M: list fill_type)(B: list Bid)(A:list Ask)(NDB: NoDup B)
+        (NDA: NoDup A): matching_in B A M->
+                        (exists M':list fill_type, matching_in B A M' /\ Is_fair M' B A /\ |M|= |M'|).
 Proof. { intros H0. apply exists_fair_on_bids in H0 as H1.
        destruct H1 as [M' H1].
        destruct H1 as [H1a H1]. destruct H1 as [H1b H1]. destruct H1 as [H1c H1d].

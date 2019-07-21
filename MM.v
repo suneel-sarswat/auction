@@ -75,17 +75,87 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
 
  Hint Resolve nil_is_MM_forB nil_is_MM_forA: core.
 
+ Lemma produce_MM_bids_in_B(B: list Bid)(A: list Ask): bids_of (produce_MM B A) [<=] B.
+ Proof. { revert B. induction A.
+          { intros. simpl. case B eqn: H0. all:simpl;auto. }
+          { intros. simpl. case B eqn: H0.
+            { simpl;auto. }
+            { destruct (a <=? b) eqn: Hab.
+              { simpl. intros x H1.
+                destruct H1 as [H1 | H1].
+                subst b. auto. cut (In x l). auto.
+                apply IHA. exact. }
+              { apply IHA. } } } } Qed.
+
+ Lemma produce_MM_asks_in_A (B: list Bid)(A: list Ask): asks_of (produce_MM B A) [<=] A.
+ Proof. { revert B. induction A.
+          { intros. simpl. case B eqn: H0. all:simpl;auto. }
+          { intros. simpl. case B eqn: H0.
+            { simpl;auto. }
+            { destruct (a <=? b) eqn: Hab.
+              { simpl. intros x H1.
+                destruct H1 as [H1 | H1].
+                subst a. auto. cut (In x A). auto.
+                eapply IHA. exact H1. }
+              { intros x H1. cut (In x A). auto. eapply IHA. exact H1. } } } } Qed.
+ 
+
  
  Lemma produce_MM_is_matching(B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
- Proof. revert no_dup_A. induction B. intros. simpl. case A eqn: H1. simpl. eauto.
- simpl. eauto. intros. case A eqn: H2. simpl. eauto. simpl. 
- destruct (a0 <=? a) eqn: Ha. simpl. move /leP in Ha. Admitted.
- 
-
- Lemma produce_MM_fob (B: list Bid)(A: list Ask):
-   Sorted by_dbp B -> Sorted by_dsp A -> fair_on_bids (produce_MM B A) B.
- Proof. Admitted.
+ Proof. { revert B no_dup_B. induction A as [| a].
+          { intros. simpl.
+            case B eqn: H1.
+            { simpl. eauto. }
+            { simpl. eauto. } }
+          { intros.
+            case B eqn: H2.
+            { simpl. eauto. }
+            { split.
+              {(*--- matching (produce_MM (b :: l) (a :: A)) ----*)
+                split.
+                { (*--  All_matchable (produce_MM (b :: l) (a :: A))----*)
+                  simpl.
+                  destruct (a <=? b) eqn:Hab.
+                  { apply All_matchable_intro. simpl. move /leP in Hab. exact.
+                    cut (matching_in l A (produce_MM l A)).
+                    intro H3. apply H3.
+                    apply IHA. all: eauto. }
+                  { cut (matching_in (b::l) A (produce_MM (b::l) A)).
+                    intro H3. apply H3.
+                    apply IHA. all: eauto. }  }
+                split.
+                { (*---- NoDup (bids_of (produce_MM (b :: l) (a :: A))) ---*)
+                  simpl.
+                  destruct (a <=? b) eqn:Hab.
+                  { simpl. apply nodup_intro.
+                    { intro H3.
+                      assert (H4: In b l).  eapply produce_MM_bids_in_B. exact H3.
+                      absurd (In b l). all: auto. }
+                    { cut (matching_in l A (produce_MM l A)).
+                      intro H3. apply H3.
+                      apply IHA. all: eauto. } }
+                  {  cut (matching_in (b::l) A (produce_MM (b::l) A)).
+                      intro H3. apply H3.
+                      apply IHA. all: eauto. }  }
+                { (*-----  NoDup (asks_of (produce_MM (b :: B) (a :: l))) ----*)
+                  simpl.
+                  destruct (a <=? b) eqn:Hab.
+                  { simpl. apply nodup_intro.
+                    { intro H3.
+                      assert (H4: In a A).  eapply produce_MM_asks_in_A. exact H3.
+                      absurd (In a A). all: auto. }
+                    { cut (matching_in l A (produce_MM l A)).
+                      intro H3. apply H3.
+                      apply IHA. all: eauto. } }
+                  {  cut (matching_in (b::l) A (produce_MM (b::l) A)).
+                      intro H3. apply H3.
+                      apply IHA. all: eauto. }  } }
+              split.
+              { (*--- bids_of (produce_MM (b :: B) (a :: l)) [<=] b :: B  --*)
+                  eapply produce_MM_bids_in_B. }
+              { (*---- asks_of (produce_MM (b :: B) (a :: l)) [<=] a :: l--- *)
+                eapply produce_MM_asks_in_A. } } } } Qed.
  
            
  Lemma produce_MM_is_MM (B: list Bid)(A: list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A):
@@ -340,9 +410,35 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                assert (h3: matching_in B' A' M). eauto using matching_in_elim8.
                cut (|M| <= | produce_MM B' A'|). omega. apply H0. exact. }   } } } Qed.
                
-Theorem exists_fair_maximum (B: list Bid)(A: list Ask): exists M, (Is_fair M B A /\ Is_MM M B A).
-Proof. Admitted.
-
+Theorem exists_fair_maximum (B: list Bid)(A: list Ask) (Nb: NoDup B) (Na: NoDup A):
+  exists M, (Is_fair M B A /\ Is_MM M B A).
+Proof. { set (M:= produce_MM (sort by_dbp B) (sort by_dsp A)).
+         assert (H1: Is_MM M (sort by_dbp B) (sort by_dsp A)).
+         { apply produce_MM_is_MM. all: eauto. 
+           apply sort_correct;eapply by_dbp_P. 
+           apply sort_correct;eapply by_dsp_P. }
+         assert (H2: Is_MM M B A).
+         { destruct H1 as [H1 H2].
+           split.
+           { eapply match_inv with (M:= M)(B:= (sort by_dbp B)) (A:=(sort by_dsp A)).
+             all: eauto. }
+           { intros M' H3. apply H2.
+             eapply match_inv with (M:= M')(B:= B) (A:= A). all: eauto. } }
+         
+         assert (H3: matching_in B A M). apply H2. 
+         apply (exists_fair_matching M B A Nb Na) in H3 as H4.
+         destruct H4 as [M' H4].
+         exists M'.
+         split.
+         { apply H4. }
+         { unfold Is_MM.
+           destruct H4 as [H4a H4]. destruct H4 as [H4b H4].
+           split.
+           exact.
+           intros M0 H5. rewrite <- H4.
+           apply H2. exact. } } Qed.
+         
+        
           
 (*
 Definition B2:= ({|b_id:= 1 ; bp:= 125 |}) ::({|b_id:= 2 ; bp:= 120 |}) ::({|b_id:= 3 ; bp:= 112 |}) ::({|b_id:= 4 ; bp:= 91 |}) ::({|b_id:= 5 ; bp:= 82 |}) ::({|b_id:= 6 ; bp:= 82 |}) ::({|b_id:= 7 ; bp:= 69 |}) ::({|b_id:= 8 ; bp:= 37 |}) :: nil.

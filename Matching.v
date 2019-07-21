@@ -372,63 +372,6 @@ Proof. Admitted.
 Hint Resolve Uniform_intro Uniform_elim Uniform_intro1 : core.
 Hint Immediate Uniform_intro2 : core.
 
-(*-------------- buyers_above and sellers_above relationship and results------------------*)
-
-Definition buyers_above (p: nat)(B: list Bid): list Bid :=
-  filter (fun x:Bid => Nat.leb p x)  B.
-
-Lemma buyers_above_elim (p:nat)(B: list Bid)(x:Bid):
-  In x (buyers_above p B)-> x >= p.
-Proof.   Admitted.
-         
-Lemma buyers_above_intro (p:nat)(B: list Bid)(x:Bid):
- ( In x B /\ x >= p ) -> In x (buyers_above p B).
-Proof. Admitted.
-
-Definition sellers_above (p: nat)(A: list Ask): list Ask :=
-  filter (fun x:Ask => Nat.leb p x) (A).
-
-Lemma sellers_above_elim (p:nat)(A: list Ask)(x:Ask):
-  In x (sellers_above p A)-> x >= p.
-Proof. Admitted.
-Lemma sellers_above_intro (p:nat)(A: list Ask)(x:Ask):
- ( In x A /\ x >= p ) -> In x (sellers_above p A).
-Proof. Admitted.
-
-Definition buyers_below (p: nat)(B: list Bid): list Bid :=
-  filter (fun x:Bid => Nat.leb x p) (B).
-
-Lemma buyers_below_intro (p:nat)(B: list Bid)(x:Bid):
- ( In x B /\ x <= p ) -> In x (buyers_below p B).
-Proof. Admitted.
-Lemma buyers_below_elim (p:nat)(B: list Bid)(x:Bid):
-  In x (buyers_below p B)-> x <= p.
-Proof. Admitted.
-
-Definition sellers_below (p: nat)(A: list Ask): list Ask :=
-  filter (fun x:Ask => Nat.leb x p) (A).
-
-Lemma sellers_below_intro (p:nat)(A: list Ask)(x:Ask):
- ( In x A /\ x <= p ) -> In x (sellers_below p A).
-Proof. Admitted.
-Lemma sellers_below_elim (p:nat)(A: list Ask)(x:Ask):
-  In x (sellers_below p A)-> x <= p.
-Proof. Admitted.
-
-Hint Resolve buyers_above_elim buyers_above_intro: auction.
-Hint Resolve sellers_above_elim sellers_above_intro: auction.
-
-Hint Resolve buyers_below_elim buyers_below_intro: auction.
-Hint Resolve sellers_below_elim sellers_below_intro: auction.
-
-
-Theorem buyers_above_ge_sellers (p:nat)(M: list fill_type) (B: list Bid) (A: list Ask):
-  matching_in B A M -> | buyers_above p (bids_of M)| >= | sellers_above p (asks_of M)|.
-Proof. Admitted.
-
-Theorem sellers_below_ge_buyers (p:nat)(M: list fill_type) (B: list Bid) (A: list Ask):
-  matching_in B A M -> | buyers_below p (bids_of M)| <= | sellers_below p (asks_of M)|.
-Proof. Admitted.
 
 End Matching.
 

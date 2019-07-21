@@ -43,33 +43,33 @@ Fixpoint produce_UM (B:list Bid) (A:list Ask)  :=
 
 Lemma UM_correct (B:list Bid) (A:list Ask) : forall m, In m (produce_UM B A) ->
                                 (bp (bid_of m)) >= (sp (ask_of m)).
-Proof.  intros m. revert A. induction B. simpl. auto. intro A.
-        induction A. simpl. auto. simpl. intro H1. 
-        destruct (a0 <=? a) eqn: H2. destruct H1.
-        subst m. unfold bid_of. unfold ask_of. move /eqP in H2.  
-        move /eqP in H2.  move /leP in H2. auto. 
-        move /leP in H2. eapply IHB. exact H. inversion H1. Qed.
+Proof. { intros m. revert A. induction B. simpl. auto. intro A.
+         induction A. simpl. auto. simpl. intro H1. 
+         destruct (a0 <=? a) eqn: H2. destruct H1.
+         subst m. unfold bid_of. unfold ask_of. move /eqP in H2.  
+         move /eqP in H2.  move /leP in H2. auto. 
+         move /leP in H2. eapply IHB. exact H. inversion H1. } Qed.
    
 Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
- Sorted by_dbp B -> Sorted by_sp A -> matching_in B A (produce_UM B A).
+  Sorted by_dbp B -> Sorted by_sp A -> matching_in B A (produce_UM B A).
  Proof. { revert B NDB. induction A. 
- { case B eqn: H1. simpl. auto. simpl. auto. }  
- { case B eqn:H1. simpl. auto. 
- intros H2 H3 H4. simpl. destruct (a <=? b) eqn:Hab. 
- assert (Hm:matching_in l A (produce_UM l A)). 
- { eapply IHA with (B:=l). eauto. subst B. eauto. subst B. eauto. eauto. }
- eapply matching_in_intro.
- { simpl. move /leP in Hab. exact Hab. }
- { eauto. }
- { simpl. intro H5. assert (Hl:In b l). subst B. unfold matching_in in Hm.
- destruct Hm as [Hm1 Hm]. destruct Hm as [Hm2 Hm].  eauto. absurd (In b l).
- all:auto.
-  } 
-  { simpl. intro H5. assert (Hl:In a A). unfold matching_in in Hm.
- destruct Hm as [Hm1 Hm]. destruct Hm as [Hm2 Hm].  eauto. absurd (In a A).
- all:auto.
-   } simpl. left;auto. simpl. left;auto.
- auto. } } Qed.
+          { case B eqn: H1. simpl. auto. simpl. auto. }  
+          { case B eqn:H1. simpl. auto. 
+            intros H2 H3 H4. simpl. destruct (a <=? b) eqn:Hab. 
+            assert (Hm:matching_in l A (produce_UM l A)). 
+            { eapply IHA with (B:=l). eauto. subst B. eauto. subst B. eauto. eauto. }
+            eapply matching_in_intro.
+            { simpl. move /leP in Hab. exact Hab. }
+            { eauto. }
+            { simpl. intro H5. assert (Hl:In b l). subst B. unfold matching_in in Hm.
+              destruct Hm as [Hm1 Hm]. destruct Hm as [Hm2 Hm].  eauto. absurd (In b l).
+              all:auto.
+            } 
+            { simpl. intro H5. assert (Hl:In a A). unfold matching_in in Hm.
+              destruct Hm as [Hm1 Hm]. destruct Hm as [Hm2 Hm].  eauto. absurd (In a A).
+              all:auto.
+            } simpl. left;auto. simpl. left;auto.
+            auto. } } Qed.
  
  
 
@@ -110,11 +110,12 @@ case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m) with (last (f :: l) 
 Lemma UM_returns_IR (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
  Sorted by_dbp B -> Sorted by_sp A -> forall m, In m (produce_UM B A) ->
    (bp (bid_of m))>= (tp m)  /\ (sp (ask_of m)) <= (tp m).
-  
-Proof.   { revert NDA. revert A. induction B. intros. split. simpl in H1.
-destruct H1. simpl in H1. destruct H1. intros.  case A eqn: Ha. simpl in H1. destruct H1. simpl in H1.  case (a0 <=? a) eqn: Ha0. simpl in H1.
-destruct H1. subst m. move /leP in Ha0. simpl. eauto. eapply IHB in H1.
- exact. eauto. eauto. eauto. eauto. destruct H1. } Qed.
+Proof.  { revert NDA. revert A. induction B. intros. split. simpl in H1.
+          destruct H1. simpl in H1. destruct H1. intros.
+          case A eqn: Ha. simpl in H1. destruct H1.
+          simpl in H1.  case (a0 <=? a) eqn: Ha0. simpl in H1.
+          destruct H1. subst m. move /leP in Ha0. simpl. eauto. eapply IHB in H1.
+          exact. eauto. eauto. eauto. eauto. destruct H1. } Qed.
  
 Fixpoint replace_column (l:list fill_type)(n:nat):=
   match l with
@@ -125,22 +126,22 @@ Fixpoint replace_column (l:list fill_type)(n:nat):=
 Lemma replace_column_is_uniform (l: list fill_type)(n:nat):
   uniform (trade_prices_of (replace_column l n)).
 Proof. { induction l. simpl.  constructor.
-       case l eqn: H. simpl.  constructor. simpl. simpl in IHl. constructor;auto. } Qed.
+         case l eqn: H. simpl.  constructor. simpl. simpl in IHl. constructor;auto. } Qed.
 
 Lemma last_column_is_trade_price (l:list fill_type)(m:fill_type)(n:nat): In m (replace_column l n)->
                                                                   (tp m = n).
 Proof. { intro H. induction l. auto. inversion H as [H0 |].  
-inversion H0 as [H1 ]. simpl. exact. apply IHl in H0. exact. } Qed.
+         inversion H0 as [H1 ]. simpl. exact. apply IHl in H0. exact. } Qed.
 
 Lemma replace_column_elim (l: list fill_type)(n:nat): forall m', In m' (replace_column l n)-> exists m, In m l /\ bid_of m = bid_of m' 
 /\ ask_of m = ask_of m'.
   Proof. { intros m' H. induction l. 
-  { simpl in H. inversion H. }
-  { simpl in H. destruct H.
-    {  exists a. split. auto. split. subst m'. simpl. auto. subst m'. simpl. auto. }
-    { apply IHl in H as H1. destruct H1 as [m H1]. exists m. 
-      destruct H1 as [H2 H1]. destruct H1 as [H3 H1]. split.
-      auto. split;auto. } } } Qed. 
+           { simpl in H. inversion H. }
+           { simpl in H. destruct H.
+             {  exists a. split. auto. split. subst m'. simpl. auto. subst m'. simpl. auto. }
+             { apply IHl in H as H1. destruct H1 as [m H1]. exists m. 
+               destruct H1 as [H2 H1]. destruct H1 as [H3 H1]. split.
+               auto. split;auto. } } } Qed. 
   
 
 
@@ -148,7 +149,6 @@ Definition uniform_price B A := bp (bid_of (last (produce_UM B A) m0)).
 
 Lemma bids_of_UM_sorted (B: list Bid) (A: list Ask) :
   (Sorted by_dbp B -> (Sorted by_dbp (bids_of (produce_UM B A)))).
-  
 Proof.  Admitted.
 
 Lemma asks_of_UM_sorted (B: list Bid) (A: list Ask) :
@@ -159,21 +159,26 @@ Proof. Admitted.
 Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid)  :
   Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (produce_UM B A)) ->
   b >=(uniform_price B A).
-  Proof. intros H1 H2 H3. unfold uniform_price. eapply bids_of_UM_sorted  with (A:=A) in H1 as H4 . 
-  assert (H5: by_dbp b (bid_of (last (produce_UM B A) m0))).
-  assert (Hlastb: last (bids_of (produce_UM B A)) b0 = bid_of (last (produce_UM B A) m0)). symmetry. eapply bid_of_last_and_last_of_bids.
-  rewrite <- Hlastb.
-  eapply last_in_Sorted. exact H4. auto. unfold by_dbp in H5. move /leP in H5. auto. Qed.
+Proof. { intros H1 H2 H3. unfold uniform_price.
+         eapply bids_of_UM_sorted  with (A:=A) in H1 as H4 . 
+         assert (H5: by_dbp b (bid_of (last (produce_UM B A) m0))).
+         assert (Hlastb: last (bids_of (produce_UM B A)) b0 = bid_of (last (produce_UM B A) m0)).
+         symmetry. eapply bid_of_last_and_last_of_bids.
+         rewrite <- Hlastb.
+         eapply last_in_Sorted. exact H4. auto.
+         unfold by_dbp in H5. move /leP in H5. auto. } Qed.
   
-  Lemma uniform_price_ask (B: list Bid) (A:list Ask) (a: Ask)  :
-  Sorted by_dbp B -> Sorted by_sp (A) -> In a (asks_of (produce_UM B A)) ->
-  a <= (uniform_price B A).
-  Proof.  intros H1 H2 H3. unfold uniform_price. eapply asks_of_UM_sorted  with (B:=B) in H2 as H4 . 
-  assert (H5: by_sp a (ask_of (last (produce_UM B A) m0))).
-  assert (Hlasta: last (asks_of (produce_UM B A)) a0 = ask_of (last (produce_UM B A) m0)). symmetry. eapply ask_of_last_and_last_of_asks.
-  rewrite <- Hlasta.
-  eapply last_in_Sorted. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
-  assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)).  Admitted.
+Lemma uniform_price_ask (B: list Bid) (A:list Ask) (a: Ask):
+  Sorted by_dbp B -> Sorted by_sp (A) -> In a (asks_of (produce_UM B A))-> a <= (uniform_price B A).
+Proof. { intros H1 H2 H3. unfold uniform_price.
+         eapply asks_of_UM_sorted  with (B:=B) in H2 as H4. 
+         assert (H5: by_sp a (ask_of (last (produce_UM B A) m0))).
+         assert (Hlasta: last (asks_of (produce_UM B A)) a0 = ask_of (last (produce_UM B A) m0)).
+         symmetry. eapply ask_of_last_and_last_of_asks.
+         rewrite <- Hlasta.
+         eapply last_in_Sorted. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
+         assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)).
+        admit.  admit. } Admitted.
 
 Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
   replace_column (produce_UM B A)
@@ -190,9 +195,7 @@ Proof. {  intros H1 H2. unfold UM. unfold Is_IR.
           eapply last_column_is_trade_price. exact H3.
           rewrite  H4. eapply replace_column_elim in H3 as H5. 
           eapply bids_of_UM_sorted with (A:=A) in H1  as H6. 
-          unfold uniform_price.  
-          
-          Admitted.
+          unfold uniform_price.  Admitted.
 
 
 (*
@@ -212,47 +215,50 @@ Proof.  unfold Uniform. unfold UM. apply replace_column_is_uniform. Qed.
 Definition Is_uniform M B A := (Uniform M /\ matching_in B A M /\ Is_IR M).
 
 Lemma matching_on_nilA (B:list Bid) (M:list fill_type) : matching_in B nil M -> M=nil.
-Proof. intros H1. unfold matching_in in H1. destruct H1 as [H1 H2].
-destruct H2 as [H2 H3]. unfold matching in H1. destruct H1 as [H1 H4]. 
-unfold All_matchable in H1. assert (HAMnil: (asks_of M) = nil). eauto.
-case M eqn: HM. auto. simpl in HAMnil. inversion HAMnil. Qed.
+Proof. { intros H1. unfold matching_in in H1. destruct H1 as [H1 H2].
+         destruct H2 as [H2 H3]. unfold matching in H1. destruct H1 as [H1 H4]. 
+         unfold All_matchable in H1. assert (HAMnil: (asks_of M) = nil). eauto.
+         case M eqn: HM. auto. simpl in HAMnil. inversion HAMnil. } Qed.
 
 Lemma matching_on_nilB (A: list Ask)(M:list fill_type) : matching_in nil A M -> M=nil.
-Proof. intros H1. unfold matching_in in H1. destruct H1 as [H1 H2].
-destruct H2 as [H2 H3]. unfold matching in H1. destruct H1 as [H1 H4]. 
-unfold All_matchable in H1. assert (HBMnil: (bids_of M) = nil). eauto.
-case M eqn: HM. auto. simpl in HBMnil. inversion HBMnil. Qed.
+Proof. { intros H1. unfold matching_in in H1. destruct H1 as [H1 H2].
+         destruct H2 as [H2 H3]. unfold matching in H1. destruct H1 as [H1 H4]. 
+         unfold All_matchable in H1. assert (HBMnil: (bids_of M) = nil). eauto.
+         case M eqn: HM. auto. simpl in HBMnil. inversion HBMnil. } Qed.
 
 Lemma unmatchableAB_nil (B:list Bid) (A:list Ask) (b:Bid)(a:Ask) (M:list fill_type): Sorted by_dbp (b::B) -> Sorted by_sp (a::A) ->matching_in (b::B) (a::A) M -> b<a-> M=nil.
-Proof. { intros H1 H2 H3 H4. case M as [|f  M'] eqn:HM.  { auto. }
-{ 
-set (b0:= bid_of f). set (a0:= ask_of f).
-assert (Hfask: In (ask_of f) (a::A)). 
-{ eapply matching_in_elim5. exact H3. }
-assert (Hfbid: In (bid_of f) (b::B)). 
-{ eapply matching_in_elim4.  exact H3. }
-assert (Hmatch: bid_of f >= ask_of f). eauto.
- assert (h1: by_dbp b b0). 
-   { unfold b0. eauto. }
-   move /leP in h1. unfold b0 in h1. 
-    assert (h2: by_sp a a0). 
-   { unfold a0. eauto. }
-   move /leP in h2. unfold a0 in h2. 
-
-omega. } } Qed.
+Proof. { intros H1 H2 H3 H4.
+         case M as [|f  M'] eqn:HM.
+         { auto. }
+         { set (b0:= bid_of f). set (a0:= ask_of f).
+           assert (Hfask: In (ask_of f) (a::A)). 
+           { eapply matching_in_elim5. exact H3. }
+           assert (Hfbid: In (bid_of f) (b::B)). 
+           { eapply matching_in_elim4.  exact H3. }
+           assert (Hmatch: bid_of f >= ask_of f). eauto.
+           assert (h1: by_dbp b b0). 
+           { unfold b0. eauto. }
+           move /leP in h1. unfold b0 in h1. 
+           assert (h2: by_sp a a0). 
+           { unfold a0. eauto. }
+           move /leP in h2. unfold a0 in h2. omega. } } Qed.
 
 Lemma delete_IR_is_IR (M : list fill_type) (m:fill_type): Is_IR M -> Is_IR (delete m M).
 Proof. unfold Is_IR. eauto. Qed. 
 
-Lemma IR_UM_matchable (M:list fill_type)(b:Bid)(a:Ask): Is_IR M -> Uniform M -> In a (asks_of M) -> In b (bids_of M)->b>=a.
-Proof. { intros H1 H2 Ha Hb. assert (Hm1: exists m1, (In m1 M) /\ a=(ask_of m1)). 
-eauto. assert (Hm2: exists m2, (In m2 M) /\ b=(bid_of m2)). 
-eauto. destruct Hm1 as [m1 Hm1]. destruct Hm2 as [m2 Hm2]. 
-assert (Ht:tp m1 = tp m2). destruct Hm1 as [Hm1m Hm1a]. destruct Hm2 as [Hm2m Hm2b]. eapply Uniform_elim. eauto. all: auto. assert (Hbm: b>= tp m2).
-{ destruct Hm1 as [Hm1m Hm1a]. destruct Hm2 as [Hm2m Hm2b]. subst b.
-eapply H1. exact. } assert (Ham: a<= tp m1). 
-{ destruct Hm1 as [Hm1m Hm1a]. destruct Hm2 as [Hm2m Hm2b]. subst a.
-eapply H1. exact. } omega. } Qed.
+Lemma IR_UM_matchable (M:list fill_type)(b:Bid)(a:Ask):
+  Is_IR M -> Uniform M -> In a (asks_of M) -> In b (bids_of M)->b>=a.
+Proof. { intros H1 H2 Ha Hb.
+         assert (Hm1: exists m1, (In m1 M) /\ a=(ask_of m1)). 
+         eauto. assert (Hm2: exists m2, (In m2 M) /\ b=(bid_of m2)). 
+         eauto. destruct Hm1 as [m1 Hm1]. destruct Hm2 as [m2 Hm2]. 
+         assert (Ht:tp m1 = tp m2).
+         destruct Hm1 as [Hm1m Hm1a]. destruct Hm2 as [Hm2m Hm2b].
+         eapply Uniform_elim. eauto. all: auto. assert (Hbm: b>= tp m2).
+         { destruct Hm1 as [Hm1m Hm1a]. destruct Hm2 as [Hm2m Hm2b]. subst b.
+           eapply H1. exact. } assert (Ham: a<= tp m1). 
+         { destruct Hm1 as [Hm1m Hm1a]. destruct Hm2 as [Hm2m Hm2b]. subst a.
+           eapply H1. exact. } omega. } Qed.
 
 
 
@@ -260,55 +266,63 @@ Lemma M'_unifom_ir (M : list fill_type) (m1 m2: fill_type):
 (Is_IR M /\ Uniform M) -> In m1 M -> In m2 M -> 
 Is_IR (({|bid_of:= bid_of m1 ; ask_of:= ask_of m2 ; tp:=(tp m1)|}::delete m1 (delete m2 M))) /\
 Uniform (({|bid_of:= bid_of m1 ; ask_of:= ask_of m2 ; tp:=(tp m1)|}::delete m1 (delete m2 M))).
-Proof. { intros H0 H1 H2. split. { 
-
-destruct H0 as [H0ir H0uni].  
-set (M'':= delete m1 (delete m2 M)). assert (H_irM'':Is_IR M'').
-{
-subst M''. unfold Is_IR. intros. apply H0ir. eapply delete_elim1.
-simple eapply delete_elim1.
-   exact H. }
-   { assert (Htp: tp m1 = tp m2).
-eauto. assert (Hrationalm2: rational m2). eauto. unfold rational in Hrationalm2. 
-assert (Htpm2: tp m2 >= ask_of m2). eapply Hrationalm2. 
-set (m:={| bid_of := bid_of m1; ask_of := ask_of m2; tp := tp m1 |}).
-assert (mrat:rational m).
-{ unfold rational. subst m.  simpl. assert (Hrationalm1: rational m1). eauto. unfold rational in Hrationalm1. 
-assert (Htpm1: bid_of m1 >= tp m1). eapply Hrationalm1. split. eauto. omega. } eauto. } }
-{ destruct H0 as [H0ir H0uni].  
-set (M'':= delete m1 (delete m2 M)). assert (H_uniM'':Uniform M'').
-subst M''. eauto. case M'' eqn: HM''. constructor. 
-assert (HeM'': In e M''). rewrite HM''. auto. assert (HeM: In e M).
-eapply delete_elim1. eapply delete_elim1. exact HeM''.  
-
-assert (H_e: tp e = tp m1).  eapply Uniform_elim. exact H0uni. exact HeM. exact H1. rewrite <- H_e. eauto. } } Qed. 
+Proof. { intros H0 H1 H2.
+         split.
+         { destruct H0 as [H0ir H0uni].
+           set (M'':= delete m1 (delete m2 M)). assert (H_irM'':Is_IR M'').
+           { subst M''. unfold Is_IR. intros. apply H0ir. eapply delete_elim1.
+             simple eapply delete_elim1. exact H. }
+           { assert (Htp: tp m1 = tp m2).
+             eauto.
+             assert (Hrationalm2: rational m2).
+             eauto. unfold rational in Hrationalm2. 
+             assert (Htpm2: tp m2 >= ask_of m2). eapply Hrationalm2. 
+             set (m:={| bid_of := bid_of m1; ask_of := ask_of m2; tp := tp m1 |}).
+             assert (mrat:rational m).
+             { unfold rational. subst m.  simpl.
+               assert (Hrationalm1: rational m1). eauto.
+               unfold rational in Hrationalm1. 
+               assert (Htpm1: bid_of m1 >= tp m1). eapply Hrationalm1.
+               split. eauto. omega. } eauto. } }
+         { destruct H0 as [H0ir H0uni].  
+           set (M'':= delete m1 (delete m2 M)). assert (H_uniM'':Uniform M'').
+           subst M''. eauto. case M'' eqn: HM''. constructor. 
+           assert (HeM'': In e M''). rewrite HM''. auto. assert (HeM: In e M).
+           eapply delete_elim1. eapply delete_elim1. exact HeM''.
+           assert (H_e: tp e = tp m1).
+           eapply Uniform_elim. exact H0uni.
+           exact HeM. exact H1. rewrite <- H_e. eauto. } } Qed. 
 
  
                  
                  
 
-Lemma IR_UM_matchable_m (M:list fill_type)(m1 m2:fill_type): Is_IR M -> Uniform M -> In m1 M -> In m2 M-> bid_of m1 >=ask_of m2. 
+Lemma IR_UM_matchable_m (M:list fill_type)(m1 m2:fill_type):
+  Is_IR M -> Uniform M -> In m1 M -> In m2 M-> bid_of m1 >=ask_of m2. 
 Proof. { intros H1 H2 H3 H4. assert (Htp: tp m1 = tp m2). eauto.
-assert (Htpm1b: tp m1 <= bid_of m1). 
-{ unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
-assert (Htpm1a: tp m1 >= ask_of m1). 
-{ unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
-assert (Htpm2b: tp m2 <= bid_of m2). 
-{ unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
-assert (Htpm2a: tp m2 >= ask_of m2). 
-{ unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
-omega. } Qed. 
+         assert (Htpm1b: tp m1 <= bid_of m1). 
+         { unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
+         assert (Htpm1a: tp m1 >= ask_of m1). 
+         { unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
+         assert (Htpm2b: tp m2 <= bid_of m2). 
+         { unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
+         assert (Htpm2a: tp m2 >= ask_of m2). 
+         { unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
+         omega. } Qed. 
 
 Theorem UM_is_maximal_Uniform (B: list Bid) (A:list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A): Sorted by_dbp B -> Sorted by_sp A-> (forall M: list fill_type, Is_uniform M B A-> |M| <= | (produce_UM B A ) |).
 
 Proof. revert B no_dup_B. induction A as [|a A'].
        { (* base case: when A is nil *)
          intros B hB H H0.  case B. simpl.
-         { intros M H1. destruct H1 as [H1 H2]. destruct H2 as [H2 H3]. apply matching_on_nilA in H2. subst M. auto. }
-         { intros b l. simpl. intros M H1. destruct H1 as [H1 H2]. destruct H2 as [H2 H3]. apply matching_on_nilA in H2. subst M. auto. } }
+         { intros M H1. destruct H1 as [H1 H2].
+           destruct H2 as [H2 H3]. apply matching_on_nilA in H2. subst M. auto. }
+         { intros b l. simpl. intros M H1. destruct H1 as [H1 H2].
+           destruct H2 as [H2 H3]. apply matching_on_nilA in H2. subst M. auto. } }
        { (* induction step: when A is a::A' *)
          intros B hB h h0. case B as [| b B'].
-         { simpl. intros M H1.  destruct H1 as [H1 H2]. destruct H2 as [H2 H3]. apply matching_on_nilB in H2. subst M. auto. }
+         { simpl. intros M H1.  destruct H1 as [H1 H2]. destruct H2 as [H2 H3].
+           apply matching_on_nilB in H2. subst M. auto. }
          { (*----- induction step : b::B'   and a:: A' ---------*)
            assert (Case: b < a \/ b >= a ). omega.
            destruct Case as [C1 | C2].
@@ -316,9 +330,11 @@ Proof. revert B no_dup_B. induction A as [|a A'].
              simpl. replace (a <=? b) with false.
              Focus 2. symmetry. apply /leP. omega. intros M H1.
              destruct H1 as [H1 H2]. destruct H2 as [H2 H3]. 
-             assert (HM:M=nil). eapply unmatchableAB_nil. eauto. eauto. eauto. exact. subst M. auto. }
+             assert (HM:M=nil). eapply unmatchableAB_nil.
+             eauto. eauto. eauto. exact. subst M. auto. }
              { (*-- C2: when b and a are matchable then Output is (b,a):: produce_MM B' A'----*)
-             assert (h1: matching_in (b::B') (a::A') (produce_UM (b::B') (a::A'))). {eauto using UP_is_matching. }
+               assert (h1: matching_in (b::B') (a::A') (produce_UM (b::B') (a::A'))).
+               {eauto using UP_is_matching. }
              intros M h2. destruct h2 as [h2a h2]. destruct h2 as [h2 h2b]. 
               simpl. replace (a <=? b) with true.
              
@@ -395,7 +411,9 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        unfold rational in Hrationalm1. apply Hrationalm1. }
                        assert (h_t2: t>=ask_of m2).
                        { subst t. assert ( Hrationalm2:rational m2). eauto.
-                       unfold rational in Hrationalm2. assert (Htpm1m2: tp m1 = tp m2). eauto. rewrite Htpm1m2. apply Hrationalm2. }
+                         unfold rational in Hrationalm2.
+                         assert (Htpm1m2: tp m1 = tp m2).
+                         eauto. rewrite Htpm1m2. apply Hrationalm2. }
                        simpl. omega. } split.
                      { (*---- NoDup (bids_of M') ----*)
                        unfold M'. simpl.
@@ -404,7 +422,10 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        { (*--- NoDup (bids_of M'')---*)
                          cut (matching M''). auto.
                          unfold M''. eauto. }
-                       { unfold M''.  { apply matching_elim10. apply matching_elim9. eapply matching_in_elim0. exact h2. apply delete_intro. exact. exact. }  } }
+                       { unfold M''.
+                         { apply matching_elim10. apply matching_elim9.
+                           eapply matching_in_elim0. exact h2.
+                           apply delete_intro. exact. exact. }  } }
                       { (*---- NoDup (asks_of M') ----*)
                        unfold M'. simpl.
                        cut (~ In (ask_of m2) (asks_of M'')).
@@ -416,8 +437,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                          assert(h6:asks_of(delete m1 (delete m2 M))[<=]asks_of(delete m2 M)).
                          eauto. intro h7.
                          absurd (In (ask_of m2) (asks_of (delete m2 M))).
-                         simple apply matching_elim11.
- simple eapply matching_in_elim0. exact h2. exact. auto. } } } split. 
+                         simple apply matching_elim11. simple eapply matching_in_elim0.
+                         exact h2. exact. auto. } } } split. 
                    { (*----- bids_of M' [<=] B'-------------*)
                      unfold M'. simpl.
                      intros x h6. destruct h6 as [h6 | h6].

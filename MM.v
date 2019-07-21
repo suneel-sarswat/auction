@@ -1,14 +1,20 @@
-(* This file contains results of Maximum matchings. The file contains a function produce_MM,
- which produces a maximum matching from any list of bids and list of aks. We also prove that
-  matching produced by this function is largest in size from any other possible matching from
-   the same set of bids and asks
 
-Important results:
 
-Lemma produce_MM_is_MM: Sorted by_dbp B -> Sorted by_dsp A-> 
-Is_MM (produce_MM B A) B A.
 
-*)
+
+
+(* ---------------------------------------------------------------------------------------
+
+   This file contains results of Maximum matchings. 
+   The file contains a function produce_MM, which produces a maximum matching 
+   from any list of bids B and list of asks A. We also prove that matching produced 
+   by this function is largest in size as compared to any other possible matching
+   on the same set of bids B and asks A.
+
+
+Lemma produce_MM_is_MM: Sorted by_dbp B -> Sorted by_dsp A->  Is_MM (produce_MM B A) B A.
+
+ -------------------------------------------------------------------------------------- *)
 
 
 

@@ -1,28 +1,35 @@
 
 
-(* -----------------Description----------------------------------------------
+(* -----------------Description------------------------------------------------------
 
 This file contains basic definitions of Bids, Asks and Fill (trade between
-Bid and Ask). They are also attached with eqType (i.e, domain with 
-decidable Equality). We have also defined projection functions on list of Bids and Asks.
+Bid and Ask). These data types are also attached with eqType (i.e, domain 
+with decidable Equality). We also define projection functions on list
+of Bids and Asks.
 
-Bid: is a recort with bid limit price and bid id.
-Ask: is a record with ask limit price and ask id.
-Fill_type: is a record with bid, ask and trade price of the pair.
-bid_prices: is a function to project bid prices from list of bids.
-ask_prices: is a function to project bid prices from list of asks.
-bids_of: is a function to project bids from list of fill_type.
-asks_of: is a function to project asks from list of fill_type.
+    Terms          <==>     Explanations
+    Bid                     Type for a buy request
+    Ask                     Type for an sell request
+    fill_type               Type for trade output
+
+    bid_prices B            projection of bid prices in B
+    ask_prices A            projection of ask prices in A
+    bids_of F               projection of bids in F
+    asks_of F               projection of asks in F
+ 
 
 Some important results:
 
-Lemma included_M_imp_included_bids : included M1 M2 ->
-included (bids_of M1) (bids_of M2).
-Lemma bids_of_perm: perm M M' -> perm (bids_of M) (bids_of M').
+  Lemma included_M_imp_included_bids : included M1 M2 -> included (bids_of M1) (bids_of M2).
+  Lemma bids_of_perm: perm M M' -> perm (bids_of M) (bids_of M').
 
-Similarily we have lemmas for Asks, trade prices.
+  Lemma included_M_imp_included_asks : included M1 M2 -> included (asks_of M1) (asks_of M2).
+  Lemma asks_of_perm: perm M M' -> perm (asks_of M) (asks_of M').
 
- ---- *)
+  Lemma included_M_imp_included_tps: included M M'->included(trade_prices_of M)(trade_prices_of M').
+  Lemma tps_of_perm : perm M M' -> perm (trade_prices_of M) (trade_prices_of M').
+
+ ---------------------------------------------------------------------------------------- *)
 
 
 Require Import ssreflect ssrbool.
@@ -60,14 +67,14 @@ Proof. unfold b_eqb. split_; apply /eqP;auto. Qed.
 
 Hint Resolve b_eqb_ref: auction.
 Lemma b_eqb_elim (x y:Bid):  b_eqb x y -> x = y.
-Proof. unfold b_eqb. move /andP. intro H. destruct H as [H1 H2].
-destruct x; destruct y. move /eqP in H1. auto.  Qed. 
+Proof. { unfold b_eqb. move /andP. intro H. destruct H as [H1 H2].
+         destruct x; destruct y. move /eqP in H1. auto.  } Qed. 
 
 
 Lemma b_eqb_intro (x y:Bid): x=y -> b_eqb x y = true.
-Proof. unfold b_eqb. intros H. apply /andP. split. 
-apply /eqP. subst x.  auto. apply /eqP. 
-inversion H. auto.  Qed.  
+Proof. { unfold b_eqb. intros H. apply /andP. split. 
+         apply /eqP. subst x.  auto. apply /eqP. 
+         inversion H. auto. } Qed.  
 
 Hint Immediate b_eqb_elim b_eqb_intro: auction.
 
@@ -83,20 +90,20 @@ Canonical bid_eqType: eqType:= {| Decidable.E:= Bid; Decidable.eqb:= b_eqb; Deci
 (*------------------ Attaching Ask to EqType ------------------------------------ *)
 
 Lemma a_eqb_ref (x: Ask): a_eqb x x = true.
-Proof. unfold a_eqb. apply /andP. split. apply /eqP. auto. apply /eqP.
-auto. Qed.
+Proof. { unfold a_eqb. apply /andP. split. apply /eqP. auto. apply /eqP.
+         auto. } Qed.
 
 
 Hint Resolve a_eqb_ref: auction.
 Lemma a_eqb_elim (x y: Ask):  a_eqb x y -> x = y.
-Proof. unfold a_eqb. move /andP. intro H. destruct H as [H1 H2].
-destruct x; destruct y. move /eqP in H1. auto. Qed. 
+Proof. { unfold a_eqb. move /andP. intro H. destruct H as [H1 H2].
+         destruct x; destruct y. move /eqP in H1. auto. } Qed. 
 
 
 Lemma a_eqb_intro (x y: Ask): x=y -> a_eqb x y = true.
-Proof. unfold a_eqb. intros H. apply /andP. split. 
-apply /eqP. subst x.  auto. apply /eqP. 
-inversion H. auto. Qed.  
+Proof. { unfold a_eqb. intros H. apply /andP. split. 
+         apply /eqP. subst x.  auto. apply /eqP. 
+         inversion H. auto. } Qed.  
 
 Hint Immediate a_eqb_elim a_eqb_intro: auction.
 
@@ -130,8 +137,9 @@ Proof. { intros p H. induction B. simpl in H. contradiction. simpl in H.
 
 Lemma bid_prices_intro1 (B: list Bid) (B': list Bid):
   B [<=] B' -> ((bid_prices B)  [<=] (bid_prices B')).
-Proof. intro H. intros p. intro H1. assert (H2: exists b, In b B /\ p=bp b).
-apply bid_prices_elim. exact. destruct H2. destruct H0. assert (H3: In x B'). auto. subst p. eapply bid_prices_intro. exact. Qed.
+Proof. { intro H. intros p. intro H1. assert (H2: exists b, In b B /\ p=bp b).
+         apply bid_prices_elim. exact. destruct H2. destruct H0.
+         assert (H3: In x B'). auto. subst p. eapply bid_prices_intro. exact. } Qed.
 
 
 
@@ -157,8 +165,9 @@ Proof. { intros p H. induction A. simpl in H. contradiction. simpl in H.
 
 Lemma ask_prices_intro1 (A: list Ask) (A': list Ask):
   A [<=] A' -> ((ask_prices A)  [<=] (ask_prices A')).
-Proof.  intro H. intros p. intro H1. assert (H2: exists a, In a A /\ p=sp a).
-apply ask_prices_elim. exact. destruct H2. destruct H0. assert (H3: In x A'). eauto. subst p. eapply ask_prices_intro. exact. Qed.
+Proof.  { intro H. intros p. intro H1. assert (H2: exists a, In a A /\ p=sp a).
+          apply ask_prices_elim. exact. destruct H2. destruct H0.
+          assert (H3: In x A'). eauto. subst p. eapply ask_prices_intro. exact. } Qed.
 
 
 
@@ -184,16 +193,15 @@ Proof. unfold m_eqb. apply /andP. split. apply /andP. split. all: apply /eqP; au
 
 Hint Resolve m_eqb_ref: auction.
 Lemma m_eqb_elim (x y: fill_type):  m_eqb x y -> x = y.
-Proof. unfold m_eqb. destruct x. destruct y. simpl. intros. move /andP in H.
-destruct H. move /andP in H. destruct H. move /eqP in H. move /eqP in H1.
-move /eqP in H0. rewrite H0. rewrite H1. rewrite H. auto. Qed.
+Proof. { unfold m_eqb. destruct x. destruct y. simpl. intros. move /andP in H.
+         destruct H. move /andP in H. destruct H. move /eqP in H. move /eqP in H1.
+         move /eqP in H0. rewrite H0. rewrite H1. rewrite H. auto. } Qed.
 
 
 Lemma m_eqb_intro (x y: fill_type): x=y -> m_eqb x y = true.
-Proof. unfold m_eqb. intros H. apply /andP. split. apply /andP. 
-split. 
-apply /eqP. subst x. exact. apply /eqP. subst x. exact. apply /eqP. 
-subst x. exact. Qed.  
+Proof. { unfold m_eqb. intros H. apply /andP. split. apply /andP. 
+         split. apply /eqP. subst x. exact. apply /eqP. subst x. exact. apply /eqP. 
+         subst x. exact. } Qed.  
 
 Hint Immediate m_eqb_elim m_eqb_intro: auction.
 
@@ -229,14 +237,15 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
 
 Lemma bids_of_intro1 (M': list fill_type) (M: list fill_type):
   M [<=] M' -> ((bids_of M)  [<=] (bids_of M')).
-Proof.  intro H. intros b. intro H1. assert (H2: exists m, In m M /\ b=bid_of m).
-apply bids_of_elim. exact. destruct H2. destruct H0. assert (H3: In x M'). auto. subst b. eapply bids_of_intro. exact. Qed.
+Proof.  { intro H. intros b. intro H1. assert (H2: exists m, In m M /\ b=bid_of m).
+          apply bids_of_elim. exact. destruct H2. destruct H0. assert (H3: In x M').
+          auto. subst b. eapply bids_of_intro. exact. } Qed.
 
 
 Lemma bids_of_elim1 (M: list fill_type)(m: fill_type)(b: Bid): In b (bids_of (delete m M)) ->
                                                                In b (bids_of M).
 Proof. { induction M. simpl. auto. simpl. intros. case (m_eqb m a) eqn: Hm.
-right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
+         right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
 
 Lemma count_in_deleted_bids (m: fill_type)(M: list fill_type):
   In m M -> count (bid_of m) (bids_of M) = S (count (bid_of m) (bids_of (delete m M))).
@@ -279,8 +288,8 @@ Proof. { revert M2. induction M1 as [| m1].
 
        
 Lemma bids_of_perm (M M': list fill_type): perm M M' -> perm (bids_of M) (bids_of M').
-Proof. intro H. unfold perm in H. move /andP in H. destruct H.
-unfold perm. apply /andP. split. all: eapply included_M_imp_included_bids;exact. Qed.
+Proof. { intro H. unfold perm in H. move /andP in H. destruct H.
+         unfold perm. apply /andP. split. all: eapply included_M_imp_included_bids;exact. } Qed.
 
 Fixpoint asks_of (F: list fill_type) : (list Ask) :=
   match F with
@@ -302,15 +311,17 @@ Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
        apply IHF in H2 as H0. destruct H0 as [m H0]. exists m. destruct H0. split.
        eauto. auto. } Qed.
        
-       Lemma asks_of_intro1 (M': list fill_type) (M: list fill_type):
+Lemma asks_of_intro1 (M': list fill_type) (M: list fill_type):
   M [<=] M' -> ((asks_of M)  [<=] (asks_of M')).
-Proof.  intro H. intros a. intro H1. assert (H2: exists m, In m M /\ a=ask_of m).
-apply asks_of_elim. exact. destruct H2. destruct H0. assert (H3: In x M'). auto. subst a. eapply asks_of_intro. exact. Qed.
+Proof.  { intro H. intros a. intro H1. assert (H2: exists m, In m M /\ a=ask_of m).
+          apply asks_of_elim. exact. destruct H2. destruct H0. assert (H3: In x M').
+          auto. subst a. eapply asks_of_intro. exact. } Qed.
 
 Lemma asks_of_elim1 (M: list fill_type)(m: fill_type)(a: Ask): In a (asks_of (delete m M)) ->
                                                                In a (asks_of M).
 Proof. { induction M. simpl. auto. simpl. intros. case (m_eqb m a0) eqn: Hm.
-right. exact. simpl in H. destruct H. left. exact. apply IHM in H. right. exact. } Qed.
+         right. exact. simpl in H. destruct H. left. exact. apply IHM in H.
+         right. exact. } Qed.
 
 
 Lemma count_in_deleted_asks (m: fill_type)(M: list fill_type):
@@ -354,8 +365,8 @@ Proof. { revert M2. induction M1 as [| m1].
 
        
 Lemma asks_of_perm (M M': list fill_type): perm M M' -> perm (asks_of M) (asks_of M').
-Proof. intro H. unfold perm in H. move /andP in H. destruct H.
-unfold perm. apply /andP. split. all: eapply included_M_imp_included_asks;exact. Qed.
+Proof. { intro H. unfold perm in H. move /andP in H. destruct H.
+         unfold perm. apply /andP. split. all: eapply included_M_imp_included_asks;exact. } Qed.
 
 Fixpoint trade_prices_of (F: list fill_type) : (list nat) :=
   match F with
@@ -420,9 +431,9 @@ Lemma included_M_imp_included_tps (M M': list fill_type):
    
 Lemma tps_of_perm (M M': list fill_type):
  perm M M' -> perm (trade_prices_of M) (trade_prices_of M').
-Proof. intro H. unfold perm in H. move /andP in H. destruct H.
-unfold perm. apply /andP. split. all: eapply included_M_imp_included_tps.
-exact. exact. Qed.
+Proof. { intro H. unfold perm in H. move /andP in H. destruct H.
+         unfold perm. apply /andP. split. all: eapply included_M_imp_included_tps.
+         exact. exact. } Qed.
 
 
       

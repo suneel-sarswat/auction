@@ -1,4 +1,7 @@
-(* This file contains results of Maximum matchings. The file contains a function produce_MM, which produces a maximum matching from any list of bids and list of aks. We also prove that matching produced by this function is largest in size from any other possible matching from the same set of bids and asks
+(* This file contains results of Maximum matchings. The file contains a function produce_MM,
+ which produces a maximum matching from any list of bids and list of aks. We also prove that
+  matching produced by this function is largest in size from any other possible matching from
+   the same set of bids and asks
 
 Important results:
 
@@ -77,7 +80,7 @@ Hint Resolve by_dsp_P by_dsp_refl: core.
    Sorted by_dbp B -> Sorted by_dsp A -> matching_in B A (produce_MM B A).
  Proof. revert no_dup_A. induction B. intros. simpl. case A eqn: H1. simpl. eauto.
  simpl. eauto. intros. case A eqn: H2. simpl. eauto. simpl. 
- destruct (a0 <=? a) eqn: Ha. simpl. Admitted.
+ destruct (a0 <=? a) eqn: Ha. simpl. move /leP in Ha. Admitted.
  
 
  Lemma produce_MM_fob (B: list Bid)(A: list Ask):

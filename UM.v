@@ -1,4 +1,8 @@
-(* This file contains results of Uniform matchings. The file contains a function produce_UM, which produces a uniform matching from any list of bids and list of aks. We prove that matching produced by this function is largest amongs any other possible uniform matching. We also prove that the matching is IR and uniform.
+(* This file contains results of Uniform matchings. The file contains a
+ function produce_UM, which produces a uniform matching from any list of
+  bids and list of aks. We prove that matching produced by this function is
+   largest amongs any other possible uniform matching. We also prove that
+    the matching is IR and uniform.
 
 Important results:
 
@@ -72,7 +76,7 @@ Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
 
 Lemma last_in_tail (A:Type): forall l:list A, forall a b d:A, 
 (last (a::b::l) d) = (last (b::l) d).
-Proof. Admitted.
+Proof. intros. eauto. Qed.
  
 (*
 Lemma last_in_list (T:Type)(l:list T)(p:T)(d:T) : In (last (p :: l) d)  (p :: l).
@@ -83,8 +87,8 @@ intros. Admitted.  *)
 
 Lemma bid_of_last_and_last_of_bids (F: list fill_type) (m : fill_type) (b : Bid):
   (bid_of (last F m)) = (last (bids_of F) b).
-Proof. 
-induction F.  simpl. destruct m. destruct b. simpl. admit. {
+Proof.  
+induction F.  simpl.  destruct m eqn : H0. destruct b eqn : H. simpl. rewrite <- H. admit. {
 case F eqn:H1. simpl. auto. replace (last (a :: f :: l) m) with (last (f :: l) m). unfold bids_of;fold bids_of. replace
  (last (bid_of a :: bid_of f :: bids_of l) b0) with
  (last (bid_of f :: bids_of l) b0). exact. symmetry.
@@ -168,7 +172,7 @@ Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid)  :
   assert (H5: by_sp a (ask_of (last (produce_UM B A) m0))).
   assert (Hlasta: last (asks_of (produce_UM B A)) a0 = ask_of (last (produce_UM B A) m0)). symmetry. eapply ask_of_last_and_last_of_asks.
   rewrite <- Hlasta.
-  eapply last_in_Sorted. exact H4. auto. unfold by_sp in H5. move /leP in H5.
+  eapply last_in_Sorted. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
   assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)).  Admitted.
 
 Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
@@ -186,6 +190,7 @@ Proof. {  intros H1 H2. unfold UM. unfold Is_IR.
           eapply last_column_is_trade_price. exact H3.
           rewrite  H4. eapply replace_column_elim in H3 as H5. 
           eapply bids_of_UM_sorted with (A:=A) in H1  as H6. 
+          unfold uniform_price.  
           
           Admitted.
 

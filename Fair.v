@@ -205,10 +205,7 @@ Proof. { intros h1 h2 h3 h4 h5.
          { auto using nodup_sub_is_includedB. }
          
          assert (h9: included (bid_prices B1) (bid_prices B2)).
-         { auto using included_Lemma mfob_fair_on_bid (M: list fill_type) (B:list Bid) (A:list Ask):
-  (Sorted m_dbp M) -> (Sorted by_dbp B) -> sublist (bid_prices (bids_of M)) (bid_prices B) ->
-  fair_on_bids (Make_FOB M B) B. 
-B_imp_included_BP. }  eauto. }  Qed.
+         { auto using included_B_imp_included_BP. }  eauto. }  Qed.
 
 Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_dbp M -> Sorted by_dbp (bids_of M).
 Proof. { induction M.

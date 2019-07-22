@@ -54,7 +54,7 @@ Proof. { intros m. revert A. induction B. simpl. auto. intro A.
          destruct (a0 <=? a) eqn: H2. destruct H1.
          subst m. unfold bid_of. unfold ask_of. move /eqP in H2.  
          move /eqP in H2.  move /leP in H2. auto. 
-         move /leP in H2. eapply IHB. exact H. inversion H1. } Qed.
+         move /leP in H2. eapply IHB. exact H. inversion H1. }  Qed.
    
 Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
   Sorted by_dbp B -> Sorted by_sp A -> matching_in B A (produce_UM B A).
@@ -78,6 +78,13 @@ Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
             auto. } } Qed.
  
  
+Lemma bids_of_UM_sorted (B: list Bid) (A: list Ask) :
+  (Sorted by_dbp B -> (Sorted by_dbp (bids_of (produce_UM B A)))).
+Proof.  Admitted.
+
+Lemma asks_of_UM_sorted (B: list Bid) (A: list Ask) :
+    (Sorted by_sp A -> (Sorted by_sp (asks_of (produce_UM B A)))).
+Proof. Admitted. 
 
 
 Lemma last_in_tail (A:Type): forall l:list A, forall a b d:A, 
@@ -92,23 +99,26 @@ intros. Admitted.  *)
 (*--------------------------------------------------------*)
 
 Lemma bid_of_last_and_last_of_bids (F: list fill_type) (m : fill_type) (b : Bid):
-  (bid_of (last F m)) = (last (bids_of F) b).
+(bid_of (last F m0)) = (last (bids_of F) b0).
 Proof.  
-induction F.  simpl.  destruct m eqn : H0. destruct b eqn : H. simpl. rewrite <- H. admit. {
-case F eqn:H1. simpl. auto. replace (last (a :: f :: l) m) with (last (f :: l) m). unfold bids_of;fold bids_of. replace
- (last (bid_of a :: bid_of f :: bids_of l) b0) with
- (last (bid_of f :: bids_of l) b0). exact. symmetry.
- eapply last_in_tail. symmetry. eapply last_in_tail. } Admitted.
- 
-Lemma ask_of_last_and_last_of_asks (F: list fill_type) (m:fill_type) (a: Ask):
-  (ask_of (last F m)) = (last (asks_of F) a).
-Proof. 
 
-induction F as [|m'].  simpl. destruct m. destruct a. simpl. admit.  {
+
+induction F as [|m'].  simpl.  auto.  {
 case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m) with (last (f :: l) m). unfold asks_of;fold asks_of. replace
  (last (ask_of m' :: ask_of f :: asks_of l) a0) with
  (last (ask_of f :: asks_of l) a0). exact. symmetry.
- eapply last_in_tail. symmetry. eapply last_in_tail. } Admitted.
+ eapply last_in_tail. symmetry. eapply last_in_tail. } Qed.
+
+ 
+Lemma ask_of_last_and_last_of_asks (F: list fill_type) (m:fill_type) (a: Ask):
+  (ask_of (last F m0)) = (last (asks_of F) a0).
+Proof. 
+
+induction F as [|m'].  simpl. destruct m. destruct a. simpl. auto.  {
+case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m) with (last (f :: l) m). unfold asks_of;fold asks_of. replace
+ (last (ask_of m' :: ask_of f :: asks_of l) a0) with
+ (last (ask_of f :: asks_of l) a0). exact. symmetry.
+ eapply last_in_tail. symmetry. eapply last_in_tail. } Qed.
 
 
 
@@ -153,23 +163,16 @@ Lemma replace_column_elim (l: list fill_type)(n:nat): forall m', In m' (replace_
 
 Definition uniform_price B A := bp (bid_of (last (produce_UM B A) m0)).
 
-Lemma bids_of_UM_sorted (B: list Bid) (A: list Ask) :
-  (Sorted by_dbp B -> (Sorted by_dbp (bids_of (produce_UM B A)))).
-Proof.  Admitted.
-
-Lemma asks_of_UM_sorted (B: list Bid) (A: list Ask) :
-    (Sorted by_sp A -> (Sorted by_sp (asks_of (produce_UM B A)))).
-Proof. Admitted. 
 
 
-Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid)  :
-  Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (produce_UM B A)) ->
+Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid) (m0:fill_type)  : Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (produce_UM B A)) ->
   b >=(uniform_price B A).
 Proof. { intros H1 H2 H3. unfold uniform_price.
          eapply bids_of_UM_sorted  with (A:=A) in H1 as H4 . 
          assert (H5: by_dbp b (bid_of (last (produce_UM B A) m0))).
          assert (Hlastb: last (bids_of (produce_UM B A)) b0 = bid_of (last (produce_UM B A) m0)).
-         symmetry. eapply bid_of_last_and_last_of_bids.
+         symmetry. eapply bid_of_last_and_last_of_bids with (F:= ((produce_UM B A))).
+         
          rewrite <- Hlastb.
          eapply last_in_Sorted. exact H4. auto.
          unfold by_dbp in H5. move /leP in H5. auto. } Qed.

@@ -451,6 +451,9 @@ Proof. Admitted.
   Lemma nodup_subset_included (l s: list A): NoDup l -> l [<=] s -> included l s.
   Proof. Admitted. 
   
+  Lemma sublist_is_sorted (lr: A-> A-> bool)(l s: list A):  Sorted lr s -> sublist l s -> Sorted lr l.
+  Proof. Admitted. 
+  
   
   Lemma sorted_included_sublist (l s: list A)(lr: A->A-> bool):
     Sorted lr l-> Sorted lr s-> included l s-> sublist l s.
@@ -466,6 +469,8 @@ Proof. Admitted.
  Lemma subset_nodup_subset (a:A) (l s: list A) :
  l[<=]a::s-> NoDup l -> ~In a l -> l[<=]s.
  Proof. Admitted.
+ 
+
 
   Hint Resolve nodup_subset_included: core.
   Hint Immediate sorted_included_sublist first_in_ordered_sublists

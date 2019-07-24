@@ -27,6 +27,7 @@ Require Export GenReflect SetSpecs.
 Require Export Sorting MinMax.
 Require Export BidAsk.
 Require Export DecList.
+Require Export MoreDecList.
 Require Export Matching.
 Require Export AuctionInvar.
 
@@ -77,45 +78,69 @@ Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
             } simpl. left;auto. simpl. left;auto.
             auto. } } Qed.
  
+
  
+Lemma produce_UM_bids_sublist_B(B: list Bid)(A: list Ask): sublist (bids_of (produce_UM B A)) B.
+ Proof. { revert B. induction A.
+          { intros. simpl. case B eqn: H0. all:simpl;auto. }
+          { intros. simpl. case B eqn: H0.
+            { simpl;auto. }
+            { destruct (a <=? b) eqn: Hab.
+              { simpl. rewrite Hab. simpl.
+                case (b_eqb b b) eqn: Hbb. 
+                 { apply IHA. }
+                 { unfold b_eqb in Hbb. move /andP in Hbb. destruct Hbb. auto. } }
+              { simpl. rewrite Hab. simpl. auto. } } } } Qed.
+
+Lemma produce_UM_asks_sublist_A(B: list Bid)(A: list Ask): sublist (asks_of (produce_UM B A)) A.
+ Proof. { revert B. induction A.
+          { intros. simpl. case B eqn: H0. all:simpl;auto. }
+          { intros. simpl. case B eqn: H0.
+            { simpl;auto. }
+            { destruct (a <=? b) eqn: Hab.
+              { simpl. rewrite Hab. simpl.
+                case (a_eqb a a) eqn: Haa. 
+                 { apply IHA. }
+                 { unfold b_eqb in Haa. move /andP in Haa. destruct Haa. auto. } }
+              { simpl. rewrite Hab. simpl. auto. } } } } Qed.
+
 Lemma bids_of_UM_sorted (B: list Bid) (A: list Ask) :
   (Sorted by_dbp B -> (Sorted by_dbp (bids_of (produce_UM B A)))).
-Proof.  Admitted.
+Proof. { assert (H0:sublist (bids_of (produce_UM B A)) B). apply produce_UM_bids_sublist_B.
+intros. eapply sublist_is_sorted with (lr:=by_dbp) (s:=B). exact. exact. } Qed.
+
+
 
 Lemma asks_of_UM_sorted (B: list Bid) (A: list Ask) :
     (Sorted by_sp A -> (Sorted by_sp (asks_of (produce_UM B A)))).
-Proof. Admitted. 
+Proof. { assert (H0:sublist (asks_of (produce_UM B A)) A). apply produce_UM_asks_sublist_A.
+intros. eapply sublist_is_sorted with (lr:=by_sp) (s:=A). exact. exact. } Qed.
 
 
 Lemma last_in_tail (A:Type): forall l:list A, forall a b d:A, 
 (last (a::b::l) d) = (last (b::l) d).
 Proof. intros. eauto. Qed.
  
-(*
-Lemma last_in_list (T:Type)(l:list T)(p:T)(d:T) : In (last (p :: l) d)  (p :: l).
-Proof.  revert p. induction l. eauto with hint_list.
-intros. Admitted.  *)
+ 
 
 (*--------------------------------------------------------*)
 
-Lemma bid_of_last_and_last_of_bids (F: list fill_type) (m : fill_type) (b : Bid):
+Lemma bid_of_last_and_last_of_bids (F: list fill_type)  (b : Bid):
 (bid_of (last F m0)) = (last (bids_of F) b0).
 Proof.  
-
-
-induction F as [|m'].  simpl.  auto.  {
-case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m) with (last (f :: l) m). unfold asks_of;fold asks_of. replace
+induction F as [|m'].  simpl.  auto.  { 
+case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m0) with (last (f :: l) m0). unfold asks_of;fold asks_of. replace
  (last (ask_of m' :: ask_of f :: asks_of l) a0) with
  (last (ask_of f :: asks_of l) a0). exact. symmetry.
  eapply last_in_tail. symmetry. eapply last_in_tail. } Qed.
 
  
-Lemma ask_of_last_and_last_of_asks (F: list fill_type) (m:fill_type) (a: Ask):
+Lemma ask_of_last_and_last_of_asks (F: list fill_type) (a: Ask):
   (ask_of (last F m0)) = (last (asks_of F) a0).
 Proof. 
 
-induction F as [|m'].  simpl. destruct m. destruct a. simpl. auto.  {
-case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m) with (last (f :: l) m). unfold asks_of;fold asks_of. replace
+induction F as [|m'].  simpl.  auto.  {
+case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m0) with (last (f :: l) m0). unfold asks_of;fold asks_of. replace
  (last (ask_of m' :: ask_of f :: asks_of l) a0) with
  (last (ask_of f :: asks_of l) a0). exact. symmetry.
  eapply last_in_tail. symmetry. eapply last_in_tail. } Qed.
@@ -165,29 +190,67 @@ Definition uniform_price B A := bp (bid_of (last (produce_UM B A) m0)).
 
 
 
-Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid) (m0:fill_type)  : Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (produce_UM B A)) ->
+Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid)  : Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (produce_UM B A)) ->
   b >=(uniform_price B A).
 Proof. { intros H1 H2 H3. unfold uniform_price.
          eapply bids_of_UM_sorted  with (A:=A) in H1 as H4 . 
          assert (H5: by_dbp b (bid_of (last (produce_UM B A) m0))).
          assert (Hlastb: last (bids_of (produce_UM B A)) b0 = bid_of (last (produce_UM B A) m0)).
-         symmetry. eapply bid_of_last_and_last_of_bids with (F:= ((produce_UM B A))).
-         
-         rewrite <- Hlastb.
+         symmetry. eapply bid_of_last_and_last_of_bids with (F:= ((produce_UM B A))). auto. rewrite <- Hlastb.
          eapply last_in_Sorted. exact H4. auto.
          unfold by_dbp in H5. move /leP in H5. auto. } Qed.
   
+Lemma produce_UM_bids_ge_asks (B: list Bid) (A:list Ask) (m: fill_type):
+In m (produce_UM B A) -> (bid_of  m) >= (ask_of m).
+Proof. { revert B m. induction A. 
+{ intros. case B eqn: HB. 
+ { simpl in H. destruct H. }
+ { simpl in H. destruct H. } }
+ { intros B m H0. case B eqn: HB.
+ { simpl in H0. destruct H0. }
+ { simpl in H0. case (a <=? b) eqn: Hab.
+ { destruct H0. 
+  { subst m. simpl. move /leP in Hab. auto. }
+  { eapply IHA. exact H. } }
+ { destruct H0. } } } }  Qed.
+
+(*Move below lemma to DecList *)
+
+
+Lemma last_in_list (T:Type)(l:list T)(x:T)(d:T) : In x l -> In (last l d) l.
+Proof. { revert x d. 
+         induction l as [| a l'].
+         { (*------ l = nil ------*) 
+           simpl. auto. }
+         { (*------ l = a::l'-----*)
+           destruct l' as [| b l'']. 
+           { (*----- l = [a]------*)
+            simpl. intros; left;auto. }
+           { (*------ l = a ::b::l'' --------*) 
+             intros x d H0.
+             assert (H1: last (a::b::l'') d = last (b::l'') d).
+             { simpl. destruct l'';auto. }
+             rewrite H1.
+             cut(In (last (b :: l'') d) (b :: l'')). auto.
+             eapply IHl' with (x:=b). auto. } } } Qed.
+
 Lemma uniform_price_ask (B: list Bid) (A:list Ask) (a: Ask):
   Sorted by_dbp B -> Sorted by_sp (A) -> In a (asks_of (produce_UM B A))-> a <= (uniform_price B A).
 Proof. { intros H1 H2 H3. unfold uniform_price.
          eapply asks_of_UM_sorted  with (B:=B) in H2 as H4. 
+         eapply bids_of_UM_sorted  with (A:=A) in H1 as H4b.
          assert (H5: by_sp a (ask_of (last (produce_UM B A) m0))).
          assert (Hlasta: last (asks_of (produce_UM B A)) a0 = ask_of (last (produce_UM B A) m0)).
-         symmetry. eapply ask_of_last_and_last_of_asks.
+         symmetry.  eapply ask_of_last_and_last_of_asks. auto. auto.
          rewrite <- Hlasta.
          eapply last_in_Sorted. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
-         assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)).
-        admit.  admit. } Admitted.
+         assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)). 
+        { apply produce_UM_bids_ge_asks with (B:=B) (A:=A). 
+          assert (Hma: exists m, In m (produce_UM B A) /\ a = ask_of m).
+          eauto. destruct Hma as [m Hma].
+          apply last_in_list with (x:=m). apply Hma. } 
+          { assert (Hma: exists m, In m (produce_UM B A) /\ a = ask_of m).
+          eauto. destruct Hma as [m Hma]. omega. } } Qed.
 
 Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
   replace_column (produce_UM B A)
@@ -204,7 +267,7 @@ Proof. {  intros H1 H2. unfold UM. unfold Is_IR.
           eapply last_column_is_trade_price. exact H3.
           rewrite  H4. eapply replace_column_elim in H3 as H5. 
           eapply bids_of_UM_sorted with (A:=A) in H1  as H6. 
-          unfold uniform_price.  Admitted.
+          unfold uniform_price. admit. admit. }  Admitted.
 
 
 (*

@@ -384,25 +384,27 @@ Definition Uniform (M : list fill_type) := uniform (trade_prices_of M).
 
 
 Lemma Uniform_intro (M:list fill_type) (m:fill_type) : Uniform M -> Uniform (delete m M).
-Proof. { unfold Uniform. induction M. simpl. auto. intros H.
-         simpl.  case (m_eqb m a) eqn: H1.
-         assert (H2:uniform (trade_prices_of M)).
-         assert (H2: uniform (trade_prices_of (a :: M))).
-         exact H. revert H2. eapply uniform_elim2. exact H2.
-         simpl in H. eapply uniform_elim2 in H as H2.  eapply IHM in H2. simpl.  Admitted.
+Proof. { unfold Uniform. 
+         induction M as [| m' M']. 
+         { simpl. auto. }
+         { intros H.
+           simpl.  
+           case (m_eqb m m') eqn: H1. 
+           { simpl in H. eapply uniform_elim2. exact H. }
+           { simpl. admit. }}}  Admitted.
 
 Lemma Uniform_intro1 (M:list fill_type) (m:fill_type) : Uniform (m::M) -> Uniform M.
 Proof. unfold Uniform.  simpl.  eapply uniform_elim2. Qed.
 
 Lemma Uniform_elim (M:list fill_type) (m1 m2:fill_type) :
-  Uniform M -> In m1 M -> In m2 M -> tp m1= tp m2.
+  Uniform M -> In m1 M -> In m2 M -> tp m1 = tp m2.
 Proof. Admitted.
 
 Lemma Uniform_intro2 (M:list fill_type) (m m':fill_type) : Uniform M -> 
 In m M -> tp m = tp m' -> Uniform (m'::M).
 Proof. Admitted.
 
-Hint Resolve Uniform_intro Uniform_elim Uniform_intro1 : core.
+Hint Resolve Uniform_intro  Uniform_intro1 Uniform_elim : core.
 Hint Immediate Uniform_intro2 : core.
 
 
@@ -428,6 +430,7 @@ Hint Resolve matching_in_elim4a matching_in_elim5a: core.
 Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
 Hint Immediate Is_IR_intro: core.
 Hint Resolve Is_IR_elim Is_IR_elim1: core.
+
 Hint Resolve Uniform_intro Uniform_elim Uniform_intro1 : core.
-Hint Immediate Uniform_intro2 : core.
+Hint Immediate Uniform_intro2 : core. 
 

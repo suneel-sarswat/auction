@@ -371,8 +371,7 @@ Section Permutation.
             exact. auto. } } Qed.
    
    
-  Lemma included_intro3 (l s: list A): sublist l s -> included l s.
-  Proof. Admitted. 
+
   Lemma included_intro (l s: list A): (forall a, count a l <= count a s)-> included l s.
   Proof. { revert s. induction l. intros;apply included_intro1;auto.
            { intros s H. simpl.  case (memb a s) eqn:Has;move /membP in Has.
@@ -390,6 +389,10 @@ Section Permutation.
              specialize (H a). rewrite countP4 in H.
              replace (count a s) with 0 in H. inversion H. symmetry; eauto. } } Qed. 
 
+
+    Lemma included_intro3 (l s: list A): sublist l s -> included l s.
+  Proof.  intro H. assert (H2: (forall a, count a l <= count a s)). eapply sublist_elim4. exact. eapply included_intro in H2. exact. Qed.
+  
   Lemma included_elim1 (l: list A): included l nil -> l=nil.
   Proof. induction l. auto. intros. inversion H. Qed. 
   
@@ -404,12 +407,18 @@ Section Permutation.
           { simpl. auto. }
           { simpl. destruct (a==a0) eqn:H0. simpl. auto. simpl. intros H. 
             destruct (memb a s) eqn:H1. auto. auto. } } Qed. 
-  
-  Lemma included_elim4 (a:A)(l s: list A): included (a::l) s -> included l s.
-  Proof. Admitted.
-  
+
+
+Lemma included_elim3a (a:A) (l s: list A) : included s l -> included (a::s) (a::l).
+Proof. induction s. intros.  simpl. simpl. destruct (a == a) eqn: Ha.
+ simpl. auto. move /eqP in Ha. auto. Admitted.
+
 Lemma included_elim4a (a:A) (l: list A) : included (delete a l) l.
-Proof. Admitted.
+Proof. { induction l. simpl. auto. simpl. destruct (a == a0) eqn: H0. 
+assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
+ eapply countP5. apply included_intro in H1. exact. 
+  (*-------Error in: cut (included (delete a l) l).  ???--------*) 
+  assert (H3:(included (delete a l) l)-> (included (a0 :: delete a l) (a0 :: l))). eapply included_elim3a. eapply H3 in IHl. exact. } Qed.
   
   Lemma included_elim4b (a:A)(l s: list A): included l s -> included (a::l) (a::s).
   Proof. Admitted.
@@ -428,7 +437,12 @@ Proof. Admitted.
            replace (count x (a::l)) with (count x l).
            replace (count x s) with  (count x (delete a s)).
            eauto. all: symmetry;eauto. } Qed. 
-  
+    
+  Lemma included_elim4 (a:A)(l s: list A): included (a::l) s -> included l s.
+  Proof. intro H. assert (H1: (forall a0, count a0 (a::l) <= count a0 s)).
+   eapply included_elim. exact. eapply included_intro. 
+   assert (H2:forall a0 : A, (count a0 l)<=(count a0 (a :: l))). eauto.
+   admit. Admitted.
 
   Lemma included_trans (l1 l2 l3: list A): 
   included l1 l2-> included l2 l3 -> included l1 l3.

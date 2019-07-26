@@ -257,7 +257,7 @@ Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
                 (uniform_price B A).
 
 
-
+(*
 
 Theorem UM_is_Ind_Rat (B: list Bid) (A:list Ask):
   Sorted by_dbp B -> Sorted by_sp A -> Is_IR (UM B A).
@@ -268,7 +268,7 @@ Proof. {  intros H1 H2. unfold UM. unfold Is_IR.
           rewrite  H4. eapply replace_column_elim in H3 as H5. 
           eapply bids_of_UM_sorted with (A:=A) in H1  as H6. 
           unfold uniform_price. admit. admit. }  Admitted.
-
+*)
 
 (*
 revert B. induction A. { case B eqn:HB. 

@@ -409,23 +409,6 @@ Section Permutation.
             destruct (memb a s) eqn:H1. auto. auto. } } Qed. 
 
 
-Lemma included_elim3a (a:A) (l s: list A) : included s l -> included (a::s) (a::l).
-Proof. induction s. intros.  simpl. simpl. destruct (a == a) eqn: Ha.
- simpl. auto. move /eqP in Ha. auto. Admitted.
-
-Lemma included_elim4a (a:A) (l: list A) : included (delete a l) l.
-Proof. { induction l. simpl. auto. simpl. destruct (a == a0) eqn: H0. 
-assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
- eapply countP5. apply included_intro in H1. exact. 
-  (*-------Error in: cut (included (delete a l) l).  ???--------*) 
-  assert (H3:(included (delete a l) l)-> (included (a0 :: delete a l) (a0 :: l))). eapply included_elim3a. eapply H3 in IHl. exact. } Qed.
-  
-  Lemma included_elim4b (a:A)(l s: list A): included l s -> included (a::l) (a::s).
-  Proof. Admitted.
-  
-  Lemma included_elim5 (l s: list A): included l s -> Subset l s.
-  Proof. Admitted.
-
   Lemma included_elim (l s: list A): included l s-> (forall a, count a l <= count a s).
   Proof. { revert s. induction l. simpl. intros;omega. 
            intros s H x. apply included_elim2 in H as H1. apply included_elim3 in H as H2.
@@ -439,14 +422,44 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
            eauto. all: symmetry;eauto. } Qed. 
     
   Lemma included_elim4 (a:A)(l s: list A): included (a::l) s -> included l s.
-  Proof. intro H. assert (H1: (forall a0, count a0 (a::l) <= count a0 s)).
-   eapply included_elim. exact. eapply included_intro. 
-   assert (H2:forall a0 : A, (count a0 l)<=(count a0 (a :: l))). eauto.
-   admit. Admitted.
+  Proof. { intro H. assert (H1: (forall a0, count a0 (a::l) <= count a0 s)).
+           eapply included_elim. exact. eapply included_intro. 
+           assert (H2:forall a0 : A, (count a0 l)<=(count a0 (a :: l))). eauto.
+           intros. specialize (H1 a0). specialize (H2 a0). omega. } Qed.
+  
 
+Lemma included_elim4b (a:A) (l s: list A) : included l s -> included (a::l) (a::s).
+Proof. { revert a. induction l. intros. simpl. destruct (a == a) eqn: Ha.
+ simpl. auto. move /eqP in Ha. auto. intros. simpl. destruct (a0 == a0) eqn: H0. simpl.
+ Admitted.
+
+Lemma included_elim4a (a:A) (l: list A) : included (delete a l) l.
+Proof. { induction l. simpl. auto. simpl. destruct (a == a0) eqn: H0. 
+assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
+ eapply countP5. apply included_intro in H1. exact. 
+  assert (H3:(included (delete a l) l)-> (included (a0 :: delete a l) (a0 :: l))). 
+  eapply included_elim4b. eapply H3 in IHl. exact. } Qed.
+  
+  
+
+   Lemma included_elim5 (l s: list A): included l s -> Subset l s.
+  Proof. { unfold "[<=]". 
+          induction l.
+          { simpl. intros. destruct H0. }
+          { intros.  destruct H0. eapply included_elim2 in H as H2.
+           subst a0. exact. apply IHl. eapply included_elim4 in H as H3. 
+           exact. exact. } } Qed.
+   
+   
   Lemma included_trans (l1 l2 l3: list A): 
   included l1 l2-> included l2 l3 -> included l1 l3.
-  Proof. Admitted.
+  Proof. { intros H1 H2. 
+          assert (H1a:forall a0 : A, (count a0 l1)<=(count a0 l2)).
+          eapply included_elim. exact.
+          assert (H2a:forall a0 : A, (count a0 l2)<=(count a0 l3)).
+          eapply included_elim. exact.
+          eapply included_intro. intros a.
+          specialize (H1a a). specialize (H2a a). omega. } Qed.
 
    Hint Extern 0 (is_true ( included ?x ?z) ) =>
   match goal with

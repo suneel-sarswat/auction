@@ -65,14 +65,35 @@ Section Sorting.
   Proof. intro H. inversion H. auto. Qed.
   Lemma Sorted_elim2 (a:A) (l:list A)(Hrefl: reflexive lr):
     Sorted (a::l) ->(forall x, In x (a::l) -> a <=r x).
-  Proof. intro H. inversion H. intros. destruct H4. subst x. eauto. eauto. Qed.
+  Proof. intro H. inversion H. intros. destruct H4. subst x.  eauto. eauto. Qed.
   Lemma Sorted_elim3 (a:A) (l:list A): (Sorted (a::l)) -> Sorted l.
   Proof. intro H. inversion H;auto. Qed.
   Lemma Sorted_single (a:A) : (Sorted (a::nil)).
   Proof. constructor. constructor. intros;simpl;contradiction. Qed.
   
-  Lemma last_in_Sorted (a d:A)(l:list A): Sorted l -> In a l -> lr a (last l d).
-  Proof. Admitted.
+  Lemma last_in_Sorted (a d:A)(l:list A)(Htrans: transitive lr)(Hrefl: reflexive lr): 
+   Sorted l -> In a l -> lr a (last l d).
+  Proof. { revert a. 
+         induction l as [|b1 l']. 
+         { intros a H H0. simpl in H0. auto. }
+         { intros a0 H H0. 
+           destruct H0.
+           { subst b1.
+           case l' as [|b2 l''] eqn: H1.
+           { simpl. auto. }
+           { replace (last (a0 :: b2 :: l'') d) with (last (b2 :: l'') d). 
+             assert (H2: b2 <=r (last (b2 :: l'') d)). 
+             { apply IHl'. eapply Sorted_elim3. exact H. auto. }
+             assert (H3: a0 <=r b2). 
+             { eapply Sorted_elim1. exact H. }
+             eauto. 
+             simpl. destruct l'';auto. } }
+            { case l' as [|b2 l''] eqn: H1.
+             { destruct H0. }
+             { replace (last (b1 :: b2 :: l'') d) with (last (b2 :: l'') d). 
+             apply IHl'. eapply Sorted_elim3. exact H. auto. 
+             simpl. destruct l'';auto. } } } } Qed.
+
 
   Hint Resolve Sorted_elim1 Sorted_elim2 Sorted_elim3 Sorted_elim4
        Sorted_single Sorted_intro last_in_Sorted : core.

@@ -382,16 +382,24 @@ Definition Is_fair (M: list fill_type) (B: list Bid) (A: list Ask)
 
 Definition Uniform (M : list fill_type) := uniform (trade_prices_of M).
 
+Lemma tps_of_delete (M: list fill_type) (m: fill_type) (x:nat):
+  In x (trade_prices_of (delete m M)) -> In x (trade_prices_of M).
+  Proof. Admitted.
 
 Lemma Uniform_intro (M:list fill_type) (m:fill_type) : Uniform M -> Uniform (delete m M).
-Proof. { unfold Uniform. 
-         induction M as [| m' M']. 
-         { simpl. auto. }
-         { intros H.
-           simpl.  
-           case (m_eqb m m') eqn: H1. 
-           { simpl in H. eapply uniform_elim2. exact H. }
-           { simpl. admit. }}}  Admitted.
+Proof. { unfold Uniform. intro H.
+         case M as [|m' M'] eqn: HM.
+         { simpl. constructor. }
+         { simpl in H. assert ((forall x, In x (tp m' :: trade_prices_of M')-> x= (tp m'))).
+           eapply uniform_elim1. exact.
+           simpl. destruct (m_eqb m m') eqn: Hm.
+           { apply uniform_elim2 in H.  exact. }
+           { simpl. cut (forall x, In x (trade_prices_of (delete m M')) -> x=(tp m')).
+             eapply uniform_intro. intros x H1.
+             assert (H1b: In x (trade_prices_of M')).
+             { eapply tps_of_delete. exact H1. }
+             apply H0. auto. }}} Qed.
+          
 
 Lemma Uniform_intro1 (M:list fill_type) (m:fill_type) : Uniform (m::M) -> Uniform M.
 Proof. unfold Uniform.  simpl.  eapply uniform_elim2. Qed.

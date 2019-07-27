@@ -40,14 +40,42 @@ Proof. { induction l.
 Lemma uniform_elim2 (a:A) (l: list A): uniform (a::l)-> uniform l.
 Proof. intro H. inversion H. constructor. exact. Qed.
 
-Lemma uniform_elim3 (a:A) (l:list A): uniform l -> uniform (delete a l).
-Proof. Admitted.
-
 Lemma uniform_elim4 (a1 a2:A) (l: list A) : uniform l -> In a1 l -> In a2 l -> a1=a2.
-Proof. Admitted.
+Proof. 
+{ induction l. { simpl. intros H1 H2. destruct H2. }
+         { intros H1 H2 H3. assert (H0:(forall x, In x (a::l)-> x=a)).
+           apply uniform_elim1. exact. specialize (H0 a1) as Ha1.
+           apply Ha1 in H2. specialize (H0 a2) as Ha2.
+           apply Ha2 in H3. subst a1. subst a2. auto. }} Qed.
+      
+
+Lemma uniform_elim3 (a:A) (l:list A): uniform l -> uniform (delete a l).
+Proof. { revert a. 
+         induction l. 
+         { simpl. auto. }
+         { intros.  
+           case l eqn:H0. 
+           { simpl. destruct (a0==a) eqn: Ha. constructor. constructor. }
+           { simpl. destruct (a0==a) eqn: Ha. eapply uniform_elim2.
+             exact H.
+           { apply uniform_elim2 in H as H1. specialize (IHl a0) as Hl.
+             apply Hl in H1. 
+             destruct (a0 == e) eqn:Hae.
+             {  move /eqP in Ha.  move /eqP in Hae.  assert (H2: a<> e).
+                intro. subst a0. auto. 
+                apply uniform_elim4 with (a1:=a) (a2:=e) in H. subst a. 
+                destruct H2. all:auto. }
+             {  apply uniform_elim4 with (a1:=a) (a2:=e) in H.
+                subst a. constructor. auto. simpl in H1. 
+                rewrite Hae in H1. all:auto.  }}}}} Qed.
 
 Lemma uniform_intro (a:A)(l: list A): (forall x, In x l -> x=a) -> uniform (a::l).
-Proof. Admitted.     
+Proof. { intros. induction l. 
+         { simpl. intros. constructor. }
+         { simpl. intros. assert (H1: (forall x : A, In x l -> x = a)).
+           auto. specialize (H a0) as Ha0. assert (H2: In a0 (a0 :: l)).
+           auto. apply Ha0 in H2. subst a0. apply IHl in H1.
+           constructor. auto. exact. }} Qed.
 
 (* ----------------- delete_all operation ---------------------------------------------  *)
 

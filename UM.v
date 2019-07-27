@@ -197,7 +197,7 @@ Proof. { intros H1 H2 H3. unfold uniform_price.
          assert (H5: by_dbp b (bid_of (last (produce_UM B A) m0))).
          assert (Hlastb: last (bids_of (produce_UM B A)) b0 = bid_of (last (produce_UM B A) m0)).
          symmetry. eapply bid_of_last_and_last_of_bids with (F:= ((produce_UM B A))). auto. rewrite <- Hlastb.
-         eapply last_in_Sorted. exact H4. auto.
+         eapply last_in_Sorted. apply by_dbp_P. apply by_dbp_refl. exact H4. auto.
          unfold by_dbp in H5. move /leP in H5. auto. } Qed.
   
 Lemma produce_UM_bids_ge_asks (B: list Bid) (A:list Ask) (m: fill_type):
@@ -243,7 +243,7 @@ Proof. { intros H1 H2 H3. unfold uniform_price.
          assert (Hlasta: last (asks_of (produce_UM B A)) a0 = ask_of (last (produce_UM B A) m0)).
          symmetry.  eapply ask_of_last_and_last_of_asks. auto. auto.
          rewrite <- Hlasta.
-         eapply last_in_Sorted. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
+         eapply last_in_Sorted. apply by_sp_P. apply by_sp_refl. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
          assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)). 
         { apply produce_UM_bids_ge_asks with (B:=B) (A:=A). 
           assert (Hma: exists m, In m (produce_UM B A) /\ a = ask_of m).

@@ -68,7 +68,7 @@ Section Sorting.
   Proof. intro H. inversion H. intros. destruct H4. subst x.  eauto. eauto. Qed.
   Lemma Sorted_elim3 (a:A) (l:list A): (Sorted (a::l)) -> Sorted l.
   Proof. intro H. inversion H;auto. Qed.
-  Lemma Sorted_single (a:A) : (Sorted (a::nil)).
+  Lemma Sorted_single : forall a:A, (Sorted (a::nil)).
   Proof. constructor. constructor. intros;simpl;contradiction. Qed.
   
   Lemma last_in_Sorted (a d:A)(l:list A)(Htrans: transitive lr)(Hrefl: reflexive lr): 

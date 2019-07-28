@@ -229,8 +229,40 @@ Fixpoint del_all (a:A)(l: list A): list A:=
             omega. intros. omega. destruct (a==a) eqn: H1. intros. omega.
             intros. omega. }} Qed.
   
+  Lemma count_nodup (l:list A): (forall x, In x l -> count x l <=1)-> NoDup l.
+  Proof. { intros H.
+         induction l. 
+         { auto. }
+         { cut (NoDup l). cut (~In a l). auto. intros H1.
+          specialize (H a) as H2. 
+          assert (H3:  count a (a :: l) <= 1). apply H2. auto.
+          simpl in H3. replace (a==a) with true in H3.
+          inversion H3. absurd (In a l). apply countP3. auto.
+          exact. inversion H4. auto.
+          apply IHl. intros x H1.
+          cut ( count x l <= count x (a::l)).
+          intros H2.
+          assert (H3: count x (a :: l) <= 1).
+          { apply H. auto. }
+          omega. apply countP5. }} Qed.
+           
+  Lemma nodup_count (l:list A) (x:A): NoDup l -> In x l -> count x l <=1.
+  Proof. { intros H1 H2.
+           induction l. simpl. auto.
+           { simpl in H2. destruct H2. 
+             { subst x.
+             simpl. replace (a==a) with true.
+             cut (count a l =0). omega.
+             cut (~In a l). eapply countP2. auto. auto. }
+             { assert (Ha: x<>a). 
+               { intro H2. subst x. absurd (In a l);auto. }
+              replace (count x (a::l)) with (count x l).
+              apply IHl. eauto. exact. symmetry.
+               apply countP8. exact. }}} Qed. 
+  
   Hint Immediate countP1 countP2 countP3: core.
   Hint Resolve countP4 countP5 countP6 countP7 countP8 countP9: core.
+  Hint Immediate count_nodup nodup_count: core.
  
 End MoreDecList.
 
@@ -240,7 +272,7 @@ End MoreDecList.
  Hint Immediate countP1 countP2 countP3: core.
  Hint Resolve countP4 countP5 countP6 countP7 countP8 countP9:  core.
  Hint Resolve countP10 countP11 countP12: core.
-
+ Hint Immediate count_nodup nodup_count: core.
 
 Section Permutation.
 
@@ -360,7 +392,7 @@ Section Permutation.
               { simpl. rewrite Hxa. eauto using sublist_elim3a. }
               cut (count x s' <= count x (e::s')). omega. auto. } } } Qed.
    
-   
+   (*
   Lemma sublist_trans (l1 l2 l3: list A): sublist l1 l2 -> sublist l2 l3 -> sublist l1 l3.
   Proof. Admitted.
 
@@ -369,7 +401,7 @@ Section Permutation.
   | H: is_true (sublist x  ?y) |- _ => apply (@sublist_trans  x y z)
   | H: is_true (sublist ?y  z) |- _ => apply (@sublist_trans  x y z) 
   end.
-
+*)
     
  
   Hint Resolve sublist_intro sublist_intro1 sublist_reflex sublist_Subset sublist_elim1: core.
@@ -458,9 +490,9 @@ Section Permutation.
   
 
 Lemma included_elim4b (a:A) (l s: list A) : included l s -> included (a::l) (a::s).
-Proof. { revert a. induction l. intros. simpl. destruct (a == a) eqn: Ha.
- simpl. auto. move /eqP in Ha. auto. intros. simpl. destruct (a0 == a0) eqn: H0. simpl.
- Admitted.
+Proof. { intro H. apply included_intro. intro x. simpl.
+         destruct (x==a) eqn: H1. cut ((count x l)<= (count x s)).
+        omega. all:apply included_elim;exact. } Qed.
 
 Lemma included_elim4a (a:A) (l: list A) : included (delete a l) l.
 Proof. { induction l. simpl. auto. simpl. destruct (a == a0) eqn: H0. 
@@ -478,6 +510,36 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
           { intros.  destruct H0. eapply included_elim2 in H as H2.
            subst a0. exact. apply IHl. eapply included_elim4 in H as H3. 
            exact. exact. } } Qed.
+           
+    Lemma included_elim6 (l s: list A)(a b: A)(lr: A->A-> bool)(Hanti: antisymmetric lr): Sorted lr (a::l) -> Sorted lr (b::s) ->
+     included (a::l) (b::s)-> a<>b -> included (a::l) s. 
+    Proof. { intros H1 H2 H3 H4. 
+           assert (H5: forall x, count x (a::l) <= count x (b::s)).
+           { eapply included_elim;auto. }
+           eapply included_intro.
+           intros x. simpl.
+           destruct (x == a) eqn: Hxa.
+           { (*-----x=a----*)
+            specialize (H5 a) as H6. simpl in H6. replace (a==b) with false in H6.
+            replace (a==a) with true in H6. move /eqP in Hxa. subst x. exact.
+            auto. auto. }
+            { (*-----x<>a-----*)
+              destruct (x==b) eqn:Hxb.
+              {  (*----x=b---*) 
+               move /eqP in Hxb. subst x. replace (count b l) with 0. omega.
+               symmetry. cut (~In b l). eauto. intro H6. 
+               assert (H7: lr a b). eauto.
+               assert (H8: lr b a). 
+               { (*---lr b a ---*)
+                cut (In a (b::s)). eauto. eapply included_elim2. exact H3.
+                }
+               absurd (a=b). auto. apply Hanti. split_;auto. }
+              { (*--- x<>b----*) 
+                 specialize (H5 x) as Hx.
+                 simpl in Hx. rewrite Hxa in Hx. rewrite Hxb in Hx. exact. } } } Qed.
+              
+                 
+                   
    
    
   Lemma included_trans (l1 l2 l3: list A): 
@@ -507,13 +569,52 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
   Lemma nodup_subset_included (l s: list A): NoDup l -> l [<=] s -> included l s.
   Proof. Admitted. 
   
-  Lemma sublist_is_sorted (lr: A-> A-> bool)(l s: list A):  Sorted lr s -> sublist l s -> Sorted lr l.
-  Proof. Admitted. 
+  Lemma sublist_is_sorted (lr: A-> A-> bool)(l s: list A):  Sorted lr s -> sublist l s -> Sorted lr l. 
+  Proof. { revert l.
+           induction s as [|b s1].
+           { intros l H1 H2. assert (H3:l=nil).
+             eauto.  subst l. auto. }
+           { intros l H1 H2.  
+             destruct l as [|a l1].
+             {  eapply Sorted_elim3. apply Sorted_single. Unshelve. exact. }
+             { simpl in H2.
+               destruct (a == b) eqn: Hab.
+               { (*----a=b----*)
+                 move /eqP in Hab. constructor. 
+                 { apply IHs1. eauto. exact. }
+                 { intros x H3. 
+                   assert (H4: lr b x). 
+                   { cut (In x s1). apply Sorted_elim4. exact.
+                   assert (H5: l1 [<=] s1). auto. auto. }
+                 subst a;auto. } }
+               { (*---a<>b---*)
+                 apply IHs1.  eauto. exact.  } } } } Qed.     
+             
   
   
-  Lemma sorted_included_sublist (l s: list A)(lr: A->A-> bool):
+  Lemma sorted_included_sublist (l s: list A)(lr: A->A-> bool)(Hanti: antisymmetric lr):
     Sorted lr l-> Sorted lr s-> included l s-> sublist l s.
-  Proof. Admitted.
+  Proof. { revert l.
+           induction s as [|b s1]. 
+           { intros l H1 H2 H3. destruct l;simpl in H3. simpl;auto.
+            inversion H3. }
+           { intros l H1 H2 H3. 
+             destruct l as [|a l1] eqn: H4. 
+             { simpl;auto. }
+             { (*----sublist (a :: l1) (b :: s1)-----*)
+               simpl. destruct (a==b) eqn: Hab. 
+               { (*----- a = b --------*)
+               apply IHs1. eauto. eauto. move /eqP in Hab. subst b.
+               cut (forall x, count x l1 <= count x s1). eauto.
+               intros x. 
+               assert (H5: forall y, count y (a :: l1) <= count y (a :: s1)).            
+               eapply included_elim. exact. specialize (H5 x) as H6. simpl in H6. 
+               destruct (x == a);omega. }
+               { (*------ a <> b--------*) 
+                assert (H5: included (a::l1) s1). eapply included_elim6. 
+                exact Hanti. auto. exact H2. exact H3. move /eqP in Hab.  exact.
+                eapply IHs1. exact. eauto. exact. } } } } Qed.
+  
   Lemma first_in_ordered_sublists (a e:A)(l s: list A)(lr: A->A-> bool):
     Sorted lr (a::l)-> Sorted lr (e::s)-> sublist (a::l)(e::s)-> lr e a.
   Proof. Admitted.
@@ -617,14 +718,14 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
 
   Hint Resolve sublist_intro sublist_intro1 sublist_reflex sublist_Subset sublist_elim1: core.
   Hint Resolve sublist_elim2 sublist_elim3 sublist_elim3a sublist_elim4: core.
-
+(*
   Hint Extern 0 (is_true ( sublist ?x ?z) ) =>
   match goal with
   | H: is_true (sublist x  ?y) |- _ => apply (@sublist_trans _ x y z)
   | H: is_true (sublist ?y  z) |- _ => apply (@sublist_trans _ x y z) 
   end.
 
-
+*)
   Hint Resolve included_intro1 included_intro2 included_intro3: core.
   Hint Resolve included_refl included_intro: core.
   Hint Resolve included_elim1 included_elim2 included_elim3: core.

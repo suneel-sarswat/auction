@@ -567,8 +567,12 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
   (* ----- Some Misc Lemmas on nodup, sorted, sublist, subset and included ---------------- *)
 
   Lemma nodup_subset_included (l s: list A): NoDup l -> l [<=] s -> included l s.
-  Proof. Admitted. 
-  
+  Proof. { intros H1 H2. eapply included_intro. intro a. assert (H: In a l -> In a s). eauto. assert (H3: forall x, In x l -> count x l <=1). eauto.
+  specialize (H3 a) as H4. assert (H5:In a s -> count a s >=1). eauto.
+  assert (H6:(In a l)\/( ~In a l)). eauto. destruct H6. apply H in H0 as H7.
+  apply H5 in H7. apply H4 in H0. omega. assert (H6: count a l =0).
+  eauto. replace (count a l) with 0. omega. } Qed.
+ 
   Lemma sublist_is_sorted (lr: A-> A-> bool)(l s: list A):  Sorted lr s -> sublist l s -> Sorted lr l. 
   Proof. { revert l.
            induction s as [|b s1].
@@ -615,18 +619,26 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
                 exact Hanti. auto. exact H2. exact H3. move /eqP in Hab.  exact.
                 eapply IHs1. exact. eauto. exact. } } } } Qed.
   
-  Lemma first_in_ordered_sublists (a e:A)(l s: list A)(lr: A->A-> bool):
+  Lemma first_in_ordered_sublists (a e:A)(l s: list A)(lr: A->A-> bool)(Hrefl: reflexive lr):
     Sorted lr (a::l)-> Sorted lr (e::s)-> sublist (a::l)(e::s)-> lr e a.
-  Proof. Admitted.
+  Proof. { intros H1 H2 H3. simpl in H3. destruct (a == e) eqn: H4.
+         move /eqP in H4. subst a. auto.
+         assert (H5: (forall x, In x l -> lr a x)). eapply Sorted_elim4. exact.
+         assert (H6: (forall x, In x s -> lr e x)). eapply Sorted_elim4. exact.
+         eauto. } Qed.
 
  Lemma nodup_included_nodup (l s: list A) :
  NoDup s -> included l s -> NoDup l.
- Proof. Admitted.
+ Proof. { intros. assert (H1:(forall a, count a l <= count a s)).
+        apply included_elim. exact. apply count_nodup. intros.
+        specialize (H1 x) as H3. assert (H4: count x s <=1).
+        apply nodup_count. exact. eauto. omega. } Qed.
  
  Lemma subset_nodup_subset (a:A) (l s: list A) :
  l[<=]a::s-> NoDup l -> ~In a l -> l[<=]s.
- Proof. Admitted.
- 
+ Proof. { intros. unfold Subset in H. unfold Subset. intros.
+       specialize (H a0) as H3. apply H3 in H2 as H4. simpl in H4.
+       destruct H4. subst a. absurd (In a0 l). exact. exact. exact. } Qed.
 
 
   Hint Resolve nodup_subset_included: core.
@@ -689,9 +701,20 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
 
    Lemma perm_sort3 (l s: list A)(lr: A-> A-> bool): perm l s -> perm (sort lr l)(sort lr s).
    Proof. eauto using perm_sort1. Qed.
-
+   
+   Lemma countP1a (l:list A) (x:A): count x l >=1 -> In x l.
+   Proof. { induction l. simpl. intros H. omega. simpl.  intros H. 
+          destruct (x == a) eqn: H1. left. move /eqP in H1. symmetry;exact.
+          right. eapply IHl in H. exact. } Qed.
+   
    Lemma perm_nodup (l s: list A): perm l s -> NoDup l -> NoDup s.
-   Proof. Admitted.
+   Proof. { intros. apply count_nodup. intros.
+          assert (H2: forall x, In x l -> count x l <= 1). 
+          eauto. assert (H3: forall a, count a l = count a s).
+          eauto. specialize (H2 x) as H4. specialize (H3 x) as H5.
+          assert (H6: count x s >=1). eauto.
+          assert (H7: count x l>=1). omega.  
+          assert (H8:In x l). apply countP1a. exact. apply H4 in H8. omega. } Qed.
 
    Lemma perm_subset (l1 l2 s1 s2: list A): perm l1 l2 -> perm s1 s2 -> l1 [<=] s1 -> l2 [<=] s2.
    Proof. intros. unfold perm in H. unfold perm in H0. move /andP in H.

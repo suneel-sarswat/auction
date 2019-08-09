@@ -384,8 +384,12 @@ Definition Uniform (M : list fill_type) := uniform (trade_prices_of M).
 
 Lemma tps_of_delete (M: list fill_type) (m: fill_type) (x:nat):
   In x (trade_prices_of (delete m M)) -> In x (trade_prices_of M).
-  Proof. Admitted.
-
+  Proof. { intro H. 
+         assert (H1: exists m', In m' (delete m M) /\ (x=(tp m'))).
+         eauto. destruct H1 as [m' H1]. destruct H1 as [H1 H2].
+         cut (In m' M). subst x. eauto. 
+         eapply delete_elim1. exact H1. } Qed.
+  
 Lemma Uniform_intro (M:list fill_type) (m:fill_type) : Uniform M -> Uniform (delete m M).
 Proof. { unfold Uniform. intro H.
          case M as [|m' M'] eqn: HM.
@@ -406,11 +410,17 @@ Proof. unfold Uniform.  simpl.  eapply uniform_elim2. Qed.
 
 Lemma Uniform_elim (M:list fill_type) (m1 m2:fill_type) :
   Uniform M -> In m1 M -> In m2 M -> tp m1 = tp m2.
-Proof. Admitted.
+Proof. { unfold Uniform. intros H1 H2 H3. 
+         cut (In (tp m2) (trade_prices_of M)).
+         cut (In (tp m1) (trade_prices_of M)).
+         eapply uniform_elim4. exact. all:auto. } Qed.
 
 Lemma Uniform_intro2 (M:list fill_type) (m m':fill_type) : Uniform M -> 
 In m M -> tp m = tp m' -> Uniform (m'::M).
-Proof. Admitted.
+Proof. { unfold Uniform. intros H1 H2 H3.
+         assert (H0:In (tp m) (trade_prices_of M)).
+         auto. simpl. eapply uniform_intro. intros x H4.
+         rewrite <- H3. eapply uniform_elim4. exact H1. all:auto. } Qed.
 
 Hint Resolve Uniform_intro  Uniform_intro1 Uniform_elim : core.
 Hint Immediate Uniform_intro2 : core.

@@ -138,6 +138,17 @@ Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
 Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl.
 
 Definition geb := fun a b => Nat.leb b a.
+Lemma geb_anti: antisymmetric geb.
+Proof. { unfold geb. unfold antisymmetric.  intros ax ay ah10. 
+            move /andP in ah10. destruct ah10 as [ah10 ah11].
+            move /leP in ah10. move /leP in ah11. omega. } Qed.
+
+Lemma leb_anti: antisymmetric leb.
+Proof. {   unfold antisymmetric.  intros ax ay ah10. 
+            move /andP in ah10. destruct ah10 as [ah10 ah11].
+            move /leP in ah10. move /leP in ah11. omega. } Qed.
+            
+Hint Resolve geb_anti leb_anti: core.
 
 Lemma sorted_B_imply_sorted_p (B: list Bid): Sorted by_dbp B -> Sorted geb (bid_prices B).
   Proof. { induction B.
@@ -217,7 +228,12 @@ Proof. { intros h1 h2 h3 h4 h5.
          { auto using nodup_sub_is_includedB. }
          
          assert (h9: included (bid_prices B1) (bid_prices B2)).
-         { auto using included_B_imp_included_BP. }  eauto. }  Qed.
+         { auto using included_B_imp_included_BP. }
+          assert (Hanti: antisymmetric geb). 
+          { unfold geb. unfold antisymmetric.  intros ax ay ah10. 
+            move /andP in ah10. destruct ah10 as [ah10 ah11].
+            move /leP in ah10. move /leP in ah11. omega. }
+            eauto. }  Qed.
 
 Lemma sorted_m_imply_sorted_b (M: list fill_type): Sorted m_dbp M -> Sorted by_dbp (bids_of M).
 Proof. { induction M.
@@ -533,7 +549,12 @@ Proof. { intros h1 h2 h3 h4 h5.
          { auto using nodup_sub_is_includedA. }
          
          assert (h9: included (ask_prices A1) (ask_prices A2)).
-         { auto using included_A_imp_included_AP. }  eauto. }  Qed.
+         { auto using included_A_imp_included_AP. } 
+         assert (Hanti: antisymmetric leb). 
+          { unfold antisymmetric.  intros ax ay ah10. 
+            move /andP in ah10. destruct ah10 as [ah10 ah11].
+            move /leP in ah10. move /leP in ah11. omega. } 
+            eapply sorted_included_sublist. exact Hanti. all: auto. }  Qed.
 
 Lemma sorted_m_imply_sorted_a (M: list fill_type): Sorted m_sp M -> Sorted by_sp (asks_of M).
 Proof. { induction M.
@@ -784,3 +805,4 @@ End Fair.
 
 Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
 Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl.
+Hint Resolve geb_anti leb_anti: core.

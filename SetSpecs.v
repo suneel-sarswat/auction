@@ -91,7 +91,7 @@ Section BasicSetFacts.
   Lemma Subset_intro (a:A)(l s: list A): l [<=] s -> (a::l) [<=] (a::s).
   Proof. intros H x H1.  destruct H1. subst a;auto. auto. Qed.
   Lemma Subset_intro1 (a:A)(l s: list A): l [<=] s -> l [<=] (a::s).
-    Proof. intros H x H1. simpl;right;auto. Qed.
+    Proof. intros H x H1. simpl;right;auto. Qed. 
   Lemma Subset_elim1 (a:A) (s s':list A): Subset (a:: s) s'-> In a s'.
   Proof. { unfold Subset. intro H. apply H. auto. } Qed.
    Lemma Subset_elim2 (a:A) (s s':list A): Subset (a:: s) s'->  Subset s s'.
@@ -186,6 +186,12 @@ Lemma non_zero_size (a:A)(l: list A): In a l -> |l| > 0.
   Proof. { induction l.
          { simpl; tauto. }
          { intros. simpl. omega. } } Qed.
+         
+Lemma non_nil_size (l: list A): |l| > 0 -> l<>nil.
+  Proof. { induction l.
+         { simpl. intro H. omega. }
+         { intros. intro. assert (H1: In a nil).
+           rewrite <- H0. auto. destruct H1. } } Qed.
 
 Hint Resolve non_zero_size: core.  
  

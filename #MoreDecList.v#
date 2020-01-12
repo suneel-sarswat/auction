@@ -4,9 +4,9 @@
 
 Require Export Lists.List.
 Require Export GenReflect SetSpecs.
-Require Export DecSort MinMax.
+Require Export Sorting.
 Require Export DecType SetReflect.
-Require Export DecList.
+Require Export DecList Sorting.
 
 
 
@@ -18,7 +18,7 @@ Section MoreDecList.
 
 Context { A: eqType}.
 (*------------------ Uniform list -----------------------------------------------------*)
-  
+
 Inductive uniform : list A -> Prop:=
 | Nil_uni: uniform nil
 |Sing_uni(a:A): uniform (a::nil)
@@ -157,18 +157,7 @@ Fixpoint del_all (a:A)(l: list A): list A:=
            destruct (a==a) eqn:H0. omega. move /eqP in H0. absurd (a=a).
            exact. exact. apply IHl in H. simpl. destruct (a==a0) eqn:H0.
            omega. exact. } } Qed.
-  Lemma countP1b (a:A) (l:list A): (count a l >= 1) -> In a l.
-  Proof. { induction l. 
-          { intros H. inversion H. }
-          { intros H. simpl in H.
-           simpl. 
-           destruct (a==a) eqn:H0. 
-           destruct (a == a0) eqn: Ha.  
-           left. move /eqP in Ha. auto. right.
-           apply IHl in H. exact.
-           destruct (a == a0) eqn: Ha. 
-           left. move /eqP in Ha. auto. right. 
-           apply IHl in H. exact. } } Qed.  
+    
   
   Lemma countP2 (a:A)(l: list A): ~ In a l -> (count a l = 0).
   Proof. { intros. induction l. 
@@ -292,7 +281,7 @@ Section Permutation.
    Lemma EM:forall x y : A, x=y \/ x<>y.
    Proof. eauto. Qed.
    
-   Definition empty: list A:= nil.
+   Definition empty: list A:= nil. 
 
    Lemma count_in_putin1 (a: A)(l: list A)(lr: A-> A-> bool):
      count a (putin lr a l)= S (count a l).
@@ -404,6 +393,8 @@ Section Permutation.
               cut (count x s' <= count x (e::s')). omega. auto. } } } Qed.
    
    (*
+  Lemma sublist_trans (l1 l2 l3: list A): sublist l1 l2 -> sublist l2 l3 -> sublist l1 l3.
+  Proof. Admitted.
 
   Hint Extern 0 (is_true ( sublist ?x ?z) ) =>
   match goal with
@@ -648,9 +639,8 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
  Proof. { intros. unfold Subset in H. unfold Subset. intros.
        specialize (H a0) as H3. apply H3 in H2 as H4. simpl in H4.
        destruct H4. subst a. absurd (In a0 l). exact. exact. exact. } Qed.
-  
 
-       
+
   Hint Resolve nodup_subset_included: core.
   Hint Immediate sorted_included_sublist first_in_ordered_sublists
   nodup_included_nodup :core.

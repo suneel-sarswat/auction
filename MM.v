@@ -25,7 +25,7 @@ Require Export Lists.List.
 
 Require Export GenReflect SetSpecs.
 
-Require Export Sorting MinMax.
+Require Export DecSort MinMax.
 Require Export BidAsk.
 Require Export DecList.
 Require Export Matching.

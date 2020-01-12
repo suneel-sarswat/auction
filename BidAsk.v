@@ -220,12 +220,43 @@ Fixpoint bids_of (F: list fill_type) : (list Bid) :=
   |f::F'=> (bid_of f)::(bids_of F')
   end.
 
+
+
 Lemma bids_of_intro (F: list fill_type) (m: fill_type):
   In m F -> (In (bid_of m) (bids_of F)).
 Proof. { intro H. induction F. simpl. simpl in H. contradiction. destruct  H.
         subst m. simpl. left. auto. simpl. right. auto. } Qed.
 
+Lemma bids_of_nonempty (F: list fill_type):
+  F<>nil -> (bids_of F)<>nil.
+Proof. intros. induction F. destruct H. auto. simpl. 
+apply non_nil_size. simpl. omega. Qed.
 
+Lemma bids_of_elim0 (F: list fill_type) (m: fill_type):
+In m F -> In (bid_of m) (bids_of F).
+Proof. { induction F as [| a F']. simpl. auto.
+         intros. simpl. simpl in H. destruct H.
+         left. subst a. auto. right. apply IHF'. exact. } Qed.
+
+Lemma bids_of_delete (F: list fill_type) (m: fill_type):
+  In m F -> NoDup (bids_of F) -> (bids_of (delete m F)) = (delete (bid_of m) (bids_of F)).
+Proof. { induction F as [| a F']. { simpl. auto. }
+         { intros. simpl. 
+           destruct (m_eqb m a) eqn: Hma.
+          { assert (Ht: (b_eqb (bid_of m) (bid_of a))=true).
+            move /eqP in Hma. apply /eqP. subst m. auto.
+            rewrite Ht. auto. } 
+            { destruct (b_eqb (bid_of m) (bid_of a)) eqn: Ham.
+              { move /eqP in Ham. simpl. rewrite IHF'. 
+                move /eqP in Hma. eauto. eauto. simpl in H.  destruct H. move /eqP in Hma.
+                apply eq_sym ; trivial. subst a. destruct Hma. auto. 
+                assert (Hbid: ~In (bid_of a) (bids_of F')).  eauto. 
+                assert (Hbidm: In (bid_of m) (bids_of F')). apply bids_of_elim0. exact. 
+                rewrite Ham in Hbidm. contradiction. }
+               { simpl. rewrite IHF'. move /eqP in Hma.
+                 destruct H. symmetry in H. contradiction. exact. 
+                 eauto. auto. }}}} Qed.
+          
 Lemma bids_of_elim (F: list fill_type): forall b, In b (bids_of F)->
                                              exists m, In m F /\ b = bid_of m.
 Proof. { intros b H. induction F. simpl in H. contradiction. simpl in H.
@@ -291,6 +322,34 @@ Lemma bids_of_perm (M M': list fill_type): perm M M' -> perm (bids_of M) (bids_o
 Proof. { intro H. unfold perm in H. move /andP in H. destruct H.
          unfold perm. apply /andP. split. all: eapply included_M_imp_included_bids;exact. } Qed.
 
+Lemma bids_of_nodup (F: list fill_type): NoDup (bids_of F) -> NoDup F.
+Proof. { intro H. induction F. auto. assert (H1:NoDup (bids_of F)).
+         simpl in H. eauto. apply IHF in H1 as H2. simpl in H. 
+         assert (~In (bid_of a) (bids_of F)). eauto. 
+         assert (~In a (F)). intro.  assert (H4:In (bid_of a) (bids_of F)).
+         apply bids_of_elim0. exact. contradiction. eauto. } Qed.
+ 
+Lemma bids_of_delete_delete (F: list fill_type) (m1 m2: fill_type):
+  In m1 F -> In m2 F -> NoDup (bids_of F) -> 
+(bids_of (delete m1 (delete m2 F))) = (delete (bid_of m1) (delete (bid_of m2) (bids_of F))).
+Proof. { intros. assert (Hm1m2: m1=m2\/m1<>m2). eapply reflect_EM. auto.
+       destruct Hm1m2.  
+       { subst m1. simpl. assert (H2:(delete m2 (delete m2 F)) = delete m2 F).
+         { assert (H3:~In m2 (delete m2 F) ). { apply delete_intro2. apply bids_of_nodup.
+         exact. } apply delete_intro1 in H3. auto. } 
+         assert (H3:(delete (bid_of m2) (delete (bid_of m2) (bids_of F))) = (delete (bid_of m2) (bids_of F))).
+         { assert (H4:~In (bid_of m2) (delete (bid_of m2) (bids_of F))). { apply delete_intro2.  exact. } apply delete_intro1 in H4. auto. }
+         rewrite H2. rewrite H3. apply bids_of_delete. exact. exact. }
+       { assert (H3: (bids_of (delete m2 F)) = (delete (bid_of m2) (bids_of F))).
+         apply bids_of_delete. exact. exact.
+         assert (H4: (bids_of (delete m1 (delete m2 F))) = 
+         (delete (bid_of m1) ((delete (bid_of m2) (bids_of F))))).
+         rewrite <- H3. apply bids_of_delete. apply delete_intro. exact.  exact.   
+         { assert (H4: (bids_of (delete m2 F)) = delete (bid_of m2) (bids_of F)).
+           apply bids_of_delete. exact. exact. rewrite H4. eauto. } exact. }} Qed.
+         
+     
+
 Fixpoint asks_of (F: list fill_type) : (list Ask) :=
   match F with
   |nil => nil
@@ -302,7 +361,37 @@ Lemma asks_of_intro (F: list fill_type) (m: fill_type):
 Proof. { intro H. induction F. simpl. simpl in H. contradiction. destruct  H.
          subst m. simpl. left. auto. simpl. right. auto. } Qed.
 
+Lemma asks_of_nonempty (F: list fill_type):
+  F<>nil -> (asks_of F)<>nil.
+Proof. intros. induction F. destruct H. auto. simpl. 
+apply non_nil_size. simpl. omega. Qed.
 
+Lemma asks_of_elim0 (F: list fill_type) (m: fill_type):
+In m F -> In (ask_of m) (asks_of F).
+Proof. { induction F as [| a F']. simpl. auto.
+         intros. simpl. simpl in H. destruct H.
+         left. subst a. auto. right. apply IHF'. exact. } Qed.
+(*TODO: automate the following Lemma*)
+Lemma asks_of_delete (F: list fill_type) (m: fill_type):
+  In m F -> NoDup (asks_of F) -> (asks_of (delete m F)) = (delete (ask_of m) (asks_of F)).
+Proof. { induction F as [| a F']. { simpl. auto. }
+         { intros. simpl. 
+           destruct (m_eqb m a) eqn: Hma.
+          { assert (Ht: (a_eqb (ask_of m) (ask_of a))=true).
+            move /eqP in Hma. apply /eqP. subst m. auto.
+            rewrite Ht. auto. } 
+            { destruct (a_eqb (ask_of m) (ask_of a)) eqn: Ham.
+              { move /eqP in Ham. simpl. rewrite IHF'. 
+                move /eqP in Hma. 
+                destruct H. symmetry in H. contradiction. exact.
+                eauto. simpl in H.  destruct H. move /eqP in Hma.
+                apply eq_sym ; trivial. subst a. destruct Hma. auto. 
+                assert (Hask: ~In (ask_of a) (asks_of F')).  eauto. 
+                assert (Haskm: In (ask_of m) (asks_of F')). apply asks_of_elim0. exact. 
+                rewrite Ham in Haskm. contradiction. }
+               { simpl. rewrite IHF'. move /eqP in Hma.
+                 destruct H. symmetry in H. contradiction. exact. 
+                 eauto. auto. }}}} Qed.
   
 Lemma asks_of_elim (F: list fill_type): forall a, In a (asks_of F)->
                                             exists m, In m F /\ a = ask_of m.
@@ -367,6 +456,33 @@ Proof. { revert M2. induction M1 as [| m1].
 Lemma asks_of_perm (M M': list fill_type): perm M M' -> perm (asks_of M) (asks_of M').
 Proof. { intro H. unfold perm in H. move /andP in H. destruct H.
          unfold perm. apply /andP. split. all: eapply included_M_imp_included_asks;exact. } Qed.
+
+Lemma asks_of_nodup (F: list fill_type): NoDup (asks_of F) -> NoDup F.
+Proof. { intro H. induction F. auto. assert (H1:NoDup (asks_of F)).
+         simpl in H. eauto. apply IHF in H1 as H2. simpl in H. 
+         assert (~In (ask_of a) (asks_of F)). eauto. 
+         assert (~In a (F)). intro.  assert (H4:In (ask_of a) (asks_of F)).
+         apply asks_of_elim0. exact. contradiction. eauto. } Qed.
+ 
+Lemma asks_of_delete_delete (F: list fill_type) (m1 m2: fill_type):
+  In m1 F -> In m2 F -> NoDup (asks_of F) -> 
+(asks_of (delete m1 (delete m2 F))) = (delete (ask_of m1) (delete (ask_of m2) (asks_of F))).
+Proof. { intros. assert (Hm1m2: m1=m2\/m1<>m2). eapply reflect_EM. auto.
+       destruct Hm1m2.  
+       { subst m1. simpl. assert (H2:(delete m2 (delete m2 F)) = delete m2 F).
+         { assert (H3:~In m2 (delete m2 F) ). { apply delete_intro2. apply asks_of_nodup.
+         exact. } apply delete_intro1 in H3. auto. } 
+         assert (H3:(delete (ask_of m2) (delete (ask_of m2) (asks_of F))) = (delete (ask_of m2) (asks_of F))).
+         { assert (H4:~In (ask_of m2) (delete (ask_of m2) (asks_of F))). { apply delete_intro2.  exact. } apply delete_intro1 in H4. auto. }
+         rewrite H2. rewrite H3. apply asks_of_delete. exact. exact. }
+       { assert (H3: (asks_of (delete m2 F)) = (delete (ask_of m2) (asks_of F))).
+         apply asks_of_delete. exact. exact.
+         assert (H4: (asks_of (delete m1 (delete m2 F))) = 
+         (delete (ask_of m1) ((delete (ask_of m2) (asks_of F))))).
+         rewrite <- H3. apply asks_of_delete. apply delete_intro. exact.  exact.   
+         { assert (H4: (asks_of (delete m2 F)) = delete (ask_of m2) (asks_of F)).
+           apply asks_of_delete. exact. exact. rewrite H4. eauto. } exact. }} Qed.
+
 
 Fixpoint trade_prices_of (F: list fill_type) : (list nat) :=
   match F with

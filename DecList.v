@@ -128,19 +128,57 @@ Section DecLists.
            { intros H1 H2. destruct H1. move /eqP in eqH. subst a; subst b.
              absurd (a0=a0); auto. auto. }
            { intros H1 H2. simpl. destruct H1. left;auto. right;auto. } } } Qed.
-            
+
+   Lemma delete_intro1 (a: A)(l:list A): ~In a l -> l=(delete a l).
+  Proof. { induction l. simpl.  auto.
+         { simpl. intros. destruct (a == a0) eqn: eqH. 
+           move /eqP in eqH. subst a. destruct H. left. auto. 
+           cut (l = delete a l). intros. rewrite<- H0. auto.
+           
+           assert (Hl:(~(a0 = a) /\ ~(In a l))).
+           auto. destruct Hl.  
+           apply IHl in H1. exact. }} Qed.
+  Lemma delete_intro2 (a:A)(l:list A): NoDup l -> ~In a (delete a l).
+  Proof. { intro. intro.
+         induction l as [|a0 l']. simpl in H0. exact. simpl in H0.
+         destruct (a == a0) eqn:Haa0. move /eqP in Haa0.
+         subst a. assert (Hl: ~In a0 l'). eauto. contradiction.
+         destruct H0. move /eqP in Haa0. auto. apply IHl' in H0. exact.
+          eauto. } Qed.
+                    
   Hint Resolve delete_elim0 delete_elim1 delete_elim2 delete_intro: core.
   Lemma delete_iff (a b:A)(l: list A): NoDup l -> (In a (delete b l) <-> (In a l /\ a<>b)).
   Proof. intro H. split. eauto.
          intro H0. destruct H0 as [H0 H1]. eauto.  Qed. 
   
-
+  
    Lemma delete_nodup (a:A)(l: list A): NoDup l -> NoDup (delete a l).
   Proof.  { induction l. simpl. constructor.
           { intro H. simpl. destruct (a == a0) eqn: eqH. 
             { eauto. }
             {  switch_in eqH. constructor. intro H1. absurd (In a0 l). all: eauto. } } } Qed.
-              
+     Lemma delete_exchange (a b:A)(l: list A): 
+     (delete a (delete b l)) = (delete b (delete a l)).
+  Proof.  { induction l. simpl. auto. simpl.
+            destruct (b == a0) eqn: Hba0. 
+            destruct (a == a0) eqn: Haa0.   
+            { move /eqP in Hba0. move /eqP in Haa0.
+            subst a. subst b. auto. }
+            { simpl. rewrite Hba0. auto. }
+            destruct (a == a0) eqn: Haa0.
+            { simpl. rewrite Haa0. auto. }
+            { simpl. rewrite Hba0. rewrite Haa0. 
+              rewrite IHl. auto. }} Qed.
+    Lemma delete_subset (a:A)(l s: list A): l [<=] s -> delete a l [<=] s.
+    Proof. { intro. unfold "[<=]" in H. unfold "[<=]".
+           intros. assert (H1: In a0 l). eauto. apply H in H1. exact. } Qed.
+    Lemma delete_subset2 (a:A)(l s: list A): l [<=] s -> NoDup l-> 
+    delete a l [<=] delete a s.
+    Proof. { intro. unfold "[<=]" in H. unfold "[<=]".
+           intros. destruct (a0==a) eqn:H2. move /eqP in H2. subst a0.
+           apply delete_elim2 in H1. destruct H1. auto. exact.
+           assert (H3: In a0 l). eauto. eauto. } Qed.
+                 
   Hint Resolve delete_nodup: core.
   
   
@@ -253,7 +291,15 @@ Hint Resolve idx_successor diff_index same_index: core.
    Lemma delete_size1a  (a:A)(l: list A): In a l -> |l|= S(|delete a l|).
    Proof. intro h1. apply delete_size1 in h1 as h2. rewrite h2. simpl.
           destruct l. simpl. inversion h1. simpl. omega. Qed.
-     
+          
+   Lemma delete_size1b (a:A)(l: list A): |delete a l| >= (|l| - 1).
+   Proof. { induction l.
+          { simpl; auto. }
+          { simpl.
+            destruct (a==a0) eqn: H1. omega.
+            assert (H2: a<>a0). switch_in H1. auto.
+            simpl. 
+            cut (|l| >= 0). omega. omega. } } Qed.  
    
   Lemma delete_size2 (a:A)(l: list A): ~ In a l -> |delete a l| = |l|.
   Proof. { induction l.
@@ -311,8 +357,8 @@ End DecLists.
  Hint Resolve insert_elim insert_elim1 insert_elim2: core.
  Hint Resolve insert_nodup :core.
 
- Hint Resolve delete_elim0 delete_elim1 delete_elim2 delete_intro delete_size: core.
- Hint Resolve delete_size1a delete_size1 delete_size2: core.
+ Hint Resolve delete_elim0 delete_elim1 delete_elim2 delete_intro delete_intro1 delete_intro2 delete_size: core.
+ Hint Resolve delete_size1a delete_size1 delete_size1b delete_size2: core.
  Hint Resolve delete_nodup: core.
  
 Hint Immediate absnt_idx_zero idx_zero_absnt idx_gt_zero idx_is_one: core.

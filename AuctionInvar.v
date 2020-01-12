@@ -2,7 +2,7 @@
 
 Require Export Lists.List.
 Require Export GenReflect SetSpecs.
-Require Export Sorting.
+Require Export DecSort.
 Require Export DecType SetReflect.
 Require Export DecList MoreDecList.
 

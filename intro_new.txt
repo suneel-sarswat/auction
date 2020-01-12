@@ -1,0 +1,20 @@
+Exchanging products is considered evolutionary to humans. The earliest known form of exchange system is known as barter system.
+With the increase in the size of human participants, it was natuaral to allows one objects in exchange of a contract. 
+
+In most modern economy, a measure of this contract is by currency of that economy. In fact day to day exchange between participants
+is done via this contranct of currency in physical as well as electronic form. 
+
+A secondary market
+is market in which people exchange (i.e. trades) contracts only. Usually this market is a very formal market. A formal market is a market
+where rules of matching are independents of identity of the participants. Furthermore, these rules are known to the participants before they commit/agree to trade. 
+
+Four properties of a formal markets and why they are most fundamental.  
+
+A paragraph on: why Any formal market should have these four properies. This should be independent of double sided auction. In the next paragraph write: double sided auction is a special type of work. We understant DSA under these above four properities only.  
+
+Describe: Double sided aution. It's algorithms. Proof that all the four properies are not achivable. In fact two are conflicting. maximal and uniform. We proove the bounds on these. Furthermore, Give an instance of (continous markets) situation where all the four properies are posible to achive.   
+
+Why this work is most important and nobody has even came close to this direction so far.
+
+
+

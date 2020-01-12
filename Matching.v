@@ -31,7 +31,7 @@ Require Export GenReflect SetSpecs.
 
 Require Export BidAsk.
 Require Export DecList.
-Require Export Sorting.
+Require Export DecSort.
 
 Section Matching.
 
@@ -328,6 +328,10 @@ Lemma matching_in_elim7 (b: Bid)(B: list Bid)(A: list Ask)(M: list fill_type):
 Proof. { unfold matching_in. intros. destruct H. destruct H0. split. exact.
          split. eauto. exact. } Qed.
 
+Lemma matching_in_elim7a (m: fill_type)(B: list Bid)(A: list Ask)(M: list fill_type):
+matching_in B A M -> matching_in B A (delete m M).
+  
+Proof. { unfold matching_in. intros. destruct H. destruct H0. split. eauto. split. eauto. eauto. } Qed.
 
  Lemma matching_in_elim8 (B: list Bid)(A: list Ask)(b: Bid)(a: Ask)(M: list fill_type):
    matching_in (b::B) (a::A) M -> ~ In b (bids_of M) -> ~ In a (asks_of M) -> matching_in B A M.
@@ -337,13 +341,14 @@ Proof. { unfold matching_in. intros. destruct H. destruct H0. split. exact.
           split.
           { eapply subset_nodup_subset in H2. all: exact. }
           { eapply subset_nodup_subset in H3. all: exact. } } Qed.
+  
 
 Hint Resolve matching_in_elim4a matching_in_elim5a: core. 
 Hint Immediate matching_in_intro: auction.
 Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1 matching_in_elim2
      matching_in_elim3 matching_in_elim4 matching_in_elim5 : auction.
 
-Hint Resolve matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
+Hint Resolve matching_in_elim6 matching_in_elim7 matching_in_elim7a  matching_in_elim8: core.
 
 (*----------------- Individual rational and  Fair matching--------------------------*)
 
@@ -425,6 +430,203 @@ Proof. { unfold Uniform. intros H1 H2 H3.
 Hint Resolve Uniform_intro  Uniform_intro1 Uniform_elim : core.
 Hint Immediate Uniform_intro2 : core.
 
+(*-------------- buyers_above and sellers_above relationship and results------------------*)
+
+Definition buyers_above (p: nat)(B: list Bid): list Bid :=
+  filter (fun x:Bid => Nat.leb p (bp x))  B.
+
+Lemma buyers_above_elim (p:nat)(B: list Bid)(x:Bid):
+  In x (buyers_above p B)-> bp(x) >= p.
+Proof. { unfold buyers_above. intros H. 
+         induction B. 
+         {  simpl in H. destruct H. } 
+         {  simpl in H.  
+            destruct (p <=? a) eqn: H1. 
+            { simpl in H. destruct H. subst x. move /leP in H1. auto. 
+            apply IHB in H. exact. }
+            { apply IHB in H. exact. }}} Qed.
+      
+Lemma buyers_above_intro (p:nat)(B: list Bid)(x:Bid):
+ ( In x B /\ (Nat.leb p x)) -> In x (buyers_above p B).
+Proof. { intros H. destruct H as [H1  H2].  
+         induction B. 
+         { destruct H1. }
+         { simpl in H1. 
+           destruct H1 as [H1a | H1b].
+           { subst x. simpl. destruct (p <=? a) eqn: Hpa. auto. eauto. }
+           { apply IHB in H1b. simpl. destruct (p <=? a) eqn: Hpa.
+             eauto. exact. }}} Qed.
+
+Definition sellers_above (p: nat)(A: list Ask): list Ask :=
+  filter (fun x:Ask => Nat.leb p (sp x)) (A).
+
+Lemma sellers_above_elim (p:nat)(A: list Ask)(x:Ask):
+  In x (sellers_above p A)-> sp(x) >= p.
+Proof. { unfold sellers_above. intros H. 
+         induction A. 
+         {  simpl in H. destruct H. } 
+         {  simpl in H.  
+            destruct (p <=? a) eqn: H1. 
+            { simpl in H. destruct H. subst x. move /leP in H1. auto. 
+            apply IHA in H. exact. }
+            { apply IHA in H. exact. }}} Qed.
+            
+Lemma sellers_above_intro (p:nat)(A: list Ask)(x:Ask):
+ ( In x A /\ Nat.leb p x ) -> In x (sellers_above p A).
+Proof. { intros H. destruct H as [H1  H2].  
+         induction A. 
+         { destruct H1. }
+         { simpl in H1. 
+           destruct H1 as [H1a | H1b].
+           { subst x. simpl. destruct (p <=? a) eqn: Hpa. auto. eauto. }
+           { apply IHA in H1b. simpl. destruct (p <=? a) eqn: Hpa.
+             eauto. exact. }}} Qed.
+
+Definition buyers_below (p: nat)(B: list Bid): list Bid :=
+  filter (fun x:Bid => Nat.leb (bp x) p) (B).
+
+Lemma buyers_below_intro (p:nat)(B: list Bid)(x:Bid):
+ ( In x B /\ Nat.leb x p ) -> In x (buyers_below p B).
+Proof. { intros H. destruct H as [H1  H2].  
+         induction B. 
+         { destruct H1. }
+         { simpl in H1. 
+           destruct H1 as [H1a | H1b].
+           { subst x. simpl. destruct (a <=? p) eqn: Hpa. auto. eauto. }
+           { apply IHB in H1b. simpl. destruct (a <=? p) eqn: Hpa.
+             eauto. exact. }}} Qed.
+
+Lemma buyers_below_elim (p:nat)(B: list Bid)(x:Bid):
+  In x (buyers_below p B)-> bp(x) <= p.
+Proof.  { unfold sellers_above. intros H. 
+         induction B. 
+         {  simpl in H. destruct H. } 
+         {  simpl in H.  
+            destruct (a <=? p) eqn: H1. 
+            { simpl in H. destruct H. subst x. move /leP in H1. auto. 
+            apply IHB in H. exact. }
+            { apply IHB in H. exact. }}} Qed.
+
+Definition sellers_below (p: nat)(A: list Ask): list Ask :=
+  filter (fun x:Ask => Nat.leb (sp x) p) (A).
+
+Lemma sellers_below_intro (p:nat)(A: list Ask)(x:Ask):
+ ( In x A /\ Nat.leb x p ) -> In x (sellers_below p A).
+Proof. { intros H. destruct H as [H1  H2].  
+         induction A. 
+         { destruct H1. }
+         { simpl in H1. 
+           destruct H1 as [H1a | H1b].
+           { subst x. simpl. destruct (a <=? p) eqn: Hpa. auto. eauto. }
+           { apply IHA in H1b. simpl. destruct (a <=? p) eqn: Hpa.
+             eauto. exact. }}} Qed.
+
+Lemma sellers_below_elim (p:nat)(A: list Ask)(x:Ask):
+  In x (sellers_below p A)-> sp(x) <= p.
+Proof. { unfold sellers_below. intros H. 
+         induction A. 
+         {  simpl in H. destruct H. } 
+         {  simpl in H.  
+            destruct (a <=? p) eqn: H1. 
+            { simpl in H. destruct H. subst x. move /leP in H1. auto. 
+            apply IHA in H. exact. }
+            { apply IHA in H. exact. }}} Qed.
+
+Hint Resolve buyers_above_elim buyers_above_intro: auction.
+Hint Resolve sellers_above_elim sellers_above_intro: auction.
+
+Hint Resolve buyers_below_elim buyers_below_intro: auction.
+Hint Resolve sellers_below_elim sellers_below_intro: auction.
+
+
+Theorem buyers_above_ge_sellers (p:nat)(M: list fill_type) (B: list Bid) (A: list Ask):
+  matching_in B A M -> | buyers_above p (bids_of M)| >= | sellers_above p (asks_of M)|.
+ Proof. { intros H. destruct H as [H H0]. destruct H0 as [H0 H1]. 
+          destruct H as [H H2]. destruct H2 as [H2 H3].
+          induction M. 
+          { simpl. auto. }
+          { simpl.  
+            destruct (p <=? bid_of a) eqn: Hpb.
+            { destruct (p <=? ask_of a) eqn: Hpa.
+              { simpl. cut ((| buyers_above p (bids_of M) |) >= (| sellers_above p (asks_of M) |)). 
+            omega. apply IHM. all:eauto. }
+              { simpl. cut ((| buyers_above p (bids_of M) |) >= (| sellers_above p (asks_of M) |)). 
+            omega. apply IHM. all:eauto. } }
+            { destruct (p <=? ask_of a) eqn: Hpa.
+              { move /leP in Hpb. move /leP in Hpa. 
+                unfold All_matchable in H. assert (H4: (ask_of a <= bid_of a)). 
+                apply H. auto. omega. }
+              { apply IHM. all: eauto. }}}} Qed.
+
+Theorem sellers_below_ge_buyers (p:nat)(M: list fill_type) (B: list Bid) (A: list Ask):
+  matching_in B A M -> | buyers_below p (bids_of M)| <= | sellers_below p (asks_of M)|.
+Proof. { intros H. destruct H as [H H0]. destruct H0 as [H0 H1]. 
+          destruct H as [H H2]. destruct H2 as [H2 H3].
+          induction M. 
+          { simpl. auto. }
+          { simpl.  
+            destruct (bid_of a <=? p) eqn: Hpb.
+            { destruct (ask_of a <=? p) eqn: Hpa.
+              { simpl. cut ((| buyers_below p (bids_of M) |) <= (| sellers_below p (asks_of M) |)). 
+            omega. apply IHM. all:eauto. }
+              { move /leP in Hpb. move /leP in Hpa. 
+                unfold All_matchable in H. 
+                assert (H4: (ask_of a <= bid_of a)). 
+                apply H. auto. omega. } }
+            { destruct (ask_of a <=? p) eqn: Hpa.
+              { simpl. cut ((| buyers_below p (bids_of M) |) <= (| sellers_below p (asks_of M) |)). 
+            omega. apply IHM. all:eauto.
+              }
+              { apply IHM. all: eauto. }}}} Qed.
+
+
+Lemma matchable_buy_above_sell_below (b:Bid) (a: Ask) (B: list Bid) (A: list Ask) (p:nat): In b (buyers_above p B) -> In a (sellers_below p A)
+-> a<=b.
+Proof. intros. apply  buyers_above_elim in H. apply sellers_below_elim in H0. omega. Qed. 
+
+Lemma buy_below_above_total (M: list fill_type) (B:list Bid) (A:list Ask) (p:nat):
+(matching_in B A M) -> (|(buyers_above p (bids_of M))|) + (|(buyers_below p (bids_of M))|) >= |M|.
+Proof. { intros H. destruct H as [H H0]. destruct H0 as [H0 H1]. 
+          destruct H as [H H2]. destruct H2 as [H2 H3].
+          induction M. { simpl. auto. }
+           { simpl.  
+            destruct (p <=? bid_of a) eqn: Hpb.
+            { destruct (bid_of a <=? p) eqn: Hpa.
+            { simpl. cut ((| buyers_above p (bids_of M) |) + (| buyers_below p (bids_of M) |) >= |M|). 
+            omega. apply IHM. all:eauto. }
+            { simpl. cut ((| buyers_above p (bids_of M) |) + (| buyers_below p (bids_of M) |) >= |M|). 
+            omega. apply IHM. all:eauto. } }
+            { destruct (bid_of a <=? p) eqn: Hpa.
+            { simpl. cut ((| buyers_above p (bids_of M) |) + (| buyers_below p (bids_of M) |) >= |M|). omega. apply IHM. all:eauto. }
+            { move /leP in Hpb. move /leP in Hpa. omega. } }}} Qed.
+            
+Lemma sell_below_above_total (M: list fill_type) (B:list Bid) (A:list Ask) (p:nat):
+(matching_in B A M) -> (|(sellers_above p (asks_of M))|) + (|(sellers_below p (asks_of M))|) >= |M|.
+Proof. { intros H. destruct H as [H H0]. destruct H0 as [H0 H1]. 
+          destruct H as [H H2]. destruct H2 as [H2 H3].
+          induction M. { simpl. auto. }
+           { simpl.  
+            destruct (p <=? ask_of a) eqn: Hpb.
+            { destruct (ask_of a <=? p) eqn: Hpa.
+            { simpl. cut ((|(sellers_above p (asks_of M))|) + (|(sellers_below p (asks_of M))|) >= |M|). 
+            omega. apply IHM. all:eauto. }
+            { simpl. cut ((|(sellers_above p (asks_of M))|) + (|(sellers_below p (asks_of M))|) >= |M|). 
+            omega. apply IHM. all:eauto. } }
+            { destruct (ask_of a <=? p) eqn: Hpa.
+            { simpl. cut ((|(sellers_above p (asks_of M))|) + (|(sellers_below p (asks_of M))|) >= |M|). omega. apply IHM. all:eauto. }
+            { move /leP in Hpb. move /leP in Hpa. omega. } }}} Qed.
+
+
+Lemma maching_buyer_right_plus_seller_left 
+(M: list fill_type) (B:list Bid) (A:list Ask) (p:nat):
+(matching_in B A M) -> (|(buyers_above p (bids_of M))|) + (|(sellers_below p (asks_of M))|) >= |M|.
+Proof.  intros H. apply sellers_below_ge_buyers with (p:=p) in H  as H1.
+                  eapply buyers_above_ge_sellers with (p:=p) in H as H2.
+                  eapply buy_below_above_total with (p:=p) in H as H3.
+                  eapply sell_below_above_total with (p:=p) in H as H4.
+                  omega. Qed.
+
+
 
 End Matching.
 
@@ -445,7 +647,7 @@ Hint Immediate matching_in_intro: core.
 Hint Resolve matching_in_elim0 matching_in_elim matching_in_elim1: core.
 Hint Resolve matching_in_elim2 matching_in_elim3 matching_in_elim4: core.
 Hint Resolve matching_in_elim4a matching_in_elim5a: core. 
-Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_elim8: core.
+Hint Resolve matching_in_elim5 matching_in_elim6 matching_in_elim7 matching_in_elim7a matching_in_elim8: core.
 Hint Immediate Is_IR_intro: core.
 Hint Resolve Is_IR_elim Is_IR_elim1: core.
 

@@ -76,13 +76,16 @@ Section Min_Max.
   Proof.  unfold maxof. destruct (a <=r b) eqn:H. all: try tauto. intro; eauto. Qed.
   Lemma maxof_spec4 (a b c:A): c <=r b -> c <=r maxof a b.
   Proof. unfold maxof. destruct (a <=r b) eqn:H. all: try tauto. intro; eauto. Qed.
+  Lemma maxof_spec5 (a b: A): a=maxof a b \/b=maxof a b.
+  Proof. unfold maxof. destruct (a <=r b). right. auto. left. auto.
+  Qed.
 
-  Hint Resolve maxof_spec1 maxof_spec2 maxof_spec3 maxof_spec4: core.
+  Hint Resolve maxof_spec1 maxof_spec2 maxof_spec3 maxof_spec4 maxof_spec5: core.
   
    Fixpoint maxin (l: list A)(d: A): A:=
     match l with
     |nil => d
-    |a::l' => maxof a (maxin l' a)
+    |a::l' => maxof a (maxin l' a)  
     end.
 
    Lemma maxin_elim (l: list A)(a d:A): maxin (a::l) d = maxin (a::l) a.
@@ -95,15 +98,27 @@ Section Min_Max.
             { intros d a0. replace (maxin (a0 :: a :: l) d) with (maxof a0 (maxin (a::l) a0)).
               unfold maxof.
               destruct (a0 <=r maxin (a :: l) a0) eqn:H; eauto.
-              simpl;auto. } } Qed.
+              simpl;auto.  } } Qed.
+
+Lemma maxin_elim2 (l:list A) (d:A) :l<>nil -> In (maxin l d) l.
+   Proof. { revert d. induction l. intros. destruct H. auto. intros. eapply maxin_elim1. } Qed.
+   
+         
 
  Lemma maxin_spec (l:list A)(d:A)(a:A): In a l -> (a <=r (maxin l d)).
    Proof. { generalize d. induction l.
           { intros d0 H. inversion H. }
           { intros d0 H. simpl. destruct H.
             { subst a; eauto. }  eauto. } } Qed.     
-
-   Hint Resolve maxin_spec maxin_elim maxin_elim1: core.
+ 
+  Lemma maxin_spec0 (l:list A)(d:A)(a:A): In (maxin l d) l -> ((maxin l d) <=r (maxin (a::l) d)).
+   Proof. { generalize d. induction l.
+          { intros d0 H. simpl in H.  inversion H. }
+          { intros d0 H. simpl. destruct H. auto.
+            apply maxin_spec with (a:=maxof a0 (maxin l a0))(l:=(a::a0::l))(d:=d0).
+             simpl in H. auto. } } Qed.     
+ 
+   Hint Resolve maxin_spec maxin_spec0 maxin_elim maxin_elim1: core.
 
     Definition minof (a b :A): A:= match a <=r b with
                                   |true => a
@@ -120,8 +135,11 @@ Section Min_Max.
    Proof. unfold minof. destruct (a <=r b) eqn:H. all: try tauto. intro; eauto. Qed.  
    Lemma minof_spec4 (a b c:A): b <=r c ->  minof a b <=r c.
    Proof. unfold minof. destruct (a <=r b) eqn:H. all: try tauto. intro; eauto. Qed. 
+   Lemma minof_spec5 (a b: A): a=minof a b \/b=minof a b.
+  Proof. unfold minof. destruct (a <=r b). left. auto. right. auto.
+  Qed.
 
-   Hint Resolve minof_spec1 minof_spec2 minof_spec3 minof_spec4: core.
+   Hint Resolve minof_spec1 minof_spec2 minof_spec3 minof_spec4 minof_spec5: core.
 
    Fixpoint minin (l: list A)(d: A): A:=
     match l with
@@ -140,25 +158,41 @@ Section Min_Max.
               unfold minof.
               destruct (a0 <=r minin (a :: l) a0) eqn:H; eauto.
               simpl;auto. } } Qed.
-
+              
+Lemma minin_elim2 (l:list A) (d:A) :l<>nil -> In (minin l d) l.
+   Proof. { revert d. induction l. intros. destruct H. auto.
+        { case l eqn: Hl. simpl. left. unfold minof. destruct (a <=r a). auto. auto.
+        intros. rewrite <- Hl. rewrite <- Hl in IHl.
+        assert (l<>nil). subst. assert (| a0::l0|>0). simpl. 
+        omega. apply non_nil_size.  exact.  apply IHl with (d:=a) in H0.
+        simpl. assert (a=minof a (minin l a) \/ (minin l a)=minof a (minin l a)).
+        eapply minof_spec5. destruct H1. left. exact. right.
+        rewrite <- H1. exact. } }Qed.
+        
    Lemma minin_spec (l:list A)(d:A)(a:A): In a l -> ((minin l d) <=r a).
    Proof. { generalize d. induction l.
           { intros d0 H. inversion H. }
           { intros d0 H. simpl. destruct H.
             { subst a; eauto. }  eauto. } } Qed.
 
-   
-   Hint Resolve minin_spec minin_elim minin_elim1: core.
+     Lemma minin_spec0 (l:list A)(d:A)(a:A): In (minin l d) l -> ((minin (a::l) d) <=r (minin l d)).
+   Proof. { generalize d. induction l.
+          { intros d0 H. simpl in H.  inversion H. }
+          { intros d0 H. simpl. destruct H. auto. 
+            apply minin_spec with (a:=minof a0 (minin l a0))(l:=(a::a0::l))(d:=d0).
+             simpl in H. auto. } } Qed.     
+ 
+   Hint Resolve minin_spec minin_spec0 minin_elim minin_elim1: core.
 
    (*---------------- Existence of Minimum and Maximum in the non-empty list------------- *)
 
    Lemma min_exists (l: list A): l<>nil -> exists min, In min l /\ (forall x, In x l -> min <=r x).
    Proof. intro H. case l eqn:H1. destruct H;auto.
           exists (minin (a::l0) a). split. auto. intro x. auto. Qed.
+          
    Lemma max_exists (l: list A): l<>nil -> exists max, In max l /\ (forall x, In x l -> x <=r max).
    Proof.  intro H. case l eqn:H1. destruct H;auto.
            exists (maxin (a::l0) a). split. auto. intro x. auto. Qed.
-   
    Lemma min_withP_exists (l: list A)(P: A->bool):
      (exists a, In a l /\ P a) -> (exists min, In min l /\ P min /\ (forall x, In x l -> P x -> min <=r x)).
    Proof. { intro H.

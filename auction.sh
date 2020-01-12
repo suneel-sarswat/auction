@@ -7,8 +7,8 @@ coqc GenReflect.v
 printf ‘SetSpecs.v
 coqc SetSpecs.v
 
-printf ‘Sorting.v
-coqc Sorting.v
+printf ‘DecSort.v
+coqc DecSort.v
 
 printf ‘MinMax.v
 coqc MinMax.v
@@ -45,6 +45,9 @@ coqc MM.v
 
 printf ‘UM.v
 coqc UM.v
+
+printf ‘Bounds.v
+coqc Bounds.v
 
 echo \
 

@@ -1,19 +1,17 @@
 
 
-
-
 (* ---------------------------------------------------------------------------------
 
      This file contains results of Uniform matchings. function produce_UM, which 
      produces a uniform matching from any list of bids B and list of aks A. 
      We prove that matching produced by this function is largest among 
      all possible uniform matching on B and A. We also prove that matching 
-     produced is IR and uniform.
+     produced is fair, IR and uniform.
 
 Important results:
 
 Theorem UM_is_maximal_Uniform: Sorted by_dbp B -> Sorted by_sp A-> 
-(forall M: list fill_type, Is_uniform M B A-> |M| <= | (produce_UM B A ) |).
+(forall M: list fill_type, Is_uniform M B A-> |M| <= | (pair_uniform B A ) |).
 
 ------------------------------------------------------------------------------------*)
 
@@ -24,7 +22,7 @@ Require Export Lists.List.
 
 Require Export GenReflect SetSpecs.
 
-Require Export Sorting MinMax.
+Require Export DecSort MinMax.
 Require Export BidAsk.
 Require Export DecList.
 Require Export MoreDecList.
@@ -37,18 +35,18 @@ Section UM.
 
 
 
-Fixpoint produce_UM (B:list Bid) (A:list Ask)  :=
+Fixpoint pair_uniform (B:list Bid) (A:list Ask)  :=
   match (B,A) with
   |(nil, _) => nil
   |(_,nil)=> nil
   |(b::B',a::A') => match Nat.leb (sp a) (bp b) with
                         |false =>nil
-                        |true  => ({|bid_of:= b ; ask_of:= a ; tp:=(bp b) |})::produce_UM B' A'
+                        |true  => ({|bid_of:= b ; ask_of:= a ; tp:=(bp b) |})::pair_uniform B' A'
   end
   end.
   
 
-Lemma UM_correct (B:list Bid) (A:list Ask) : forall m, In m (produce_UM B A) ->
+Lemma UM_correct (B:list Bid) (A:list Ask) : forall m, In m (pair_uniform B A) ->
                                 (bp (bid_of m)) >= (sp (ask_of m)).
 Proof. { intros m. revert A. induction B. simpl. auto. intro A.
          induction A. simpl. auto. simpl. intro H1. 
@@ -57,13 +55,13 @@ Proof. { intros m. revert A. induction B. simpl. auto. intro A.
          move /eqP in H2.  move /leP in H2. auto. 
          move /leP in H2. eapply IHB. exact H. inversion H1. }  Qed.
    
-Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
-  Sorted by_dbp B -> Sorted by_sp A -> matching_in B A (produce_UM B A).
+Lemma UM_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
+  Sorted by_dbp B -> Sorted by_sp A -> matching_in B A (pair_uniform B A).
  Proof. { revert B NDB. induction A. 
           { case B eqn: H1. simpl. auto. simpl. auto. }  
           { case B eqn:H1. simpl. auto. 
             intros H2 H3 H4. simpl. destruct (a <=? b) eqn:Hab. 
-            assert (Hm:matching_in l A (produce_UM l A)). 
+            assert (Hm:matching_in l A (pair_uniform l A)). 
             { eapply IHA with (B:=l). eauto. subst B. eauto. subst B. eauto. eauto. }
             eapply matching_in_intro.
             { simpl. move /leP in Hab. exact Hab. }
@@ -80,7 +78,7 @@ Lemma UP_is_matching (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
  
 
  
-Lemma produce_UM_bids_sublist_B(B: list Bid)(A: list Ask): sublist (bids_of (produce_UM B A)) B.
+Lemma pair_uniform_bids_sublist_B(B: list Bid)(A: list Ask): sublist (bids_of (pair_uniform B A)) B.
  Proof. { revert B. induction A.
           { intros. simpl. case B eqn: H0. all:simpl;auto. }
           { intros. simpl. case B eqn: H0.
@@ -92,7 +90,7 @@ Lemma produce_UM_bids_sublist_B(B: list Bid)(A: list Ask): sublist (bids_of (pro
                  { unfold b_eqb in Hbb. move /andP in Hbb. destruct Hbb. auto. } }
               { simpl. rewrite Hab. simpl. auto. } } } } Qed.
 
-Lemma produce_UM_asks_sublist_A(B: list Bid)(A: list Ask): sublist (asks_of (produce_UM B A)) A.
+Lemma pair_uniform_asks_sublist_A(B: list Bid)(A: list Ask): sublist (asks_of (pair_uniform B A)) A.
  Proof. { revert B. induction A.
           { intros. simpl. case B eqn: H0. all:simpl;auto. }
           { intros. simpl. case B eqn: H0.
@@ -105,15 +103,14 @@ Lemma produce_UM_asks_sublist_A(B: list Bid)(A: list Ask): sublist (asks_of (pro
               { simpl. rewrite Hab. simpl. auto. } } } } Qed.
 
 Lemma bids_of_UM_sorted (B: list Bid) (A: list Ask) :
-  (Sorted by_dbp B -> (Sorted by_dbp (bids_of (produce_UM B A)))).
-Proof. { assert (H0:sublist (bids_of (produce_UM B A)) B). apply produce_UM_bids_sublist_B.
+  (Sorted by_dbp B -> (Sorted by_dbp (bids_of (pair_uniform B A)))).
+Proof. { assert (H0:sublist (bids_of (pair_uniform B A)) B). apply pair_uniform_bids_sublist_B.
 intros. eapply sublist_is_sorted with (lr:=by_dbp) (s:=B). exact. exact. } Qed.
 
 
-
 Lemma asks_of_UM_sorted (B: list Bid) (A: list Ask) :
-    (Sorted by_sp A -> (Sorted by_sp (asks_of (produce_UM B A)))).
-Proof. { assert (H0:sublist (asks_of (produce_UM B A)) A). apply produce_UM_asks_sublist_A.
+    (Sorted by_sp A -> (Sorted by_sp (asks_of (pair_uniform B A)))).
+Proof. { assert (H0:sublist (asks_of (pair_uniform B A)) A). apply pair_uniform_asks_sublist_A.
 intros. eapply sublist_is_sorted with (lr:=by_sp) (s:=A). exact. exact. } Qed.
 
 
@@ -149,7 +146,7 @@ case F eqn:H1. simpl. auto. replace (last (m' :: f :: l) m0) with (last (f :: l)
 
 
 Lemma UM_returns_IR (B: list Bid) (A: list Ask) (NDB: NoDup B) (NDA: NoDup A):
- Sorted by_dbp B -> Sorted by_sp A -> forall m, In m (produce_UM B A) ->
+ Sorted by_dbp B -> Sorted by_sp A -> forall m, In m (pair_uniform B A) ->
    (bp (bid_of m))>= (tp m)  /\ (sp (ask_of m)) <= (tp m).
 Proof.  { revert NDA. revert A. induction B. intros. split. simpl in H1.
           destruct H1. simpl in H1. destruct H1. intros.
@@ -183,25 +180,64 @@ Lemma replace_column_elim (l: list fill_type)(n:nat): forall m', In m' (replace_
              { apply IHl in H as H1. destruct H1 as [m H1]. exists m. 
                destruct H1 as [H2 H1]. destruct H1 as [H3 H1]. split.
                auto. split;auto. } } } Qed. 
+
+Lemma replace_column_elim_bid (l: list fill_type)(n:nat) (m:fill_type):
+In m (replace_column l n) -> In (bid_of m) (bids_of l).
+Proof. { induction l. intros. simpl. destruct H.
+         intros. simpl in H. simpl. destruct H. left. 
+         simpl in H. subst m. simpl. exact. right. apply IHl. exact. } Qed.
+
+
+Lemma replace_column_elim_ask (l: list fill_type)(n:nat) (m:fill_type):
+In m (replace_column l n) -> In (ask_of m) (asks_of l).
+Proof. { induction l. intros. simpl. destruct H.
+         intros. simpl in H. simpl. destruct H. left. 
+         simpl in H. subst m. simpl. exact. right. apply IHl. exact. } Qed.
   
+Lemma replace_column_bids_perm (l: list fill_type)(n:nat):
+perm (bids_of l) (bids_of (replace_column l n)).
+  Proof. { induction l. 
+           { simpl. auto. }
+           { simpl. unfold perm. unfold perm in IHl.
+             move /andP in IHl. destruct IHl.
+           apply /andP. split. 
+           apply included_elim4b with (a0:=(bid_of a)) in H. exact.
+           apply included_elim4b with (a0:=(bid_of a)) in H0. exact. }
+           }  Qed. 
 
 
-Definition uniform_price B A := bp (bid_of (last (produce_UM B A) m0)).
+Lemma replace_column_asks_perm (l: list fill_type)(n:nat):
+perm (asks_of l) (asks_of (replace_column l n)).
+  Proof. { induction l. 
+           { simpl. auto. }
+           { simpl. unfold perm. unfold perm in IHl.
+             move /andP in IHl. destruct IHl.
+           apply /andP. split. 
+           apply included_elim4b with (a0:=(ask_of a)) in H. exact.
+           apply included_elim4b with (a0:=(ask_of a)) in H0. exact. }
+           }  Qed. 
+
+Lemma replace_column_size (l: list fill_type)(n:nat):
+|(l)| = |((replace_column l n))|.
+Proof. induction l. simpl. auto.
+simpl. omega. Qed.
+
+Definition uniform_price B A := bp (bid_of (last (pair_uniform B A) m0)).
 
 
 
-Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid)  : Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (produce_UM B A)) ->
+Lemma uniform_price_bid (B: list Bid) (A:list Ask) (b: Bid)  : Sorted by_dbp (B) -> Sorted by_sp (A) -> In b (bids_of (pair_uniform B A)) ->
   b >=(uniform_price B A).
 Proof. { intros H1 H2 H3. unfold uniform_price.
          eapply bids_of_UM_sorted  with (A:=A) in H1 as H4 . 
-         assert (H5: by_dbp b (bid_of (last (produce_UM B A) m0))).
-         assert (Hlastb: last (bids_of (produce_UM B A)) b0 = bid_of (last (produce_UM B A) m0)).
-         symmetry. eapply bid_of_last_and_last_of_bids with (F:= ((produce_UM B A))). auto. rewrite <- Hlastb.
+         assert (H5: by_dbp b (bid_of (last (pair_uniform B A) m0))).
+         assert (Hlastb: last (bids_of (pair_uniform B A)) b0 = bid_of (last (pair_uniform B A) m0)).
+         symmetry. eapply bid_of_last_and_last_of_bids with (F:= ((pair_uniform B A))). auto. rewrite <- Hlastb.
          eapply last_in_Sorted. apply by_dbp_P. apply by_dbp_refl. exact H4. auto.
          unfold by_dbp in H5. move /leP in H5. auto. } Qed.
   
-Lemma produce_UM_bids_ge_asks (B: list Bid) (A:list Ask) (m: fill_type):
-In m (produce_UM B A) -> (bid_of  m) >= (ask_of m).
+Lemma pair_uniform_bids_ge_asks (B: list Bid) (A:list Ask) (m: fill_type):
+In m (pair_uniform B A) -> (bid_of  m) >= (ask_of m).
 Proof. { revert B m. induction A. 
 { intros. case B eqn: HB. 
  { simpl in H. destruct H. }
@@ -235,54 +271,45 @@ Proof. { revert x d.
              eapply IHl' with (x:=b). auto. } } } Qed.
 
 Lemma uniform_price_ask (B: list Bid) (A:list Ask) (a: Ask):
-  Sorted by_dbp B -> Sorted by_sp (A) -> In a (asks_of (produce_UM B A))-> a <= (uniform_price B A).
+  Sorted by_dbp B -> Sorted by_sp (A) -> In a (asks_of (pair_uniform B A))-> a <= (uniform_price B A).
 Proof. { intros H1 H2 H3. unfold uniform_price.
          eapply asks_of_UM_sorted  with (B:=B) in H2 as H4. 
          eapply bids_of_UM_sorted  with (A:=A) in H1 as H4b.
-         assert (H5: by_sp a (ask_of (last (produce_UM B A) m0))).
-         assert (Hlasta: last (asks_of (produce_UM B A)) a0 = ask_of (last (produce_UM B A) m0)).
+         assert (H5: by_sp a (ask_of (last (pair_uniform B A) m0))).
+         assert (Hlasta: last (asks_of (pair_uniform B A)) a0 = ask_of (last (pair_uniform B A) m0)).
          symmetry.  eapply ask_of_last_and_last_of_asks. auto. auto.
          rewrite <- Hlasta.
          eapply last_in_Sorted. apply by_sp_P. apply by_sp_refl. exact H4. auto. unfold by_sp in H5. move /leP in H5. 
-         assert (H6: bid_of (last (produce_UM B A) m0) >= ask_of (last (produce_UM B A) m0)). 
-        { apply produce_UM_bids_ge_asks with (B:=B) (A:=A). 
-          assert (Hma: exists m, In m (produce_UM B A) /\ a = ask_of m).
+         assert (H6: bid_of (last (pair_uniform B A) m0) >= ask_of (last (pair_uniform B A) m0)). 
+        { apply pair_uniform_bids_ge_asks with (B:=B) (A:=A). 
+          assert (Hma: exists m, In m (pair_uniform B A) /\ a = ask_of m).
           eauto. destruct Hma as [m Hma].
           apply last_in_list with (x:=m). apply Hma. } 
-          { assert (Hma: exists m, In m (produce_UM B A) /\ a = ask_of m).
+          { assert (Hma: exists m, In m (pair_uniform B A) /\ a = ask_of m).
           eauto. destruct Hma as [m Hma]. omega. } } Qed.
 
-Definition UM (B:list Bid) (A:list Ask) : (list fill_type) :=
-  replace_column (produce_UM B A)
+Definition produce_UM (B:list Bid) (A:list Ask) : (list fill_type) :=
+  replace_column (pair_uniform B A)
                 (uniform_price B A).
 
-
-(*
+Print Uniform.
 
 Theorem UM_is_Ind_Rat (B: list Bid) (A:list Ask):
-  Sorted by_dbp B -> Sorted by_sp A -> Is_IR (UM B A).
-Proof. {  intros H1 H2. unfold UM. unfold Is_IR.
-          intros m H3. unfold rational. split. 
-          assert (H4: tp m = (uniform_price B A)).  
+  Sorted by_dbp B -> Sorted by_sp A -> Is_IR (produce_UM B A).
+Proof. {  intros H1 H2. unfold produce_UM. unfold Is_IR.
+          intros m H3. unfold rational. split.
+          { assert (H4: tp m = (uniform_price B A)).  
           eapply last_column_is_trade_price. exact H3.
-          rewrite  H4. eapply replace_column_elim in H3 as H5. 
-          eapply bids_of_UM_sorted with (A:=A) in H1  as H6. 
-          unfold uniform_price. admit. admit. }  Admitted.
-*)
+          rewrite  H4. eapply replace_column_elim_bid in H3.
+          apply uniform_price_bid. exact. exact. exact. }
+          { assert (H4: tp m = (uniform_price B A)).  
+          eapply last_column_is_trade_price. exact H3.
+          rewrite  H4. eapply replace_column_elim_ask in H3.
+          apply uniform_price_ask. exact. exact. exact. } } Qed.
 
-(*
-revert B. induction A. { case B eqn:HB. 
-{ unfold UM. simpl. unfold Is_IR. intros H1 H2 H3 H4. inversion H4. }
-{ unfold UM. simpl. unfold Is_IR. intros H1 H2 H3 H4. inversion H4. } }
-{ case B eqn:HB. 
-{ unfold UM. simpl. unfold Is_IR. intros H1 H2 H3 H4. inversion H4. }
-{ unfold UM. simpl. intros H1 H2. destruct (a <=? b) eqn: Hab.
-{ simpl. unfold Is_IR. intros m H3. destruct H3 eqn: Hm. subst m.
-unfold rational. simpl. split.   unfold uniform_price.
-*)
  
-Theorem UM_is_Uniform (B: list Bid) (A:list Ask) : Uniform ( UM B A).
-Proof.  unfold Uniform. unfold UM. apply replace_column_is_uniform. Qed.
+Theorem UM_is_Uniform (B: list Bid) (A:list Ask) : Uniform ( produce_UM B A).
+Proof.  unfold Uniform. unfold produce_UM. apply replace_column_is_uniform. Qed.
 
 Definition Is_uniform M B A := (Uniform M /\ matching_in B A M /\ Is_IR M).
 
@@ -381,7 +408,154 @@ Proof. { intros H1 H2 H3 H4. assert (Htp: tp m1 = tp m2). eauto.
          assert (Htpm2a: tp m2 >= ask_of m2). 
          { unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
          omega. } Qed. 
+         
+Lemma UM_pair_fair_on_bids (B:list Bid)(A:list Ask):
+  Sorted by_dbp B -> Sorted by_sp A -> fair_on_bids (pair_uniform B A) B.
+  Proof. { revert A. induction B as [|b]. 
+        { intros. unfold fair_on_bids. intros. simpl in H3. inversion H3. }
+        { intros. unfold fair_on_bids. intros b0 b0' H2 H3 H4.
+          destruct A eqn: Ha. 
+         { simpl. inversion H4. }
+         { assert (case1: b0' = b \/ b0' <> b). eauto.
+           destruct H2 as [H2 H2a].
+           assert  (case3: b = b0' \/ In b0' (bids_of (pair_uniform B l))).
+           {  destruct case1.   left.  exact. right. simpl in H4. 
+              destruct (a <=? b) eqn:Hab. simpl in H4. destruct H4.
+              symmetry in H4. contradiction. eauto. destruct H4.
+               }
+           destruct case1 as [c1a | c1b]. 
+           { subst b0'. assert (H5: b0 <= b). 
+             { apply Sorted_elim2 with (x:= b0) in H as H0a.
+              apply /leP. auto.  unfold by_dbp.
+              unfold reflexive. auto.  auto. } omega.  }
+             { assert (H5: In b0' B).
+             { eapply in_inv2. exact H2a. exact c1b. }
+             assert (case2: b0=b \/ In b0 B).
+             { auto. }
+             destruct case2 as [c2a | c2b]. 
+             { subst b0. simpl. case (a <=? b) eqn: Hab. simpl. left. auto. 
+              simpl in H4. rewrite Hab in H4. destruct H4. }
+             { destruct case3 as [c3a | c3b].
+               { subst b. contradiction. }
+               { simpl. case (a <=? b) eqn: Hab. simpl. right. eapply IHB.
+                 { eauto. }
+                 { eauto. }
+                 { simpl in H2. split. auto. exact H5. } 
+                 { exact. }
+                 { simpl in H4. rewrite Hab in H4. simpl in H4.
+                   destruct H4. eauto. exact. }
+                 { simpl in H4. rewrite Hab in H4. simpl in H4. auto. }  } } } } } } Qed.
 
+
+Lemma UM_pair_fair_on_asks (B:list Bid) (A:list Ask):
+  (Sorted by_dbp B) -> (Sorted by_sp A) -> fair_on_asks (pair_uniform B A) A. 
+Proof. { revert B. induction A as [|a]. 
+        { intros. unfold fair_on_asks. intros.  
+          destruct B eqn: Hb. simpl in H3. inversion H3.
+          simpl in H3. inversion H3. }
+        { intros. unfold fair_on_asks. intros s s' H2 H3 H4.
+          destruct B eqn: Hb. 
+         { simpl. inversion H4. }
+         { assert (case1: s' = a \/ s' <> a). eauto.
+           destruct H2 as [H2 H2a].
+           assert  (case3: a = s' \/ In s' (asks_of (pair_uniform l A))).
+           {  destruct case1.   left.  exact. right. simpl in H4. 
+              destruct (a <=? b) eqn:Hab. simpl in H4. destruct H4. 
+              symmetry in H4. contradiction. eauto.
+              destruct H4. }
+           destruct case1 as [c1a | c1b]. 
+           { subst s'. assert (H5: s >= a).
+             { simpl in H2. destruct H2. subst a. auto.
+               assert (Hb0: by_sp a s). eauto.
+               unfold by_sp in Hb0. move /leP in Hb0.  omega. } omega.  }
+           
+           {  assert (H5: In s' A).
+             {  eapply in_inv2. exact H2a. exact c1b. }
+             assert (case2: a=s \/ In s A).
+             { auto. }
+             destruct case2 as [c2a | c2b]. 
+             { subst s. simpl. case (a <=? b) eqn: Hab. simpl. left. auto. 
+              simpl in H4. rewrite Hab in H4. destruct H4. }
+             { destruct case3 as [c3a | c3b].
+               { subst a. contradiction. }
+               { simpl. case (a <=? b) eqn: Hab. simpl. right. eapply IHA.
+                 { eauto. }
+                 { eauto. }
+                 {  simpl in H2. split. auto. exact H5. }
+                 { exact. }
+                 { simpl in H4. rewrite Hab in H4. simpl in H4.
+                   destruct H4. eauto. exact.  }
+                 { simpl in H4. rewrite Hab in H4. simpl in H4. auto. } } } } } } } Qed.
+
+Lemma UM_pair_fair (B: list Bid) (A:list Ask)(m: fill_type): 
+Sorted by_dbp B -> Sorted by_sp A-> Is_fair (pair_uniform B A ) B A.
+Proof. { intros H1 H2. unfold Is_fair. 
+         split. apply UM_pair_fair_on_asks. all:eauto.
+         apply UM_pair_fair_on_bids. all:eauto. } Qed.
+         
+         
+
+Theorem UM_fair (B: list Bid) (A:list Ask): 
+Sorted by_dbp B -> Sorted by_sp A-> Is_fair (produce_UM B A) B A.
+Proof. { intros H1 H2. unfold produce_UM.
+
+ unfold Is_fair. 
+         split. 
+         { unfold fair_on_asks. intros. 
+         assert (H5: fair_on_asks (pair_uniform B A) A).
+         apply UM_pair_fair_on_asks. exact. exact.
+         assert (H6: perm (asks_of ((pair_uniform B A)))
+          (asks_of (replace_column ((pair_uniform B A)) ((uniform_price B A))))).
+         apply replace_column_asks_perm. 
+         assert (H7: In s' (asks_of (pair_uniform B A))).
+         { apply perm_elim with (a:=s') in H6.
+         assert (H8: (count s'
+       (asks_of
+          (replace_column (pair_uniform B A) (uniform_price B A)))) >=1).
+         eauto. assert (H9: (count s' (asks_of (pair_uniform B A)))>=1).
+         omega. apply countP1b in H9. exact. }
+         unfold fair_on_asks in H5.
+         assert (H8: (In s (asks_of (pair_uniform B A)))).
+         eapply H5 in H7. exact H7. auto. auto.
+         apply perm_elim with (a:=s) in H6.
+         assert (H9: (count s (asks_of (pair_uniform B A)))>=1).
+         eauto.  
+         assert (H10: (count s
+       (asks_of
+          (replace_column (pair_uniform B A) (uniform_price B A))))>=1).
+          omega. apply countP1b in H10. exact.
+           }
+           
+         { unfold fair_on_bids. intros. 
+         assert (H5: fair_on_bids (pair_uniform B A) B).
+         apply UM_pair_fair_on_bids. exact. exact.
+         assert (H6: perm (bids_of ((pair_uniform B A)))
+          (bids_of (replace_column ((pair_uniform B A)) ((uniform_price B A))))).
+         apply replace_column_bids_perm. 
+         assert (H7: In b' (bids_of (pair_uniform B A))).
+         { apply perm_elim with (a:=b') in H6.
+         assert (H8: (count b'
+       (bids_of
+          (replace_column (pair_uniform B A) (uniform_price B A)))) >=1).
+         eauto. assert (H9: (count b' (bids_of (pair_uniform B A)))>=1).
+         omega. apply countP1b in H9. exact. }
+         unfold fair_on_bids in H5.
+         assert (H8: (In b (bids_of (pair_uniform B A)))).
+         eapply H5 in H7. exact H7. auto. auto.
+         apply perm_elim with (a:=b) in H6.
+         assert (H9: (count b (bids_of (pair_uniform B A)))>=1).
+         eauto.  
+         assert (H10: (count b
+       (bids_of
+          (replace_column (pair_uniform B A) (uniform_price B A))))>=1).
+          omega. apply countP1b in H10. exact.
+           } } Qed.
+         
+Lemma UM_size (B: list Bid) (A:list Ask):
+|(pair_uniform B A )|=|produce_UM B A|.
+Proof. unfold produce_UM. eapply replace_column_size. Qed.
+  
+   
 Theorem UM_is_maximal_Uniform (B: list Bid) (A:list Ask)(no_dup_B: NoDup B)(no_dup_A: NoDup A): Sorted by_dbp B -> Sorted by_sp A-> (forall M: list fill_type, Is_uniform M B A-> |M| <= | (produce_UM B A ) |).
 
 Proof. revert B no_dup_B. induction A as [|a A'].
@@ -405,17 +579,18 @@ Proof. revert B no_dup_B. induction A as [|a A'].
              assert (HM:M=nil). eapply unmatchableAB_nil.
              eauto. eauto. eauto. exact. subst M. auto. }
              { (*-- C2: when b and a are matchable then Output is (b,a):: produce_MM B' A'----*)
-               assert (h1: matching_in (b::B') (a::A') (produce_UM (b::B') (a::A'))).
-               {eauto using UP_is_matching. }
+               assert (h1: matching_in (b::B') (a::A') (pair_uniform (b::B') (a::A'))).
+               {eauto using UM_is_matching. }
              intros M h2. destruct h2 as [h2a h2]. destruct h2 as [h2 h2b]. 
               simpl. replace (a <=? b) with true.
              
              Focus 2. symmetry. apply /leP. auto.
              assert (Hb: In b (bids_of M) \/ ~ In b (bids_of M)). eauto.
              assert (Ha: In a (asks_of M) \/ ~ In a (asks_of M)). eauto.
-             assert (H0: forall M, Is_uniform M B' A' -> |M| <= |(produce_UM B' A')|).
+             assert (H0: forall M, Is_uniform M B' A' -> |M| <= |(pair_uniform B' A')|).
             
-             { apply IHA'. all: eauto. }
+             {assert (Hpair:(| pair_uniform B' A' |)=(| produce_UM B' A' |)). apply UM_size.
+             rewrite Hpair. apply IHA'. all: eauto. }
              destruct Hb as [Hb1 | Hb2]; destruct Ha as [Ha1 | Ha2].
              { (* Case_ab1: In b (bids_of M) and In a (asks_of M)------*)
                assert (h3: exists m1, In m1 M /\ a = ask_of m1). eauto.
@@ -456,8 +631,13 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      {unfold Is_uniform. eauto. }
                  assert (h6: |M| = S (|M'|)).
                  { unfold M'. eauto. }
-                 assert (h7: |M'| <= |(produce_UM B' A')|). apply H0. exact.
-                 simpl. omega. }
+                 assert (h7: |M'| <= |(pair_uniform B' A')|). apply H0. exact.
+                 simpl. 
+                 { assert (Hpair:(|produce_UM (b::B') (a::A') |)=
+                 (| pair_uniform (b::B') (a::A') |)). symmetry. eapply UM_size.
+                  rewrite Hpair. simpl. destruct (a <=? b) eqn: Hba. simpl. omega.
+                  assert (Hbat:(a <=? b) = true). apply /leP. omega. 
+                  rewrite Hba in Hbat. inversion Hbat. } }
                                 { (*-------- h5b : m1 <> m2 ---------*)
                  set (M'' := delete m1 (delete m2 M)).
                  assert (h5: |M| = S (S (|M''|))).
@@ -572,8 +752,13 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      assert (h5_is_unif:Is_uniform M' B' A').
                      {unfold Is_uniform. eauto. }
                      
-             assert (h7: |M'| <= |(produce_UM B' A')|). apply H0. exact.
-                 unfold M' in h7. simpl in h7. rewrite h5. simpl. omega. } }
+             assert (h7: |M'| <= |(pair_uniform B' A')|). apply H0. exact.
+                 unfold M' in h7. simpl in h7. rewrite h5. 
+                 { assert (Hpair:(|produce_UM (b::B') (a::A') |)=
+                 (| pair_uniform (b::B') (a::A') |)). symmetry. eapply UM_size.
+                  rewrite Hpair. simpl. destruct (a <=? b) eqn: Hba. simpl. omega.
+                  assert (Hbat:(a <=? b) = true). apply /leP. omega. 
+                  rewrite Hba in Hbat. inversion Hbat. } } }
              { (* Case_ab2: In b (bids_of M) and ~ In a (asks_of M)----*)
                assert (h3: exists m, In m M /\ b = bid_of m). eauto.
                destruct h3 as [m h3]. destruct h3 as [h3a h3].
@@ -612,8 +797,12 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      { subst M'.  eauto. }
                      assert (h5_is_uni:Is_uniform M' B' A').
                      {unfold Is_uniform. eauto. }
-               assert (h6: |M'| <= |(produce_UM B' A')|). apply H0. exact.
-               simpl. omega. }
+               assert (h6: |M'| <= |(pair_uniform B' A')|). apply H0. exact.
+               { assert (Hpair:(|produce_UM (b::B') (a::A') |)=
+                 (| pair_uniform (b::B') (a::A') |)). symmetry. eapply UM_size.
+                  rewrite Hpair. simpl. destruct (a <=? b) eqn: Hba. simpl. omega.
+                  assert (Hbat:(a <=? b) = true). apply /leP. omega. 
+                  rewrite Hba in Hbat. inversion Hbat. } }
              { (* Case_ab3: ~ In b (bids_of M) and In a (asks_of M)----*)
                assert (h3: exists m, In m M /\ a = ask_of m). eauto.
                destruct h3 as [m h3]. destruct h3 as [h3a h3].
@@ -653,8 +842,12 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      { subst M'. eauto. }
                      assert (h5_is_uni:Is_uniform M' B' A').
                      {unfold Is_uniform. eauto. }
-               assert (h6: |M'| <= |(produce_UM B' A')|). apply H0. exact.
-               simpl. omega. }
+               assert (h6: |M'| <= |(pair_uniform B' A')|). apply H0. exact.
+               { assert (Hpair:(|produce_UM (b::B') (a::A') |)=
+                 (| pair_uniform (b::B') (a::A') |)). symmetry. eapply UM_size.
+                  rewrite Hpair. simpl. destruct (a <=? b) eqn: Hba. simpl. omega.
+                  assert (Hbat:(a <=? b) = true). apply /leP. omega. 
+                  rewrite Hba in Hbat. inversion Hbat. } }
              { (* Case_ab4: ~ In b (bids_of M) and ~ In a (asks_of M)---*)
                assert (h3: matching_in B' A' M). eauto using matching_in_elim8.
                 assert (h5_ir: Is_IR M). 
@@ -663,7 +856,11 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      {exact. }
                      assert (h5_is_uni:Is_uniform M B' A').
                      {unfold Is_uniform. eauto. }
-               cut (|M| <= | produce_UM B' A'|). simpl. omega. apply H0. exact. }   } } } Qed.  
+               cut (|M| <= | pair_uniform B' A'|). 
+               { assert (Hpair:(|produce_UM (b::B') (a::A') |)=
+                 (| pair_uniform (b::B') (a::A') |)). symmetry. eapply UM_size.
+                  rewrite Hpair. simpl. destruct (a <=? b) eqn: Hba. simpl. omega.
+                  assert (Hbat:(a <=? b) = true). apply /leP. omega. 
+                  rewrite Hba in Hbat. inversion Hbat. }  apply H0. exact. }   } } } Qed.
                
-
 End UM.

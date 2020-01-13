@@ -196,7 +196,7 @@ Fixpoint subset (s s': list A): bool:=
 Lemma subsetP s s': reflect (Subset s s') (subset s s').
 Proof. { induction s. simpl. constructor. intro. intros  H. absurd (In a nil); auto.
        apply reflect_intro. split.
-       { intro H.  cut (In a s' /\ Subset s s'). Focus 2. split; eauto. simpl.
+       { intro H.  cut (In a s' /\ Subset s s'). 2:{ split; eauto. } simpl.
          intro H1; destruct H1 as [H1 H2].
          apply /andP. split. apply /membP;auto. apply /IHs;auto.  }
        { simpl.  move /andP. intro H; destruct H as [H1 H2]. unfold Subset.
@@ -222,7 +222,7 @@ Definition equal (s s':list A): bool:= subset s s' && subset s' s.
 Lemma equalP s s': reflect (Equal s s') (equal s s').
 Proof. { apply reflect_intro.  split.
        { intro H. cut (Subset s s'/\ Subset s' s).
-       Focus 2. auto. intro H1. unfold equal.
+       2:{ auto. } intro H1. unfold equal.
        apply /andP. split; apply /subsetP; tauto. }
        { unfold equal. move /andP. intro H. apply Equal_intro; apply /subsetP; tauto. }
        } Qed.
@@ -357,7 +357,7 @@ Hint Immediate equal_elim equal_intro: core.
  Lemma forall_exists_EM P l:
    (forall x:A, P x \/ ~ P x) -> (forall x, In x l -> P x) \/ (exists x, In x l /\ ~ P x).
  Proof. { intros. cut(Forall P l \/ ~ Forall P l).  
-        Focus 2. eapply Forall_EM. auto.
+        2:{ eapply Forall_EM. auto. }
         intro H1; destruct H1 as [Hl | Hr].
         left. apply Forall_forall. auto. right.
         cut(Exists (fun x : A => ~ P x) l). eapply Exists_exists.
@@ -365,7 +365,7 @@ Hint Immediate equal_elim equal_intro: core.
  Lemma exists_forall_EM P l:
    (forall x:A, P x \/ ~ P x)-> (exists x, In x l /\ P x) \/ (forall x, In x l ->  ~ P x).
    Proof.  { intros. cut(Exists P l \/ ~ Exists P l).  
-        Focus 2. eapply Exists_EM. auto.
+        2:{ eapply Exists_EM. auto. }
         intro H1; destruct H1 as [Hl | Hr].
         left. apply Exists_exists. auto. right.
         cut(Forall (fun x : A => ~ P x) l). eapply Forall_forall.

@@ -30,8 +30,8 @@ Hint Resolve in_eq in_cons in_inv in_nil in_dec: core.
 Section BasicListFacts.
   Variable A:Type.
   Lemma in_inv1 : forall (a b:A) (l:list A), In b (a :: l) -> b = a \/ In b l.
-  Proof. { intros  a b l H. cut (a=b \/ In b l).
-       Focus 2. auto.  intros H1; destruct H1 as [H1 | H2].
+  Proof. { intros  a b l H. cut (a=b \/ In b l). 
+       2: {  auto. } intros H1; destruct H1 as [H1 | H2].
        left; symmetry; auto. right;auto. } Qed.
   Lemma in_inv2: forall (x a:A) (l:list A), In x (a::l)-> x <> a -> In x l.
   Proof.  { intros x a l H. cut (x=a \/ In x l). intro H1;destruct H1 as [Hl1|Hr1].
@@ -113,7 +113,7 @@ Hint Extern 0 (?x [<=] ?z)  =>
 match goal with
 | H: (x [<=] ?y) |- _ => apply (@Subset_trans  x y z)
 | H: (?y [<=] z) |- _ => apply (@Subset_trans  x y z)                                   
-end.
+end : core.
   
   (* ---------------------- Equal (spec) and their properties--------------------*)
   Lemma Eq_refl (s: list A):  s [=] s.
@@ -122,13 +122,13 @@ end.
   Proof. unfold Equal.  tauto. Qed. 
   Lemma Eq_trans1 ( x y z : list A) : x [=] y -> y [=] z -> x [=] z.
   Proof. { unfold Equal.  intros H H1. destruct H as [H0 H]; destruct H1 as [H1a H1].
-           split; auto. } Qed.
+           split; auto.  } Qed.
 
  Hint Extern 0 (?x [=] ?z)  =>
 match goal with
 | H: (x [=] ?y) |- _ => apply (@Eq_trans1  x y z)
 | H: (?y [=] z) |- _ => apply (@Eq_trans1  x y z)                                   
-end.
+end : core.
 
 
   Lemma Equal_intro (s s': list A): s [<=] s' -> s' [<=] s -> s [=] s'.
@@ -192,6 +192,9 @@ Lemma non_nil_size (l: list A): |l| > 0 -> l<>nil.
          { simpl. intro H. omega. }
          { intros. intro. assert (H1: In a nil).
            rewrite <- H0. auto. destruct H1. } } Qed.
+           
+Lemma element_list (l: list A)(a b : A): a<>b -> In b (a::l) -> In b l.
+Proof. intros H1 H2. simpl in H2. destruct H2. destruct H1;auto. exact. Qed. 
 
 Hint Resolve non_zero_size: core.  
  
@@ -203,13 +206,13 @@ Hint Extern 0 (?x [<=] ?z)  =>
 match goal with
 | H: (x [<=] ?y) |- _ => apply (@Subset_trans _ x y z)
 | H: (?y [<=] z) |- _ => apply (@Subset_trans _ x y z)                                   
-end.
+end : core.
 
 Hint Extern 0 (?x [=] ?z)  =>
 match goal with
 | H: (x [=] ?y) |- _ => apply (@Eq_trans1 _ x y z)
 | H: (?y [=] z) |- _ => apply (@Eq_trans1 _ x y z)                                   
-end.
+end : core.
 
 
 Hint Immediate Eq_refl Eq_sym Equal_elim Equal_intro Equal_intro1: core.
@@ -221,4 +224,4 @@ Hint Immediate filter_elim1 filter_elim2 filter_intro: core.
 
 Hint Resolve lt_set_is_well_founded: core.
 
-Hint Resolve non_zero_size: core. 
+Hint Resolve non_zero_size element_list: core. 

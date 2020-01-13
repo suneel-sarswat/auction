@@ -202,8 +202,15 @@ Proof.  { intros H1 H2. unfold matching in H2. destruct H2. destruct H0.
           intro H3.
           assert (H4: exists m', (In m' (delete m M))/\ (bid_of m = bid_of m')). eauto.
           destruct H4 as [m' H4]. destruct H4 as [H4 H5].
-          assert (H6: In m' M). eauto. assert (H7: m'<>m).
-          cut (NoDup M). eauto. apply matching_elim3.
+          assert (H6: In m' M). 
+          eapply included_elim2. eapply included_elim4.
+          apply included_intro2. exact H1. apply included_intro2. exact H4.
+          apply included_refl.
+          assert (H7: m'<>m).
+          cut (NoDup M). intro. eapply del_all_elim2. 
+          apply del_all_intro. exact H6. eapply delete_elim2.
+          exact H7. exact H4.
+          apply matching_elim3.
           unfold matching. auto. eapply matching_elim14 in H7.
           symmetry in H5. contradiction. instantiate (1:=M).
           unfold matching. auto. exact. exact. } Qed.
@@ -453,7 +460,9 @@ Proof. { intros H. destruct H as [H1  H2].
          { destruct H1. }
          { simpl in H1. 
            destruct H1 as [H1a | H1b].
-           { subst x. simpl. destruct (p <=? a) eqn: Hpa. auto. eauto. }
+           { subst x. simpl. destruct (p <=? a) eqn: Hpa. auto.
+            apply IHB. eapply insert_elim2. apply insert_intro3.
+            auto. }
            { apply IHB in H1b. simpl. destruct (p <=? a) eqn: Hpa.
              eauto. exact. }}} Qed.
 
@@ -478,7 +487,9 @@ Proof. { intros H. destruct H as [H1  H2].
          { destruct H1. }
          { simpl in H1. 
            destruct H1 as [H1a | H1b].
-           { subst x. simpl. destruct (p <=? a) eqn: Hpa. auto. eauto. }
+           { subst x. simpl. destruct (p <=? a) eqn: Hpa. auto. 
+             apply IHA. eapply insert_elim2. apply insert_intro3.
+            auto. }
            { apply IHA in H1b. simpl. destruct (p <=? a) eqn: Hpa.
              eauto. exact. }}} Qed.
 
@@ -492,7 +503,9 @@ Proof. { intros H. destruct H as [H1  H2].
          { destruct H1. }
          { simpl in H1. 
            destruct H1 as [H1a | H1b].
-           { subst x. simpl. destruct (a <=? p) eqn: Hpa. auto. eauto. }
+           { subst x. simpl. destruct (a <=? p) eqn: Hpa. auto. 
+             apply IHB. eapply insert_elim2. apply insert_intro3.
+            auto. }
            { apply IHB in H1b. simpl. destruct (a <=? p) eqn: Hpa.
              eauto. exact. }}} Qed.
 
@@ -517,7 +530,9 @@ Proof. { intros H. destruct H as [H1  H2].
          { destruct H1. }
          { simpl in H1. 
            destruct H1 as [H1a | H1b].
-           { subst x. simpl. destruct (a <=? p) eqn: Hpa. auto. eauto. }
+           { subst x. simpl. destruct (a <=? p) eqn: Hpa. auto.
+             apply IHA. eapply insert_elim2. apply insert_intro3.
+            auto. }
            { apply IHA in H1b. simpl. destruct (a <=? p) eqn: Hpa.
              eauto. exact. }}} Qed.
 
@@ -631,7 +646,7 @@ Proof.  intros H. apply sellers_below_ge_buyers with (p:=p) in H  as H1.
 End Matching.
 
 
-Hint Unfold All_matchable.
+Hint Unfold All_matchable : core.
 Hint Immediate All_matchable_intro All_matchable_nil: core.
 Hint Resolve All_matchable_elim All_matchable_elim1 All_matchable_elim2 : core.
 

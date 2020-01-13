@@ -446,9 +446,9 @@ Section Permutation.
   Proof. { revert s. induction l. intros;apply included_intro1;auto.
            { intros s H. simpl.  case (memb a s) eqn:Has;move /membP in Has.
              apply IHl. intro x. destruct (EM x a).
-             Focus 2.  replace (count x l) with (count x (a::l)).
+             2:{  replace (count x l) with (count x (a::l)).
              replace (count x (delete a s)) with (count x s).
-             all: eauto. subst x. 
+             all: eauto. } subst x. 
              replace (count a l) with ((count a (a::l)) -1). 
              replace (count a (delete a s)) with ((count a s)-1).
              specialize (H a).  omega.
@@ -565,7 +565,7 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
   match goal with
   | H: is_true (included x  ?y) |- _ => apply (@included_trans  x y z)
   | H: is_true (included ?y  z) |- _ => apply (@included_trans  x y z) 
-  end.
+  end : core.
 
  
   Hint Resolve included_intro1 included_intro2 included_intro3: core.
@@ -698,7 +698,7 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
   match goal with
   | H: is_true (perm x  ?y) |- _ => apply (@perm_trans x y z)
   | H: is_true (perm ?y  z) |- _ => apply (@perm_trans x y z) 
-  end.
+  end : core.
 
   Hint Resolve  perm_intro0a  perm_intro0b perm_refl perm_nil perm_elim1 : core.
   Hint Immediate perm_elim perm_intro perm_sym: core.
@@ -761,17 +761,17 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
 *)
   Hint Resolve included_intro1 included_intro2 included_intro3: core.
   Hint Resolve included_refl included_intro: core.
-  Hint Resolve included_elim1 included_elim2 included_elim3: core.
+  Hint Resolve included_elim1 included_elim2  included_elim3: core.
   Hint Resolve included_elim4 (*included_elim4a*) included_elim5 included_elim: core.
-
+  
   Hint Extern 0 (is_true ( included ?x ?z) ) =>
   match goal with
   | H: is_true (included x  ?y) |- _ => apply (@included_trans _ x y z)
   | H: is_true (included ?y  z) |- _ => apply (@included_trans _ x y z) 
-  end.
+  end : core.
 
   Hint Resolve nodup_subset_included: core.
-    Hint Immediate sorted_included_sublist first_in_ordered_sublists
+  Hint Immediate sorted_included_sublist first_in_ordered_sublists
   nodup_included_nodup :core.
   Hint Resolve  perm_intro0a  perm_intro0b perm_refl perm_nil perm_elim1 : core.
   Hint Immediate perm_elim perm_intro perm_sym: core.
@@ -781,6 +781,6 @@ assert (H1: (forall a1, count a1 l <= count a1 (a0::l))). intros.
   match goal with
   | H: is_true (perm x  ?y) |- _ => apply (@perm_trans _ x y z)
   | H: is_true (perm ?y  z) |- _ => apply (@perm_trans _ x y z) 
-  end.
+  end : core.
 
   Hint Resolve perm_sort1 perm_sort2 perm_sort3 perm_nodup perm_subset: core.

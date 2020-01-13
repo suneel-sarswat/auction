@@ -179,7 +179,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
            destruct Case as [C1 | C2].
            { (*------C1:  when b and a are not matchable then produce_MM (b::B') A' *)
              simpl. replace (a <=? b) with false.
-             Focus 2. symmetry. apply /leP. omega.
+             2:{ symmetry. apply /leP. omega. }
              assert (h1: Is_MM  (produce_MM (b::B') A') (b::B') A').
              { apply IHA'. all: eauto. }
              unfold Is_MM. split.
@@ -205,7 +205,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                    cut ((bids_of M') [<=] (b::B')). auto.
                    apply h2. auto. } 
                  assert (h8: (bid_of m) <= b).
-                 { assert (h9: by_dbp b (bid_of m)). eauto.
+                 { assert (h9: by_dbp b (bid_of m)). eapply Sorted_elim2. auto.
+                   exact h. exact h7. 
                    unfold by_dbp in h9. apply /leP. auto. }
                  omega. }
                { auto. }  } }
@@ -214,7 +215,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
              assert (h1: matching_in (b::B') (a::A') (produce_MM (b::B') (a::A'))).
              { auto using produce_MM_is_matching. }
              unfold Is_MM. split. auto.
-             simpl. replace (a <=? b) with true. Focus 2. symmetry. apply /leP. auto.
+             simpl. replace (a <=? b) with true. 2:{ symmetry. apply /leP. auto. }
              intros M h2. simpl.
              assert (Hb: In b (bids_of M) \/ ~ In b (bids_of M)). eauto.
              assert (Ha: In a (asks_of M) \/ ~ In a (asks_of M)). eauto.
@@ -253,7 +254,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        subst x. subst a. eauto. subst x;auto. }
                      { auto. } } }
                  assert (h6: |M| = S (|M'|)).
-                 { unfold M'. eauto. }
+                 { unfold M'.  eapply delete_size1a. exact. }
                  assert (h7: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                  omega. }
                
@@ -279,7 +280,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        auto. eauto. simpl. cut (ask_of m2 <= ask_of m1).
                        cut (ask_of m1 <= bid_of m1). omega.
                        eauto. rewrite <- h3. cut (In (ask_of m2) (a::A')).
-                       intro h6. assert(h7: by_dsp a (ask_of m2)). eauto.
+                       intro h6. assert(h7: by_dsp a (ask_of m2)). eapply Sorted_elim2.
+                       auto. exact h0. exact h6.
                        unfold by_dsp in h7. apply /leP. auto.
                        eapply matching_in_elim5a. apply h2. auto. } split.
                      { (*---- NoDup (bids_of M') ----*)
@@ -289,7 +291,9 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        { (*--- NoDup (bids_of M'')---*)
                          cut (matching M''). auto.
                          unfold M''. eauto. }
-                       { unfold M''. eauto. } }
+                       { unfold M''. apply matching_elim10. apply matching_elim9. 
+                       eapply matching_in_elim0. exact h2. apply delete_intro.
+                       exact h3a. exact h5b. } }
                       { (*---- NoDup (asks_of M') ----*)
                        unfold M'. simpl.
                        cut (~ In (ask_of m2) (asks_of M'')).
@@ -301,11 +305,13 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                          assert(h6:asks_of(delete m1 (delete m2 M))[<=]asks_of(delete m2 M)).
                          eauto. intro h7.
                          absurd (In (ask_of m2) (asks_of (delete m2 M))).
-                         eauto. auto. } } } split. 
+                         apply matching_elim11. eapply matching_in_elim0. exact h2. 
+                         exact h4a. auto. } } } split. 
                    { (*----- bids_of M' [<=] B'-------------*)
                      unfold M'. simpl.
                      intros x h6. destruct h6 as [h6 | h6].
-                     { cut (In x (b::B')). cut ( x <> b). eauto.
+                     { cut (In x (b::B')). cut ( x <> b). intros. apply element_list with
+                     (b:=x)(a:=b). auto. exact.
                        { subst x; subst b. eapply matching_elim14 with (M:= M).
                          all: auto. eauto. }
                        { subst x. eapply matching_in_elim4a. apply h2. auto. } }
@@ -315,9 +321,10 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        assert (h8: x <> bid_of m2).
                        { intro h8. subst x.
                          assert (h9: In (bid_of m2) (bids_of (delete m2 M))).
-                         eauto.
+                         eapply bids_of_elim1. exact h6.
                          absurd (In (bid_of m2) (bids_of (delete m2 M))).
-                         eauto. auto. } 
+                         apply matching_elim10. eapply matching_in_elim0.
+                         exact h2. exact h4a. auto. } 
                        rewrite <- h4 in h8.
                        assert (h9: In x (b::B')).
                        { apply h2. auto. }
@@ -325,7 +332,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                    { (*------ asks_of M' [<=] A' -------*)
                      unfold M'. simpl.
                      intros x h6. destruct h6 as [h6 | h6].
-                     { cut (In x (a::A')). cut ( x <> a). eauto.
+                     { cut (In x (a::A')). cut ( x <> a). intros. eapply element_list.
+                       apply not_eq_sym ; trivial. exact H. exact H1.
                        { subst x; subst a. eapply matching_elim15 with (M:= M).
                          all: auto. eauto. }
                        { subst x. eapply matching_in_elim5a. apply h2. auto. } }
@@ -335,9 +343,11 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        assert (h8: x <> ask_of m1).
                        { intro h8. subst x.
                          assert (h9: In (ask_of m1) (asks_of (delete m2 M))).
-                         eauto.
+                         apply asks_of_intro. apply delete_intro. exact h3a. exact h5b.
                          absurd (In (ask_of m1) (asks_of (delete m1 (delete m2 M)))).
-                         eauto. auto. }
+                         apply matching_elim11. apply matching_elim9. 
+                         eapply matching_in_elim0. exact h2. apply delete_intro.
+                         exact h3a. exact h5b. auto. }
                        rewrite <- h3 in h8.
                        assert (h9: In x (a::A')).
                        { apply h2. auto. }
@@ -363,7 +373,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                    { intro h6. unfold M' in h4.
                      subst x;subst b.
                      absurd (In (bid_of m) (bids_of (delete m M))).
-                     eauto. auto. }
+                     apply matching_elim10. eapply matching_in_elim0. 
+                     exact h2. exact h3a. auto. }
                    eapply in_inv2. all: eauto. }
                  { (*------ asks_of M' [<=] A'-------*)
                    intros x h4.
@@ -375,7 +386,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                    { apply h2. auto. }
                    eapply in_inv2. all: eauto.  } }
                assert (h5: |M| = S (|M'|)).
-               { unfold M'. eauto. }
+               { unfold M'. eapply delete_size1a. exact h3a. }
                assert (h6: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                omega. }
              { (* Case_ab3: ~ In b (bids_of M) and In a (asks_of M)----*)
@@ -406,10 +417,11 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                    { intro h6. unfold M' in h4.
                      subst x;subst a.
                      absurd (In (ask_of m) (asks_of (delete m M))).
-                     eauto. auto. }
+                     apply matching_elim11. eapply matching_in_elim0. 
+                     exact h2. exact h3a. auto. }
                    eapply in_inv2. all: eauto. } } 
                assert (h5: |M| = S (|M'|)).
-               { unfold M'. eauto. }
+               { unfold M'. eapply delete_size1a.  exact h3a. }
                assert (h6: |M'| <= |(produce_MM B' A')|). apply H0. exact.
                omega. }
              { (* Case_ab4: ~ In b (bids_of M) and ~ In a (asks_of M)---*)

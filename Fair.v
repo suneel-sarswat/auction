@@ -71,7 +71,7 @@ Proof. { intros H1 H2. unfold fair_on_bids. unfold fair_on_bids in H1.
          intros s s' H3 H4 H5. destruct H2 as [H2a H2].
          apply H2a; eapply H1 with (b':=s');auto.  }  Qed.
 
-Hint Resolve same_ask_is_fair same_bid_is_fair.
+Hint Resolve same_ask_is_fair same_bid_is_fair : core.
 
 (*------------ Sorting by decreasing bid prices and their properties --------------*)
 
@@ -86,7 +86,7 @@ Proof.  { split.
            move /leP in H. apply /leP. omega. } } Qed.
             
 Lemma by_dbp_refl: reflexive by_dbp.
-Proof. unfold reflexive. intros. eauto. Qed.
+Proof. unfold reflexive. intros.  apply nat_reflexive.  Qed.
 
 
 
@@ -101,7 +101,7 @@ Proof. { split.
            exact.  } } Qed.
 
 Lemma m_dbp_refl: reflexive m_dbp.
-Proof. unfold reflexive. intros. unfold m_dbp. eauto. Qed.
+Proof. unfold reflexive. intros. unfold m_dbp. apply nat_reflexive. Qed.
 
 
 (*------------- Sorting by increasing ask prices and their properties -------------*)
@@ -117,7 +117,7 @@ Proof. { split.
             move /leP in H. apply /leP. omega. } } Qed.
 
 Lemma by_sp_refl: reflexive by_sp.
-Proof. unfold reflexive.  intros. eauto. Qed.
+Proof. unfold reflexive.  intros.  apply nat_reflexive. Qed.
 
 
 Definition m_sp (m1:fill_type) (m2:fill_type) :=  by_sp (ask_of m1) (ask_of m2).
@@ -131,11 +131,11 @@ Proof. { split.
            exact.  } } Qed.
 
 Lemma m_sp_refl: reflexive m_sp.
-Proof. unfold reflexive. intros. eauto. Qed.
+Proof. unfold reflexive. intros. apply nat_reflexive. Qed.
 
 
-Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
-Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl.
+Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P : core.
+Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl : core.
 
 Definition geb := fun a b => Nat.leb b a.
 Lemma geb_anti: antisymmetric geb.
@@ -183,7 +183,7 @@ Proof. { induction B.
          { simpl. rewrite h2. move /eqP in h2.
            subst a. simpl. replace (b =? b) with true. auto. auto. }
          { assert (h1a: In b B).
-           { move /eqP in h2; eauto. }
+           { move /eqP in h2. simpl in h1.  destruct h1. destruct h2. auto. exact. }
            replace (delete b (a :: B)) with (a :: (delete b B)).
            { simpl. destruct (b =? a) eqn: h3.
              { apply IHB in h1a as h1b. rewrite h1b. auto. }
@@ -245,7 +245,7 @@ Proof. { induction M.
          apply H3 in H5 as H7. unfold m_dbp in H7. unfold by_dbp in H7.
          subst b. exact. } } Qed.
 
-Hint Resolve sorted_m_imply_sorted_b.
+Hint Resolve sorted_m_imply_sorted_b : core.
 
 
   
@@ -285,7 +285,7 @@ Proof. { revert B. induction M.
          { simpl. auto. }
          { intros b l. simpl. intro H. cut (NoDup (asks_of (Make_FOB M l))).
            cut(~ In (ask_of a) (asks_of (Make_FOB M l))). eauto.
-           Focus 2. eauto.
+           2:{ eauto. }
            intro H1. absurd (In (ask_of a) (asks_of M)). auto.
            eapply mfob_ask_sub_M. eauto. } } } Qed.
 
@@ -367,7 +367,7 @@ Proof. { revert B. induction M as [|m].
               unfold reflexive. auto.  auto. } omega.  }
            
            { (*-- c1b : b' <> b0 ---*)             assert (H5: In b' l).
-             { eauto. }
+             { simpl in H2a. destruct H2a. destruct c1b. auto. exact. }
              assert (case2: b=b0 \/ In b l).
              { auto. }
              destruct case2 as [c2a | c2b]. 
@@ -377,7 +377,8 @@ Proof. { revert B. induction M as [|m].
                { simpl. right. eapply IHM with (b':= b').
                  { eauto. }
                  { eauto. }
-                 { simpl in H1. destruct ( bid_of m =? b0) eqn: H6.  auto. eauto. }
+                 { simpl in H1. destruct ( bid_of m =? b0) eqn: H6.  auto.
+                  apply sublist_elim3 in H1. exact. }
                  { split;auto. }
                  { auto. }
                  { auto. }  } } } } } } Qed.
@@ -451,7 +452,7 @@ Proof. { assert (HmP: transitive m_dbp /\ comparable m_dbp). apply m_dbp_P.
         {  assert (HBid: fair_on_bids (Make_FOB (sort m_dbp M) (sort by_dbp B)) (sort by_dbp B)).
            { eapply mfob_fair_on_bid. all:auto. apply sorted_nodup_is_sublistB.
              all: auto. 
-             { assert (H1: NoDup (bids_of M)). apply H.  eauto. }
+             { assert (H1: NoDup (bids_of M)). apply H. eauto. }
              { assert (H2: bids_of M [<=] B). apply H.
                eapply perm_subset with (l1:= bids_of M)(s1:= B).
                auto. all: auto. } }
@@ -504,7 +505,8 @@ Proof. { induction A as [|b].
          { simpl. rewrite h2. move /eqP in h2.
            subst a. simpl. replace (b =? b) with true. auto. auto. }
          { assert (h1a: In a A).
-           { move /eqP in h2. eauto.   }
+           { move /eqP in h2. apply element_list with (a:=b)(b:=a). 
+           auto. exact.   }
            replace (delete a (b :: A)) with (b :: (delete a A)).
            { simpl. destruct (a =? b) eqn: h3.
              { apply IHA in h1a as h1b. rewrite h1b. auto. }
@@ -566,7 +568,7 @@ Proof. { induction M.
          apply H3 in H5 as H7. unfold m_sp in H7. unfold by_sp in H7.
          subst a1. exact. } } Qed.
 
-Hint Resolve sorted_m_imply_sorted_a.
+Hint Resolve sorted_m_imply_sorted_a : core.
 
 
 
@@ -618,7 +620,7 @@ Proof. { revert A. induction M.
          { simpl. auto. }
          { intros a0 l. simpl. intro H. cut (NoDup (bids_of (Make_FOA M l))).
            cut(~ In (bid_of a) (bids_of (Make_FOA M l))). eauto.
-           Focus 2. eauto.
+           2:{ eauto. }
            intro H1. absurd (In (bid_of a) (bids_of M)). auto.
            eapply mfoa_bid_sub_M. eauto. } } } Qed.
 
@@ -703,7 +705,7 @@ Proof. { revert A. induction M as [|m].
               unfold reflexive. auto. exact. } omega.  }
            
            { (*-- c1b : a' <> a0 ---*)             assert (H5: In a' l).
-             { eauto. }
+             { eapply element_list with (b:=a')(a:=a0). auto. exact. }
              assert (case2: a=a0 \/ In a l).
              { auto. }
              destruct case2 as [c2a | c2b]. 
@@ -798,11 +800,11 @@ Proof. { intros H0. apply exists_fair_on_bids in H0 as H1.
        { auto. }
        split.
        { split. auto. eauto. }
-       {eauto. } auto. auto. } Qed.
+       { omega. } auto. auto. } Qed.
          
 End Fair.
 
 
-Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P.
-Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl.
+Hint Resolve m_dbp_P m_sp_P by_dbp_P by_sp_P : core.
+Hint Resolve by_dbp_refl by_sp_refl m_dbp_refl m_sp_refl : core.
 Hint Resolve geb_anti leb_anti: core.

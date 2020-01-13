@@ -248,7 +248,8 @@ Proof. { induction F as [| a F']. { simpl. auto. }
             rewrite Ht. auto. } 
             { destruct (b_eqb (bid_of m) (bid_of a)) eqn: Ham.
               { move /eqP in Ham. simpl. rewrite IHF'. 
-                move /eqP in Hma. eauto. eauto. simpl in H.  destruct H. move /eqP in Hma.
+                move /eqP in Hma. eapply element_list with (b:=m)(a:=a). auto. exact.
+                 eauto. simpl in H.  destruct H. move /eqP in Hma.
                 apply eq_sym ; trivial. subst a. destruct Hma. auto. 
                 assert (Hbid: ~In (bid_of a) (bids_of F')).  eauto. 
                 assert (Hbidm: In (bid_of m) (bids_of F')). apply bids_of_elim0. exact. 
@@ -286,7 +287,7 @@ Proof. { induction M.
          { simpl. rewrite h2. move /eqP in h2.
            subst a. simpl. replace (b_eqb (bid_of m) (bid_of m)) with true. auto. auto. }
          { assert (h1a: In m M).
-           { move /eqP in h2; eauto. }
+           { move /eqP in h2. eapply element_list with (b:=m)(a:=a). auto. exact. }
            replace (delete m (a :: M)) with (a :: (delete m M)).
            { simpl. destruct (b_eqb (bid_of m) (bid_of a)) eqn: h3.
              { apply IHM in h1a as h1b. rewrite h1b. auto. }
@@ -421,7 +422,7 @@ Proof. { induction M.
          { simpl. rewrite h2. move /eqP in h2.
            subst a. simpl. replace (a_eqb (ask_of m) (ask_of m)) with true. auto. auto. }
          { assert (h1a: In m M).
-           { move /eqP in h2; eauto. }
+           { move /eqP in h2. eapply element_list with (b:=m)(a:=a). auto. exact. }
            replace (delete m (a :: M)) with (a :: (delete m M)).
            { simpl. destruct (a_eqb (ask_of m) (ask_of a)) eqn: h3.
              { apply IHM in h1a as h1b. rewrite h1b. auto. }
@@ -511,7 +512,7 @@ Lemma count_in_deleted_tp (m: fill_type)(M: list fill_type):
          { simpl. rewrite H2. move /eqP in H2.
            subst a. simpl. replace (tp m =? tp m) with true. auto. auto. }
          { assert (H1a: In m M).
-           { move /eqP in H2; eauto. }
+           { move /eqP in H2. eapply element_list with (b:=m)(a:=a). auto. exact. }
            replace (delete m (a :: M)) with (a :: (delete m M)).
            { simpl. destruct (tp m =? tp a) eqn: H3.
              { apply IHM in H1a as H1b. rewrite H1b. auto. }

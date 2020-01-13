@@ -109,7 +109,7 @@ Lemma maxin_elim2 (l:list A) (d:A) :l<>nil -> In (maxin l d) l.
    Proof. { generalize d. induction l.
           { intros d0 H. inversion H. }
           { intros d0 H. simpl. destruct H.
-            { subst a; eauto. }  eauto. } } Qed.     
+            { subst a; eauto. } apply maxof_spec4. apply IHl. exact H. } } Qed.     
  
   Lemma maxin_spec0 (l:list A)(d:A)(a:A): In (maxin l d) l -> ((maxin l d) <=r (maxin (a::l) d)).
    Proof. { generalize d. induction l.
@@ -173,7 +173,7 @@ Lemma minin_elim2 (l:list A) (d:A) :l<>nil -> In (minin l d) l.
    Proof. { generalize d. induction l.
           { intros d0 H. inversion H. }
           { intros d0 H. simpl. destruct H.
-            { subst a; eauto. }  eauto. } } Qed.
+            { subst a; eauto. } apply minof_spec4. apply IHl. exact H. } } Qed.
 
      Lemma minin_spec0 (l:list A)(d:A)(a:A): In (minin l d) l -> ((minin (a::l) d) <=r (minin l d)).
    Proof. { generalize d. induction l.

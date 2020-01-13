@@ -46,7 +46,7 @@ Lemma reflect_intro (P:Prop)(b:bool): Prop_bool_eq P b -> reflect P b.
 Proof. { intros. destruct H as  [H1 H2].
          destruct b. constructor;auto.
          constructor.  intro H. apply H1 in H;inversion H. } Qed.
-Hint Immediate  reflect_elim reflect_intro. 
+
 Lemma reflect_dec P: forall b:bool, reflect P b -> {P} + {~P}.
 Proof. intros b H; destruct b; inversion H; auto.  Qed.
 Lemma reflect_EM P: forall b:bool, reflect P b -> P \/ ~P.
@@ -56,7 +56,7 @@ Lemma dec_EM P: {P}+{~P} -> P \/ ~P.
 Lemma pbe_EM P: forall b:bool, Prop_bool_eq P b -> P \/ ~P.
 Proof. { intros b H; cut( reflect P b).
          apply reflect_EM. apply reflect_intro;auto. } Qed.
-Hint Immediate reflect_EM reflect_dec.
+
 
 (* iffP : forall (P Q : Prop) (b : bool), reflect P b -> (P -> Q) -> (Q -> P) -> reflect Q b *)
 

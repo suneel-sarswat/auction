@@ -292,7 +292,7 @@ Definition produce_UM (B:list Bid) (A:list Ask) : (list fill_type) :=
   replace_column (pair_uniform B A)
                 (uniform_price B A).
 
-Print Uniform.
+
 
 Theorem UM_is_Ind_Rat (B: list Bid) (A:list Ask):
   Sorted by_dbp B -> Sorted by_sp A -> Is_IR (produce_UM B A).
@@ -336,7 +336,10 @@ Proof. { intros H1 H2 H3 H4.
            { eapply matching_in_elim4.  exact H3. }
            assert (Hmatch: bid_of f >= ask_of f). eauto.
            assert (h1: by_dbp b b0). 
-           { unfold b0. eauto. }
+           { unfold b0. unfold is_true. apply bool_fun_equal.
+             intro. exact is_true_true. intro.
+              eapply Sorted_elim2. exact by_dbp_refl.
+            exact H1. exact Hfbid. }
            move /leP in h1. unfold b0 in h1. 
            assert (h2: by_sp a a0). 
            { unfold a0. eauto. }
@@ -371,8 +374,8 @@ Proof. { intros H0 H1 H2.
            set (M'':= delete m1 (delete m2 M)). assert (H_irM'':Is_IR M'').
            { subst M''. unfold Is_IR. intros. apply H0ir. eapply delete_elim1.
              simple eapply delete_elim1. exact H. }
-           { assert (Htp: tp m1 = tp m2).
-             eauto.
+           { assert (Htp: tp m1 = tp m2). eapply Uniform_elim.
+             exact H0uni. exact H1. exact H2.
              assert (Hrationalm2: rational m2).
              eauto. unfold rational in Hrationalm2. 
              assert (Htpm2: tp m2 >= ask_of m2). eapply Hrationalm2. 
@@ -398,7 +401,8 @@ Proof. { intros H0 H1 H2.
 
 Lemma IR_UM_matchable_m (M:list fill_type)(m1 m2:fill_type):
   Is_IR M -> Uniform M -> In m1 M -> In m2 M-> bid_of m1 >=ask_of m2. 
-Proof. { intros H1 H2 H3 H4. assert (Htp: tp m1 = tp m2). eauto.
+Proof. { intros H1 H2 H3 H4. assert (Htp: tp m1 = tp m2). 
+         eapply Uniform_elim. exact H2. exact H3. exact H4.
          assert (Htpm1b: tp m1 <= bid_of m1). 
          { unfold Is_IR in H1. unfold rational in H1. eapply H1. exact. }
          assert (Htpm1a: tp m1 >= ask_of m1). 
@@ -574,7 +578,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
            destruct Case as [C1 | C2].
                       { (*------C1:  when b and a are not matchable then produce_MM (b::B') A' *)
              simpl. replace (a <=? b) with false.
-             Focus 2. symmetry. apply /leP. omega. intros M H1.
+             2:{ symmetry. apply /leP. omega. } intros M H1.
              destruct H1 as [H1 H2]. destruct H2 as [H2 H3]. 
              assert (HM:M=nil). eapply unmatchableAB_nil.
              eauto. eauto. eauto. exact. subst M. auto. }
@@ -584,7 +588,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
              intros M h2. destruct h2 as [h2a h2]. destruct h2 as [h2 h2b]. 
               simpl. replace (a <=? b) with true.
              
-             Focus 2. symmetry. apply /leP. auto.
+             2:{ symmetry. apply /leP. auto. }
              assert (Hb: In b (bids_of M) \/ ~ In b (bids_of M)). eauto.
              assert (Ha: In a (asks_of M) \/ ~ In a (asks_of M)). eauto.
              assert (H0: forall M, Is_uniform M B' A' -> |M| <= |(pair_uniform B' A')|).
@@ -630,7 +634,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      assert (h5_is_uni:Is_uniform M' B' A').
                      {unfold Is_uniform. eauto. }
                  assert (h6: |M| = S (|M'|)).
-                 { unfold M'. eauto. }
+                 { unfold M'. eapply delete_size1a. exact. }
                  assert (h7: |M'| <= |(pair_uniform B' A')|). apply H0. exact.
                  simpl. 
                  { assert (Hpair:(|produce_UM (b::B') (a::A') |)=
@@ -665,7 +669,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        { subst t. assert ( Hrationalm2:rational m2). eauto.
                          unfold rational in Hrationalm2.
                          assert (Htpm1m2: tp m1 = tp m2).
-                         eauto. rewrite Htpm1m2. apply Hrationalm2. }
+                         eapply Uniform_elim.
+                         exact h2a. exact. exact. rewrite Htpm1m2. apply Hrationalm2. }
                        simpl. omega. } split.
                      { (*---- NoDup (bids_of M') ----*)
                        unfold M'. simpl.
@@ -727,7 +732,8 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                        assert (h8: x <> ask_of m1).
                        { intro h8. subst x.
                          assert (h9: In (ask_of m1) (asks_of (delete m2 M))).
-                         eauto.
+                         apply asks_of_intro. apply delete_intro. exact h3a.
+                         exact h5b.
                          absurd (In (ask_of m1) (asks_of (delete m1 (delete m2 M)))).
                          { apply matching_elim11. apply matching_elim9. 
                          eapply matching_in_elim0. exact h2. 
@@ -790,7 +796,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                    { apply h2. auto. }
                    eapply in_inv2. all: eauto.  } }
                assert (h5: |M| = S (|M'|)).
-               { unfold M'. eauto. }
+               { unfold M'. eapply delete_size1a. exact. }
                 assert (h5_ir: Is_IR M'). 
                      { subst M'. eapply Is_IR_elim2. exact. }
                      assert (h5_unif: Uniform M').
@@ -835,7 +841,7 @@ Proof. revert B no_dup_B. induction A as [|a A'].
                      exact h2. exact h3a. } auto. }
                    eapply in_inv2. all: eauto. } } 
                assert (h5: |M| = S (|M'|)).
-               { unfold M'. eauto. }
+               { unfold M'. eapply delete_size1a. exact. }
                 assert (h5_ir: Is_IR M'). 
                      { subst M'. eapply Is_IR_elim2. exact. }
                      assert (h5_unif: Uniform M').

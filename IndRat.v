@@ -80,8 +80,8 @@ Lemma produce_IR_is_IR (M: list fill_type) (B: list Bid) (A: list Ask):
  matching_in B A M-> Is_IR (produce_IR M).
  
 Proof. { intro H0. unfold Is_IR. intro m'. intro H.
-         unfold rational. replace (tp m') with (sp (ask_of m')). Focus 2.
-         apply produce_IR_trade_ask_same with (M:=M). auto. split. Focus 2. auto.
+         unfold rational. replace (tp m') with (sp (ask_of m')). 2:{
+         apply produce_IR_trade_ask_same with (M:=M). auto. } split. 2:{ auto. }
          assert (H1: exists m, In m M /\ (bid_of m = bid_of m') /\ (ask_of m = ask_of m')).
          apply fst_same_IR;auto.
          destruct H1 as [m H1]. destruct H1 as [H1 H2].

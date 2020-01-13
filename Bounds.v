@@ -28,7 +28,6 @@ Require Export UM.
 
 Section bounds.
 
-Check Nat.leb.
 
 Fixpoint bids_above (p:nat)(M:list fill_type) :=
 match M with 
@@ -254,7 +253,7 @@ intros. case A as [| a1 A']. { case B as [| b1 B'].
            destruct Case as [C1 | C2].
                       { (*------C1:  when b and a are not matchable then produce_MM (b::B') A' *)
              simpl. replace (a1 <=? b1) with false.
-             Focus 2. symmetry. apply /leP. omega. 
+             2:{ symmetry. apply /leP. omega. } 
              assert (HM:M=nil). eapply unmatchableAB_nil.
              eauto. eauto. eauto. exact. subst M. simpl in H2. omega. }
              { (*-- C2: when b and a are matchable then Output is (b,a):: produce_MM B' A'----*)
@@ -269,7 +268,7 @@ intros. case A as [| a1 A']. { case B as [| b1 B'].
                simpl.
               replace (a1 <=? b1) with true.
              
-             Focus 2. symmetry. apply /leP. auto. simpl.
+             2:{ symmetry. apply /leP. auto. } simpl.
              cut ( (| pair_uniform B' A' |) >= n). omega.
              assert (Hb: In b1 (bids_of M) \/ ~ In b1 (bids_of M)). eauto.
              assert (Ha: In a1 (asks_of M) \/ ~ In a1 (asks_of M)). eauto.
@@ -381,7 +380,8 @@ rewrite <- HAdel. eauto. exact. }
                    assert (h6: x <> a1).
                    { intro h6. subst x. 
                    subst M'. assert (~In (ask_of m) (asks_of (delete m M))).
-                   eauto. subst a1. contradiction. }
+                   eapply matching_elim11. eapply matching_in_elim0.
+                   exact H1. exact h3a. subst a1. contradiction. }
                    assert (h7: In x (a1::A')).
                    { apply H1. auto. }
                    eapply in_inv2. all: eauto.  } }

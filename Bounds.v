@@ -391,6 +391,9 @@ rewrite <- HAdel. eauto. exact. }
                    assert (h3: matching_in B' A' M). eauto using matching_in_elim8.
                    apply IHn in h3. exact. eauto. eauto. eauto. eauto. omega. } } } Qed. 
 
+
+
+
 End bounds.
 
 

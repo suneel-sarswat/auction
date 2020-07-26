@@ -1,55 +1,48 @@
 #!/bin/bash
 
 
-printf ‘GenReflect
+printf "%s\n" "Running list results"
+
 coqc GenReflect.v
 
-printf ‘SetSpecs.v
 coqc SetSpecs.v
 
-printf ‘DecSort.v
 coqc DecSort.v
 
-printf ‘MinMax.v
 coqc MinMax.v
 
-printf ‘DecType.v
 coqc DecType.v
 
-printf ‘SetReflect.v
 coqc SetReflect.v
 
-printf ‘DecList.v
 coqc DecList.v
 
-printf ‘MoreDecList.v
 coqc MoreDecList.v
 
-printf ‘BidAsk.v
+printf "%s\n" "Running essential definitions and results"
 coqc BidAsk.v
 
-printf ‘Matching.v
 coqc Matching.v
 
-printf ‘AuctionInvar.v
 coqc AuctionInvar.v
 
-printf ‘IndRat.v
 coqc IndRat.v
 
-printf ‘Fair.v
+printf "%s\n" "Runing fair matching results"
 coqc Fair.v
 
-printf ‘MM.v
+printf "%s\n" "Running maximum matching results"
 coqc MM.v
 
-printf ‘UM.v
+printf "%s\n" "Running uniform matching results"
 coqc UM.v
 
-printf ‘Bounds.v
+printf "%s\n" "Ruuning results on bounds"
 coqc Bounds.v
 
-echo \
+
+printf "%s\n" "Done"
+coqc Bounds.v
 
 
 

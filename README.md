@@ -6,7 +6,7 @@ This work aims to formally verify different algorithms used in finance. Matching
 
 2. SetSpecs.v: Common predicates over sets.
 
-3. Sorting.v: Sorting a list using a decidable binary relation.
+3. DecSort.v: Sorting a list using a decidable binary relation.
 
 4. MinMax.v: Min and Max in a list.
 
